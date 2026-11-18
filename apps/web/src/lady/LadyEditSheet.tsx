@@ -1,6 +1,6 @@
 import { playerName, validateLadyUses, type Game, type GameAction } from '@avalon/core'
 import { Sheet } from '../components/Sheet.tsx'
-import { SectionTitle, Switch } from '../components/ui.tsx'
+import { SectionTitle } from '../components/ui.tsx'
 import { LadyFields } from './LadyFields.tsx'
 
 /** Edit a recorded Lady use; later uses are re-validated and flagged. */
@@ -38,24 +38,17 @@ export function LadyEditSheet({
               ))}
             </select>
           </div>
-          <Switch
-            label="這次跳過（湖中女神留在持有者手上）"
-            checked={use.skipped}
-            onChange={(skipped) => dispatch({ type: 'editLady', index, patch: { skipped } })}
+          <LadyFields
+            game={game}
+            index={index}
+            holderId={use.holderId}
+            targetId={use.targetId}
+            declared={use.declared}
+            note={use.note}
+            onTarget={(targetId) => dispatch({ type: 'editLady', index, patch: { targetId } })}
+            onDeclared={(declared) => dispatch({ type: 'editLady', index, patch: { declared } })}
+            onNote={(note) => dispatch({ type: 'editLady', index, patch: { note } })}
           />
-          {!use.skipped && (
-            <LadyFields
-              game={game}
-              index={index}
-              holderId={use.holderId}
-              targetId={use.targetId}
-              declared={use.declared}
-              note={use.note}
-              onTarget={(targetId) => dispatch({ type: 'editLady', index, patch: { targetId } })}
-              onDeclared={(declared) => dispatch({ type: 'editLady', index, patch: { declared } })}
-              onNote={(note) => dispatch({ type: 'editLady', index, patch: { note } })}
-            />
-          )}
           {errors.some((e) => e.length > 0) && (
             <ul
               role="alert"

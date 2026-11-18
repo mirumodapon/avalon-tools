@@ -187,25 +187,19 @@ export function HistoryTable({
                           <div className="flex items-center gap-2">
                             <LadyIcon size={16} />
                             <span className="min-w-0 flex-1">
-                              {use.skipped ? (
-                                <span className="text-subtext0">
-                                  已跳過（{playerName(game, use.holderId)} 持有）
+                              <span className="flex flex-wrap items-center gap-x-2">
+                                <span>
+                                  {playerName(game, use.holderId)} →{' '}
+                                  {playerName(game, use.targetId)}：
                                 </span>
-                              ) : (
-                                <span className="flex flex-wrap items-center gap-x-2">
-                                  <span>
-                                    {playerName(game, use.holderId)} →{' '}
-                                    {use.targetId ? playerName(game, use.targetId) : '？'}：
-                                  </span>
-                                  <DeclarationMark declared={use.declared} />
-                                  {showRoles && ladyTruth(game, use) && (
-                                    <LadyTruthMark
-                                      truth={ladyTruth(game, use)!}
-                                      lied={ladyLied(game, use)}
-                                    />
-                                  )}
-                                </span>
-                              )}
+                                <DeclarationMark declared={use.declared} />
+                                {showRoles && ladyTruth(game, use) && (
+                                  <LadyTruthMark
+                                    truth={ladyTruth(game, use)!}
+                                    lied={ladyLied(game, use)}
+                                  />
+                                )}
+                              </span>
                               {use.note && (
                                 <span className="block text-xs text-subtext0">{use.note}</span>
                               )}

@@ -8,7 +8,7 @@ import {
   isLadyQuest,
   type Game,
 } from '@avalon/core'
-import { IconAlertTriangle, IconCheck, IconRipple, IconRippleOff, IconX } from '@tabler/icons-react'
+import { IconAlertTriangle, IconCheck, IconRipple, IconX } from '@tabler/icons-react'
 import { Fragment } from 'react'
 import { LadyIcon } from '../lady/marks.tsx'
 import { CrownMark } from './marks.tsx'
@@ -66,18 +66,11 @@ export function ProgressOverview({ game }: { game: Game }) {
               </li>
               {ladySlot && (
                 <li
-                  className={cx(
-                    'flex',
-                    ladyUse && !ladyUse.skipped ? 'text-lady-fg' : 'text-overlay0',
-                  )}
-                  aria-label={`任務 ${q + 1} 後湖中女神：${ladyUse ? (ladyUse.skipped ? '已跳過' : '已使用') : '未使用'}`}
+                  className={cx('flex', ladyUse ? 'text-lady-fg' : 'text-overlay0')}
+                  aria-label={`任務 ${q + 1} 後湖中女神：${ladyUse ? '已使用' : '未使用'}`}
                   title={`任務 ${q + 1} 後使用湖中女神`}
                 >
-                  {ladyUse?.skipped ? (
-                    <IconRippleOff size={14} aria-hidden />
-                  ) : (
-                    <IconRipple size={14} aria-hidden stroke={ladyUse ? 2.5 : 1.5} />
-                  )}
+                  <IconRipple size={14} aria-hidden stroke={ladyUse ? 2.5 : 1.5} />
                 </li>
               )}
             </Fragment>

@@ -51,19 +51,17 @@ describe('Lady of the Lake UI', () => {
       holderId: 'p7',
       targetId: 'p3',
       declared: 'good',
-      skipped: false,
     })
     expect(deriveState(g).phase).toBe('proposal')
   })
 
-  it('can skip a use', () => {
+  it('cannot be skipped', () => {
     useGames.setState({ games: [atLady()] })
     render(<PlayPage id="g" />)
-    fireEvent.click(screen.getByRole('button', { name: /跳過這次/ }))
-    expect(useGames.getState().games[0]!.lady!.uses[0]).toMatchObject({
-      skipped: true,
-      holderId: 'p7',
-    })
+    expect(screen.queryByRole('button', { name: /跳過/ })).toBeNull()
+    expect(
+      (screen.getByRole('button', { name: /選擇查驗對象/ }) as HTMLButtonElement).disabled,
+    ).toBe(true)
   })
 
   it('shows the declaration, and the lie only when roles are shown', () => {
