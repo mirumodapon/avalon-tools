@@ -44,7 +44,7 @@ describe('App', () => {
       window.location.hash = '#/new'
     })
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /從名冊依序選擇玩家/ }))
+    fireEvent.click(screen.getByRole('button', { name: /從名冊選擇/ }))
     const dialog = screen.getByRole('dialog', { name: '依座位順序點選玩家' })
     const list = within(dialog).getByRole('list', { name: '玩家名冊' })
     for (const n of ['小美', '阿明', '胖虎', '小華', '大雄', '靜香']) {
@@ -67,18 +67,21 @@ describe('App', () => {
     expect(useSettings.getState().settings.roster).toEqual([...roster, '新朋友'])
   })
 
-  it('needs 5–10 picks before finishing', () => {
+  it('accepts fewer picks than seats and keeps the player count', () => {
     useSettings.getState().update({ roster: ['阿明', '小華', '小美', '大雄'] })
     act(() => {
       window.location.hash = '#/new'
     })
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: /從名冊依序選擇玩家/ }))
+    fireEvent.click(screen.getByRole('radio', { name: '7' }))
+    fireEvent.click(screen.getByRole('button', { name: /從名冊選擇/ }))
     const dialog = screen.getByRole('dialog')
-    for (const n of ['阿明', '小華', '小美', '大雄']) {
+    for (const n of ['小華', '阿明']) {
       fireEvent.click(within(dialog).getByRole('button', { name: n }))
     }
-    expect(within(dialog).getByRole('button', { name: /完成/ })).toHaveProperty('disabled', true)
-    expect(dialog.textContent).toContain('已選 4 人（需 5–10 人）')
+    expect(dialog.textContent).toContain('已選 2 人')
+    fireEvent.click(within(dialog).getByRole('button', { name: /完成/ }))
+    expect([1, 2, 3, 7].map(seat)).toEqual(['小華', '阿明', '', ''])
+    expect(screen.getByRole('radio', { name: '7' })).toHaveProperty('checked', true)
   })
 })
