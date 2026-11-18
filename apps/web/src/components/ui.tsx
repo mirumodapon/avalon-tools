@@ -9,7 +9,7 @@ type Variant = 'primary' | 'secondary' | 'danger' | 'ghost'
 const VARIANTS: Record<Variant, string> = {
   primary: 'bg-accent text-on-accent font-semibold disabled:opacity-40',
   secondary: 'bg-surface0 text-text hover:bg-surface1 disabled:opacity-40',
-  danger: 'bg-fail text-base font-semibold disabled:opacity-40',
+  danger: 'bg-fail text-on-fill font-semibold disabled:opacity-40',
   ghost: 'text-subtext1 hover:bg-surface0 disabled:opacity-40',
 }
 
@@ -23,7 +23,7 @@ export function Button({
     <button
       type={type}
       className={cx(
-        'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-4 text-base transition-colors active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100',
+        'inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl px-4 transition-colors active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100',
         VARIANTS[variant],
         className,
       )}
