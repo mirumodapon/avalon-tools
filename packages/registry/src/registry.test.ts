@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -24,14 +24,11 @@ describe('registry', () => {
     expect(validateTools(tools)).toEqual([])
   })
 
-  it('has an app (with a matching version) for every tool that is not coming-soon', () => {
-    const problems = builtTools().flatMap((t) => {
-      const pkg = join(root, 'apps', t.id, 'package.json')
-      if (!existsSync(pkg)) return [`apps/${t.id} is missing`]
-      const { version } = JSON.parse(readFileSync(pkg, 'utf8')) as { version: string }
-      return version === t.version ? [] : [`${t.id}: registry ${t.version} ≠ package ${version}`]
-    })
-    expect(problems).toEqual([])
+  it('has an app for every tool that is not coming-soon', () => {
+    const missing = builtTools()
+      .filter((t) => !existsSync(join(root, 'apps', t.id, 'package.json')))
+      .map((t) => t.id)
+    expect(missing).toEqual([])
   })
 
   it('only uses Tabler icons that exist', () => {
@@ -68,7 +65,6 @@ describe('validateTools', () => {
     icon: 'IconX',
     accent: 'mauve',
     status: 'stable',
-    version: '1.0.0',
   }
   it('reports duplicates and malformed entries', () => {
     const problems = validateTools([
@@ -76,7 +72,7 @@ describe('validateTools', () => {
       { ...base, id: 'a', path: '/a/' },
       { ...base, id: 'a', path: '/a/' },
       { ...base, id: 'Bad', path: '/bad' },
-      { ...base, id: 'b', path: '/b/', icon: 'castle', version: '1' },
+      { ...base, id: 'b', path: '/b/', icon: 'castle' },
     ])
     expect(problems).toEqual(
       expect.arrayContaining([
@@ -85,7 +81,6 @@ describe('validateTools', () => {
         'Bad: id must be lowercase letters, digits and dashes',
         'Bad: path must be /Bad/ (got /bad)',
         'b: icon must be a Tabler component name',
-        'b: version must be x.y.z',
       ]),
     )
   })

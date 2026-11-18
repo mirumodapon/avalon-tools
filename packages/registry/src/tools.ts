@@ -14,7 +14,6 @@ export const TOOLS = [
     icon: 'IconBuildingCastle',
     accent: 'mauve',
     status: 'stable',
-    version: '2.0.0',
   },
   {
     id: 'record',
@@ -25,7 +24,6 @@ export const TOOLS = [
     icon: 'IconClipboardList',
     accent: 'green',
     status: 'stable',
-    version: '2.0.0',
   },
   {
     id: 'narrator',
@@ -36,7 +34,6 @@ export const TOOLS = [
     icon: 'IconMoonStars',
     accent: 'lavender',
     status: 'coming-soon',
-    version: '0.0.0',
   },
   {
     id: 'deal',
@@ -47,7 +44,6 @@ export const TOOLS = [
     icon: 'IconCards',
     accent: 'peach',
     status: 'coming-soon',
-    version: '0.0.0',
   },
   // new:app inserts here
 ] as const satisfies readonly ToolMeta[]

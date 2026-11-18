@@ -17,6 +17,4 @@ export interface ToolMeta {
   /** Catppuccin accent used for the tool's icon and card. */
   accent: AccentName
   status: ToolStatus
-  /** Must equal `apps/<id>/package.json` version for built apps. */
-  version: string
 }
