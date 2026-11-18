@@ -6,4 +6,7 @@ import { useGames } from './games/store.ts'
 beforeEach(() => {
   useGames.setState({ ready: true, storageError: null })
 })
-afterEach(() => cleanup())
+afterEach(() => {
+  cleanup()
+  localStorage.clear()
+})

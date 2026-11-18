@@ -10,6 +10,8 @@ import { SetupPage } from './pages/SetupPage.tsx'
 import { SummaryPage } from './pages/SummaryPage.tsx'
 import { useRoute, type Route } from './router.ts'
 import { useApplyTheme } from './settings/useApplyTheme.ts'
+import { savedScroll } from './session/session.ts'
+import { useEffect, useRef } from 'react'
 
 export function App() {
   useApplyTheme()
@@ -18,6 +20,7 @@ export function App() {
   const storageError = useGames((s) => s.storageError)
   const dismissError = useGames((s) => s.dismissError)
   const shared = useShareParam()
+  useRestoreScroll(ready)
   return (
     <>
       {storageError && (
@@ -44,6 +47,17 @@ export function App() {
       )}
     </>
   )
+}
+
+/** After the first load, return to where the user had scrolled on this screen. */
+function useRestoreScroll(ready: boolean) {
+  const restored = useRef(false)
+  useEffect(() => {
+    if (!ready || restored.current) return
+    restored.current = true
+    const y = savedScroll(window.location.hash)
+    if (y > 0) requestAnimationFrame(() => window.scrollTo(0, y))
+  }, [ready])
 }
 
 function Routes({ route }: { route: Route }) {

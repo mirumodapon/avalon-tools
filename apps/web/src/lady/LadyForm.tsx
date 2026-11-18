@@ -6,8 +6,8 @@ import {
   type PlayerId,
 } from '@avalon/core'
 import { IconSend } from '@tabler/icons-react'
-import { useState } from 'react'
 import { BottomBar, Button } from '../components/ui.tsx'
+import { usePersistentState } from '../session/usePersistentState.ts'
 import { LadyFields } from './LadyFields.tsx'
 import { LadyIcon } from './marks.tsx'
 
@@ -21,9 +21,15 @@ export function LadyForm({
   onUse: (input: { targetId: PlayerId; declared: LadyDeclaration; note: string }) => void
 }) {
   const holderId = state.ladyHolderId!
-  const [targetId, setTargetId] = useState<PlayerId | null>(null)
-  const [declared, setDeclared] = useState<LadyDeclaration>('none')
-  const [note, setNote] = useState('')
+  // Survives closing the app mid-entry; tied to this game's next Lady use.
+  const draftKey = `${game.id}:lady${game.lady?.uses.length ?? 0}`
+  const [targetId, setTargetId] = usePersistentState<PlayerId | null>('lady-target', draftKey, null)
+  const [declared, setDeclared] = usePersistentState<LadyDeclaration>(
+    'lady-declared',
+    draftKey,
+    'none',
+  )
+  const [note, setNote] = usePersistentState('lady-note', draftKey, '')
   const useNumber = (game.lady?.uses.length ?? 0) + 1
 
   return (

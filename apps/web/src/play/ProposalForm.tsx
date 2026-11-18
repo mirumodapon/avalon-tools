@@ -15,6 +15,7 @@ import { AnomalyMark, CrownMark, ForcedBadge, TeamMark, VoteMark } from '../comp
 import { BottomBar, Button, Card, cx, Segmented } from '../components/ui.tsx'
 import { Sheet } from '../components/Sheet.tsx'
 import { useSettings } from '../settings/store.ts'
+import { usePersistentState } from '../session/usePersistentState.ts'
 import {
   draftVotes,
   emptyDraft,
@@ -51,11 +52,13 @@ export function ProposalForm({
 }) {
   const settings = useSettings((s) => s.settings)
   const ids = playerIds(game)
-  const [draft, setDraft] = useState(() =>
+  // The half-entered proposal survives closing the app; tied to this game and attempt.
+  const draftKey = `${game.id}:q${state.questIndex}:a${state.attempt}`
+  const [draft, setDraft] = usePersistentState('proposal-draft', draftKey, () =>
     emptyDraft(initialInputMode(game, settings.defaultInputMode)),
   )
-  const [step, setStep] = useState<Step>('team')
-  const [leaderId, setLeaderId] = useState(state.leaderId)
+  const [step, setStep] = usePersistentState<Step>('proposal-step', draftKey, 'team')
+  const [leaderId, setLeaderId] = usePersistentState('proposal-leader', draftKey, state.leaderId)
   const [pickingLeader, setPickingLeader] = useState(false)
 
   const autoApprove = state.forced && settings.forcedAutoApprove
