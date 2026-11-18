@@ -9,7 +9,6 @@ import {
   type Game,
 } from '@avalon/core'
 import { IconAlertTriangle, IconCheck, IconRipple, IconX } from '@tabler/icons-react'
-import { Fragment } from 'react'
 import { LadyIcon } from '../lady/marks.tsx'
 import { CrownMark } from './marks.tsx'
 import { cx } from './ui.tsx'
@@ -26,7 +25,7 @@ export function ProgressOverview({ game }: { game: Game }) {
 
   return (
     <div className="space-y-2 px-4 pb-3">
-      <ol className="flex items-center justify-between gap-1" aria-label="任務進度">
+      <ol className="grid grid-cols-5 items-center" aria-label="任務進度">
         {Array.from({ length: QUEST_COUNT }, (_, q) => {
           const outcome = s.outcomes[q]
           const current = inProgress && q === s.questIndex
@@ -35,8 +34,15 @@ export function ProgressOverview({ game }: { game: Game }) {
           const ladyUse = game.lady?.uses.find((u) => u.afterQuest === q)
           const ladySlot = game.lady && isLadyQuest(q)
           return (
-            <Fragment key={q}>
-              <li className="relative" aria-label={label} title={label}>
+            <li
+              key={q}
+              className="relative flex justify-center"
+              aria-label={
+                ladySlot ? `${label}；之後湖中女神${ladyUse ? '已使用' : '未使用'}` : label
+              }
+              title={label}
+            >
+              <span className="relative">
                 <span
                   className={cx(
                     'flex size-11 items-center justify-center rounded-full border-2 font-bold',
@@ -63,17 +69,21 @@ export function ProgressOverview({ game }: { game: Game }) {
                     ×2
                   </span>
                 )}
-              </li>
+              </span>
               {ladySlot && (
-                <li
-                  className={cx('flex', ladyUse ? 'text-lady-fg' : 'text-overlay0')}
-                  aria-label={`任務 ${q + 1} 後湖中女神：${ladyUse ? '已使用' : '未使用'}`}
+                // Sits on the boundary between this quest and the next, outside the layout flow.
+                <span
+                  aria-hidden
+                  className={cx(
+                    'absolute top-1/2 right-0 flex translate-x-1/2 -translate-y-1/2',
+                    ladyUse ? 'text-lady-fg' : 'text-overlay0',
+                  )}
                   title={`任務 ${q + 1} 後使用湖中女神`}
                 >
                   <IconRipple size={14} aria-hidden stroke={ladyUse ? 2.5 : 1.5} />
-                </li>
+                </span>
               )}
-            </Fragment>
+            </li>
           )
         })}
       </ol>
