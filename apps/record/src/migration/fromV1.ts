@@ -111,6 +111,16 @@ async function migrateGames(target: AvalonDB): Promise<{ games: number; skipped:
   return { games: ids.length, skipped }
 }
 
+/**
+ * The synchronous part (settings, theme, session, drafts). Runs before any store reads
+ * localStorage; idempotent and flag-free — the flag is set once the games are verified.
+ */
+export function migrateLocalFromV1(): void {
+  if (localStorage.getItem(MIGRATED_FLAG) !== null || !hasLegacyData()) return
+  migrateSettings()
+  migrateSessionAndDrafts()
+}
+
 export function hasLegacyData(): boolean {
   return legacyKeys().length > 0
 }
