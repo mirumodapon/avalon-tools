@@ -24,7 +24,7 @@ export function ProgressOverview({ game }: { game: Game }) {
   const track = s.phase === 'proposal' ? s.attempt : proposalsThisQuest
 
   return (
-    <div className="space-y-2 px-4 pb-3">
+    <div className="space-y-1.5 px-4 pb-2">
       <ol className="grid grid-cols-5 items-center" aria-label="任務進度">
         {Array.from({ length: QUEST_COUNT }, (_, q) => {
           const outcome = s.outcomes[q]
@@ -45,7 +45,7 @@ export function ProgressOverview({ game }: { game: Game }) {
               <span className="relative">
                 <span
                   className={cx(
-                    'flex size-11 items-center justify-center rounded-full border-2 font-bold',
+                    'flex size-9 items-center justify-center rounded-full border-2 text-sm font-bold',
                     outcome === 'success' && 'border-success bg-success text-on-fill',
                     outcome === 'fail' && 'border-fail bg-fail text-on-fill',
                     !outcome &&
@@ -54,9 +54,9 @@ export function ProgressOverview({ game }: { game: Game }) {
                   aria-hidden
                 >
                   {outcome === 'success' ? (
-                    <IconCheck size={22} stroke={3} />
+                    <IconCheck size={18} stroke={3} />
                   ) : outcome === 'fail' ? (
-                    <IconX size={22} stroke={3} />
+                    <IconX size={18} stroke={3} />
                   ) : (
                     sizes[q]
                   )}
@@ -87,7 +87,7 @@ export function ProgressOverview({ game }: { game: Game }) {
           )
         })}
       </ol>
-      {s.ladyHolderId && (
+      {s.ladyHolderId && !inProgress && s.phase !== 'lady' && (
         <p className="flex items-center gap-1 text-sm text-subtext1">
           <LadyIcon size={16} />
           湖中女神持有者：<span className="font-semibold">{playerName(game, s.ladyHolderId)}</span>
@@ -98,12 +98,21 @@ export function ProgressOverview({ game }: { game: Game }) {
         <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm">
           <span className="flex min-w-0 items-center gap-1">
             <span className="shrink-0 font-semibold">
-              任務 {s.questIndex + 1}・第 {s.attempt} 次派票
+              任務 {s.questIndex + 1}・第 {s.attempt} 次
             </span>
             <span className="flex min-w-[3em] items-center gap-0.5 text-subtext1">
               <CrownMark size={16} />
               <span className="truncate">{playerName(game, s.leaderId)}</span>
             </span>
+            {s.ladyHolderId && (
+              <span
+                className="flex min-w-[3em] items-center gap-0.5 text-subtext1"
+                title="湖中女神持有者"
+              >
+                <LadyIcon size={16} label="湖中女神持有者" />
+                <span className="truncate">{playerName(game, s.ladyHolderId)}</span>
+              </span>
+            )}
           </span>
           <ol
             className="flex shrink-0 items-center gap-1"
@@ -119,7 +128,7 @@ export function ProgressOverview({ game }: { game: Game }) {
                   key={k}
                   aria-hidden
                   className={cx(
-                    'flex size-6 items-center justify-center rounded-full text-xs font-bold',
+                    'flex size-5 items-center justify-center rounded-full text-[11px] font-bold',
                     forced ? 'border-2 border-forced' : 'border border-surface2',
                     done && (forced ? 'bg-forced text-on-fill' : 'bg-overlay0 text-on-fill'),
                     now &&
@@ -128,7 +137,7 @@ export function ProgressOverview({ game }: { game: Game }) {
                     !done && !now && (forced ? 'text-forced-fg' : 'text-subtext0'),
                   )}
                 >
-                  {forced ? <IconAlertTriangle size={14} /> : k}
+                  {forced ? <IconAlertTriangle size={12} /> : k}
                 </li>
               )
             })}
@@ -136,9 +145,9 @@ export function ProgressOverview({ game }: { game: Game }) {
         </div>
       )}
       {inProgress && s.forced && s.phase === 'proposal' && (
-        <p className="flex items-center gap-1 rounded-lg bg-forced/15 px-2 py-1 text-sm font-semibold text-forced-fg">
+        <p className="flex items-center gap-1 rounded-lg bg-forced/15 px-2 py-0.5 text-sm font-semibold text-forced-fg">
           <IconAlertTriangle size={16} aria-hidden />
-          強制局：這次派票沒有通過，壞人直接勝利
+          強制局：未通過則壞人勝利
         </p>
       )}
     </div>
