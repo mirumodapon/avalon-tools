@@ -1,15 +1,24 @@
-import { IconCrown } from '@tabler/icons-react'
-import { ThemePicker } from './components/ThemePicker.tsx'
+import { HomePage } from './pages/HomePage.tsx'
+import { NotFoundPage } from './pages/NotFoundPage.tsx'
+import { PlayPage } from './pages/PlayPage.tsx'
+import { SettingsPage } from './pages/SettingsPage.tsx'
+import { SetupPage } from './pages/SetupPage.tsx'
+import { useRoute } from './router.ts'
 import { useApplyTheme } from './settings/useApplyTheme.ts'
 
 export function App() {
   useApplyTheme()
-  return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="flex items-center gap-2 text-xl font-bold">
-        <IconCrown aria-hidden className="text-crown" /> 阿瓦隆紀錄
-      </h1>
-      <ThemePicker />
-    </main>
-  )
+  const route = useRoute()
+  switch (route.name) {
+    case 'home':
+      return <HomePage />
+    case 'new':
+      return <SetupPage />
+    case 'play':
+      return <PlayPage key={route.id} id={route.id} />
+    case 'settings':
+      return <SettingsPage />
+    default:
+      return <NotFoundPage />
+  }
 }
