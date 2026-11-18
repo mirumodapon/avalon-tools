@@ -5,9 +5,12 @@ import {
   QUEST_COUNT,
   teamSizes,
   failsRequired,
+  isLadyQuest,
   type Game,
 } from '@avalon/core'
-import { IconAlertTriangle, IconCheck, IconX } from '@tabler/icons-react'
+import { IconAlertTriangle, IconCheck, IconRipple, IconRippleOff, IconX } from '@tabler/icons-react'
+import { Fragment } from 'react'
+import { LadyIcon } from '../lady/marks.tsx'
 import { CrownMark } from './marks.tsx'
 import { cx } from './ui.tsx'
 
@@ -29,38 +32,64 @@ export function ProgressOverview({ game }: { game: Game }) {
           const current = inProgress && q === s.questIndex
           const twoFails = failsRequired(n, q) === 2
           const label = `任務 ${q + 1}：${outcome === 'success' ? '成功' : outcome === 'fail' ? '失敗' : current ? '進行中' : '未進行'}，${sizes[q]} 人${twoFails ? '，需 2 張失敗' : ''}`
+          const ladyUse = game.lady?.uses.find((u) => u.afterQuest === q)
+          const ladySlot = game.lady && isLadyQuest(q)
           return (
-            <li key={q} className="relative" aria-label={label} title={label}>
-              <span
-                className={cx(
-                  'flex size-11 items-center justify-center rounded-full border-2 text-base font-bold',
-                  outcome === 'success' && 'border-success bg-success text-base',
-                  outcome === 'fail' && 'border-fail bg-fail text-base',
-                  !outcome &&
-                    (current ? 'border-accent text-accent-fg' : 'border-surface2 text-subtext0'),
-                )}
-                aria-hidden
-              >
-                {outcome === 'success' ? (
-                  <IconCheck size={22} stroke={3} />
-                ) : outcome === 'fail' ? (
-                  <IconX size={22} stroke={3} />
-                ) : (
-                  sizes[q]
-                )}
-              </span>
-              {twoFails && (
+            <Fragment key={q}>
+              <li className="relative" aria-label={label} title={label}>
                 <span
+                  className={cx(
+                    'flex size-11 items-center justify-center rounded-full border-2 text-base font-bold',
+                    outcome === 'success' && 'border-success bg-success text-base',
+                    outcome === 'fail' && 'border-fail bg-fail text-base',
+                    !outcome &&
+                      (current ? 'border-accent text-accent-fg' : 'border-surface2 text-subtext0'),
+                  )}
                   aria-hidden
-                  className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-base bg-forced px-1 text-[10px] font-bold text-base"
                 >
-                  ×2
+                  {outcome === 'success' ? (
+                    <IconCheck size={22} stroke={3} />
+                  ) : outcome === 'fail' ? (
+                    <IconX size={22} stroke={3} />
+                  ) : (
+                    sizes[q]
+                  )}
                 </span>
+                {twoFails && (
+                  <span
+                    aria-hidden
+                    className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-base bg-forced px-1 text-[10px] font-bold text-base"
+                  >
+                    ×2
+                  </span>
+                )}
+              </li>
+              {ladySlot && (
+                <li
+                  className={cx(
+                    'flex',
+                    ladyUse && !ladyUse.skipped ? 'text-lady-fg' : 'text-overlay0',
+                  )}
+                  aria-label={`任務 ${q + 1} 後湖中女神：${ladyUse ? (ladyUse.skipped ? '已跳過' : '已使用') : '未使用'}`}
+                  title={`任務 ${q + 1} 後使用湖中女神`}
+                >
+                  {ladyUse?.skipped ? (
+                    <IconRippleOff size={14} aria-hidden />
+                  ) : (
+                    <IconRipple size={14} aria-hidden stroke={ladyUse ? 2.5 : 1.5} />
+                  )}
+                </li>
               )}
-            </li>
+            </Fragment>
           )
         })}
       </ol>
+      {s.ladyHolderId && (
+        <p className="flex items-center gap-1 text-sm text-subtext1">
+          <LadyIcon size={16} />
+          湖中女神持有者：<span className="font-semibold">{playerName(game, s.ladyHolderId)}</span>
+        </p>
+      )}
 
       {inProgress && (
         <div className="flex items-center justify-between gap-2 text-sm">
