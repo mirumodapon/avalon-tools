@@ -1,7 +1,7 @@
 import { deriveState, dateKey, formatTime, type Game } from '@avalon/core'
 import { IconDownload, IconLinkOff, IconX } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
-import { GlobalDisplaySettingsButton } from '../components/DisplaySettings.tsx'
+import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
 import { ProgressOverview } from '../components/ProgressOverview.tsx'
@@ -63,7 +63,8 @@ function SharedPreview({ game, onClose }: { game: Game; onClose: () => void }) {
   const exists = useGames((s) => s.games.some((g) => g.id === game.id))
   const importGames = useGames((s) => s.importGames)
   const viewMode = useSettings((s) => s.settings.viewMode)
-  const showRoles = useSettings((s) => s.settings.showRoles)
+  const rolesByDefault = useSettings((s) => s.settings.showRoles)
+  const [showRoles, setShowRoles] = useState(rolesByDefault)
   const [choice, setChoice] = useState<ConflictChoice>('copy')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -110,7 +111,7 @@ function SharedPreview({ game, onClose }: { game: Game; onClose: () => void }) {
           <div className="mb-3 flex gap-2">
             <ViewModeToggle className="w-28" />
             <span className="flex-1" />
-            <GlobalDisplaySettingsButton />
+            <DisplaySettingsButton showRoles={showRoles} onShowRoles={setShowRoles} />
           </div>
           <HistoryTable game={game} viewMode={viewMode} showRoles={showRoles} />
         </section>

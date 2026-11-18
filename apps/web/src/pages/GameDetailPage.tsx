@@ -13,7 +13,7 @@ import { ProgressOverview } from '../components/ProgressOverview.tsx'
 import { StatsPanel } from '../components/StatsPanel.tsx'
 import { Button, Card, IconButton, SectionTitle } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
-import { GlobalDisplaySettingsButton } from '../components/DisplaySettings.tsx'
+import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { ShareButton } from '../share/ShareButton.tsx'
 import { ExportSheet } from '../export/ExportSheet.tsx'
 import { useGame, useGames } from '../games/store.ts'
@@ -29,7 +29,9 @@ export function GameDetailPage({ id }: { id: string }) {
   const game = useGame(id)
   const dispatchGame = useGames((s) => s.dispatch)
   const viewMode = useSettings((s) => s.settings.viewMode)
-  const showRoles = useSettings((s) => s.settings.showRoles)
+  // Starts from the 「瀏覽時預設隱藏角色」 setting each time; toggling here only affects this view.
+  const rolesByDefault = useSettings((s) => s.settings.showRoles)
+  const [showRoles, setShowRoles] = useState(rolesByDefault)
   const title = useDisplayName(game)
   const [editOpen, setEditOpen] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
@@ -101,7 +103,7 @@ export function GameDetailPage({ id }: { id: string }) {
           <div className="mb-3 flex gap-2">
             <ViewModeToggle className="w-28" />
             <span className="flex-1" />
-            <GlobalDisplaySettingsButton />
+            <DisplaySettingsButton showRoles={showRoles} onShowRoles={setShowRoles} />
           </div>
           <HistoryTable game={game} viewMode={viewMode} showRoles={showRoles} />
         </section>
@@ -120,7 +122,12 @@ export function GameDetailPage({ id }: { id: string }) {
         </Button>
       </div>
 
-      <ExportSheet game={game} open={exportOpen} onClose={() => setExportOpen(false)} />
+      <ExportSheet
+        game={game}
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        defaultIncludeRoles={showRoles}
+      />
       <GameSettingsSheet
         game={game}
         open={editOpen}
