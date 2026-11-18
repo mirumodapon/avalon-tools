@@ -85,12 +85,12 @@ export function ProgressOverview({ game }: { game: Game }) {
       )}
 
       {inProgress && (
-        <div className="flex items-center justify-between gap-2 text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 text-sm">
           <span className="flex min-w-0 items-center gap-1">
             <span className="shrink-0 font-semibold">
               任務 {s.questIndex + 1}・第 {s.attempt} 次派票
             </span>
-            <span className="flex min-w-0 items-center gap-0.5 text-subtext1">
+            <span className="flex min-w-[3em] items-center gap-0.5 text-subtext1">
               <CrownMark size={16} />
               <span className="truncate">{playerName(game, s.leaderId)}</span>
             </span>

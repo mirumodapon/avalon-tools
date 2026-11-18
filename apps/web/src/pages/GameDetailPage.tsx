@@ -13,13 +13,13 @@ import { ProgressOverview } from '../components/ProgressOverview.tsx'
 import { StatsPanel } from '../components/StatsPanel.tsx'
 import { Button, Card, IconButton, SectionTitle } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
+import { GlobalDisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { ExportSheet } from '../export/ExportSheet.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
-import { GlobalShowRolesButton } from '../roles/ShowRolesToggle.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
 import { NotFoundPage } from './NotFoundPage.tsx'
@@ -102,8 +102,9 @@ export function GameDetailPage({ id }: { id: string }) {
 
         <section aria-label="歷史表格">
           <div className="mb-3 flex gap-2">
-            <ViewModeToggle className="flex-1" />
-            <GlobalShowRolesButton />
+            <ViewModeToggle className="w-28" />
+            <span className="flex-1" />
+            <GlobalDisplaySettingsButton />
           </div>
           <HistoryTable
             game={game}

@@ -24,8 +24,10 @@ function game(mode: 'approvals' | 'anomalies'): Game {
   return gameReducer(g, { type: 'propose', team, votes, inputMode: mode })
 }
 
+/** Cells of the first proposal row in the quest 1 table. */
 function cells() {
-  const row = screen.getAllByRole('row')[1]!
+  const table = screen.getByRole('table', { name: '任務 1' })
+  const row = within(table).getAllByRole('row')[1]!
   return within(row).getAllByRole('cell')
 }
 

@@ -64,15 +64,26 @@ describe('Lady of the Lake UI', () => {
     ).toBe(true)
   })
 
-  it('shows the declaration, and the lie only when roles are shown', () => {
+  it('shows the declaration in detail, and the lie only when roles are shown', () => {
     const g = gameReducer(atLady(), { type: 'useLady', targetId: 'p3', declared: 'good' })
-    const { unmount } = render(<HistoryTable game={g} viewMode="full" />)
-    const row = screen.getByText(/7號 →/).closest('tr')!
+    const detailed = { questResult: 'detailed', ladyResult: 'detailed' } as const
+    const { unmount } = render(<HistoryTable game={g} viewMode="full" display={detailed} />)
+    const row = screen.getByRole('region', { name: '湖中女神第 1 次' })
+    expect(row.textContent).toContain('7號 → 3號')
     expect(row.textContent).toContain('宣告好人')
     expect(row.textContent).not.toMatch(/說謊|實際/)
     unmount()
-    render(<HistoryTable game={g} viewMode="full" showRoles />)
-    const row2 = screen.getByText(/7號 →/).closest('tr')!
-    expect(within(row2).getByText('說謊')).toBeTruthy()
+    render(<HistoryTable game={g} viewMode="full" showRoles display={detailed} />)
+    expect(
+      within(screen.getByRole('region', { name: '湖中女神第 1 次' })).getByText('說謊'),
+    ).toBeTruthy()
+  })
+
+  it('shows seat numbers and a faction icon in simple mode', () => {
+    const g = gameReducer(atLady(), { type: 'useLady', targetId: 'p3', declared: 'evil' })
+    const simple = { questResult: 'simple', ladyResult: 'simple' } as const
+    render(<HistoryTable game={g} viewMode="full" display={simple} />)
+    const row = screen.getByRole('region', { name: '湖中女神第 1 次' })
+    expect(row.textContent).toBe('湖中女神7查驗3:壞人')
   })
 })

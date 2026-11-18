@@ -144,7 +144,7 @@ export function ExportSheet({
           />
         ) : (
           <div className="overflow-x-auto rounded-xl border border-overlay0">
-            <div ref={pngRef} className="w-max min-w-full bg-base p-4 text-text">
+            <div ref={pngRef} className="w-[390px] bg-base p-4 text-text">
               <p className="mb-1 text-lg font-bold">{name}</p>
               {game.note && (
                 <p className="mb-3 max-w-md text-sm whitespace-pre-wrap text-subtext1">
