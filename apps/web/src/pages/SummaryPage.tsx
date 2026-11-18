@@ -1,13 +1,8 @@
-import {
-  assassinationHit,
-  deriveState,
-  renderName,
-  type GameAction,
-  type PlayerId,
-} from '@avalon/core'
+import { assassinationHit, deriveState, renderName, type GameAction } from '@avalon/core'
 import { IconArrowBackUp, IconDeviceFloppy, IconSword } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Page } from '../components/Layout.tsx'
+import { SelectField } from '../components/Select.tsx'
 import { BottomBar, Button, Card, SectionTitle, Segmented } from '../components/ui.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { GameInfoEditor } from '../naming/GameInfoEditor.tsx'
@@ -82,26 +77,14 @@ export function SummaryPage({ id }: { id: string }) {
                 刺殺
               </span>
             </SectionTitle>
-            <label className="block">
-              <span className="mb-1 block text-sm text-subtext0">刺殺目標</span>
-              <select
-                className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3"
-                value={assassination.targetId ?? ''}
-                onChange={(e) =>
-                  dispatch({
-                    type: 'assassinate',
-                    targetId: (e.target.value || null) as PlayerId | null,
-                    manualHit: assassination.manualHit,
-                  })
-                }
-              >
-                {game.players.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <SelectField
+              label="刺殺目標"
+              value={assassination.targetId}
+              options={game.players.map((p) => ({ value: p.id, label: p.name }))}
+              onChange={(targetId) =>
+                dispatch({ type: 'assassinate', targetId, manualHit: assassination.manualHit })
+              }
+            />
             {merlinKnown ? (
               <p className="mt-2 text-sm text-subtext0">
                 已指派梅林，自動判定：{assassinationHit(game, assassination) ? '刺中' : '沒刺中'}

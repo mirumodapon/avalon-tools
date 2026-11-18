@@ -57,7 +57,7 @@ describe('game list', () => {
   it('searches by name and note', () => {
     useGames.setState({ games: [finished('a', '週五團', '在咖啡廳'), finished('b', '週六團')] })
     render(<App />)
-    fireEvent.change(screen.getByRole('searchbox', { name: '搜尋名稱或備註' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: '搜尋名稱或備註' }), {
       target: { value: '咖啡' },
     })
     const list = screen.getByRole('region', { name: '遊戲列表' })

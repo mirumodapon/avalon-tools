@@ -1,6 +1,7 @@
 import { DATE_FORMATS, DEFAULT_NAMING, PLACEHOLDERS, renderName } from '@avalon/core'
 import { IconRestore } from '@tabler/icons-react'
 import { useRef } from 'react'
+import { SelectField } from '../components/Select.tsx'
 import { Button } from '../components/ui.tsx'
 import { useSettings } from '../settings/store.ts'
 
@@ -57,22 +58,17 @@ export function NamingSettings() {
           </button>
         ))}
       </div>
-      <label className="block">
-        <span className="mb-1 block text-sm text-subtext0">
-          日期格式（也可在範本中寫 <code>{'{date:MM/DD}'}</code>）
-        </span>
-        <select
-          className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3"
+      <div>
+        <SelectField
+          label="日期格式"
           value={naming.dateFormat}
-          onChange={(e) => set({ dateFormat: e.target.value })}
-        >
-          {DATE_FORMATS.map((f) => (
-            <option key={f} value={f}>
-              {f}
-            </option>
-          ))}
-        </select>
-      </label>
+          options={DATE_FORMATS.map((f) => ({ value: f, label: f }))}
+          onChange={(dateFormat) => set({ dateFormat })}
+        />
+        <p className="mt-1 text-xs text-subtext0">
+          也可在範本中直接寫 <code>{'{date:MM/DD}'}</code>
+        </p>
+      </div>
       <div className="rounded-xl bg-surface0 p-3" aria-live="polite">
         <p className="text-xs text-subtext0">預覽（今天第 3 場、7 人）</p>
         <p className="font-semibold">{preview || '（空白，將使用備用名稱）'}</p>

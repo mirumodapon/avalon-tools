@@ -28,6 +28,7 @@ import {
 } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 import { Page, SettingsLink } from '../components/Layout.tsx'
+import { SelectField } from '../components/Select.tsx'
 import {
   BottomBar,
   Button,
@@ -230,7 +231,6 @@ export function SetupPage({ from }: { from?: string }) {
                 <SeatNo n={i + 1} />
                 <input
                   aria-label={`第 ${i + 1} 位玩家名稱`}
-                  list="roster-names"
                   onFocus={() => setActive(i)}
                   className={cx(
                     'ml-1 min-h-11 min-w-0 flex-1 rounded-xl border bg-base px-3 focus:border-accent focus:outline-none',
@@ -270,13 +270,6 @@ export function SetupPage({ from }: { from?: string }) {
               </li>
             ))}
           </ol>
-          <datalist id="roster-names">
-            {roster.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </datalist>
 
           <div className="mt-2 space-y-1 border-t border-surface0 pt-2 text-sm">
             <p className="flex items-center gap-1 text-subtext0">
@@ -307,23 +300,17 @@ export function SetupPage({ from }: { from?: string }) {
             <p className="mt-1 text-sm text-forced-fg">官方建議湖中女神用於 7 人以上的遊戲</p>
           )}
           {ladyOn && (
-            <label className="mt-3 block">
-              <span className="mb-1 block text-sm text-subtext0">
-                初始持有者（預設為第一位隊長右手邊）
-              </span>
-              <select
-                className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3"
+            <div className="mt-3">
+              <SelectField
+                label="湖中女神初始持有者"
                 value={ladyInitial}
-                onChange={(e) => setLadyHolder(e.target.value)}
-              >
-                {players.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                    {p.id === defaultHolder ? '（預設）' : ''}
-                  </option>
-                ))}
-              </select>
-            </label>
+                options={players.map((p) => ({
+                  value: p.id,
+                  label: p.id === defaultHolder ? `${p.name}（預設：第一位隊長右手邊）` : p.name,
+                }))}
+                onChange={setLadyHolder}
+              />
+            </div>
           )}
         </Card>
 

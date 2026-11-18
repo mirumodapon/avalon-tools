@@ -40,7 +40,12 @@ describe('export/import placement', () => {
     render(<App />)
     expect(screen.getByRole('button', { name: /全部匯出/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^匯入$/ })).toBeTruthy()
-    fireEvent.change(screen.getByRole('combobox', { name: /匯出單場/ }), { target: { value: 'b' } })
+    fireEvent.click(screen.getByRole('button', { name: /匯出單場/ }))
+    fireEvent.click(
+      within(screen.getByRole('dialog', { name: /匯出單場/ })).getByRole('button', {
+        name: '週六團',
+      }),
+    )
     fireEvent.click(screen.getByRole('button', { name: /匯出這場/ }))
     const dialog = screen.getByRole('dialog', { name: '匯出' })
     expect(within(dialog).getByText(/檔名：週六團\.json/)).toBeTruthy()

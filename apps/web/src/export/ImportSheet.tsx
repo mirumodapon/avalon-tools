@@ -1,6 +1,6 @@
 import { parseGamesJson, type Game } from '@avalon/core'
-import { IconFileImport } from '@tabler/icons-react'
-import { useState } from 'react'
+import { IconClipboardText, IconFile, IconFileImport } from '@tabler/icons-react'
+import { useRef, useState } from 'react'
 import { Sheet } from '../components/Sheet.tsx'
 import { Button, Segmented } from '../components/ui.tsx'
 import type { ConflictChoice } from '../db/repository.ts'
@@ -22,6 +22,9 @@ export function ImportSheet({ open, onClose }: { open: boolean; onClose: () => v
   const [paste, setPaste] = useState('')
   const [result, setResult] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [pasteOpen, setPasteOpen] = useState(false)
+  const [fileName, setFileName] = useState<string | null>(null)
+  const fileInput = useRef<HTMLInputElement>(null)
 
   const existingIds = new Set(existing.map((g) => g.id))
   const conflicts = parsed?.games.filter((g) => existingIds.has(g.id)) ?? []
@@ -84,30 +87,51 @@ export function ImportSheet({ open, onClose }: { open: boolean; onClose: () => v
       }
     >
       <div className="space-y-4">
-        <label className="block">
-          <span className="mb-1 block text-sm text-subtext0">選擇檔案（單場或多場 JSON）</span>
+        <div>
           <input
+            ref={fileInput}
             type="file"
             accept=".json,application/json"
             aria-label="選擇 JSON 檔案"
-            className="block w-full text-sm file:mr-3 file:min-h-11 file:rounded-xl file:border-0 file:bg-surface0 file:px-4 file:text-text"
-            onChange={(e) => void onFile(e.target.files?.[0])}
+            className="sr-only"
+            tabIndex={-1}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              setFileName(file?.name ?? null)
+              void onFile(file)
+              e.target.value = ''
+            }}
           />
-        </label>
-        <details>
-          <summary className="min-h-11 cursor-pointer py-2 text-sm text-subtext0">
-            或貼上 JSON 內容
-          </summary>
-          <textarea
-            aria-label="貼上 JSON"
-            className="h-32 w-full rounded-xl border border-overlay0 bg-base p-2 font-mono text-xs"
-            value={paste}
-            onChange={(e) => setPaste(e.target.value)}
-          />
-          <Button className="mt-2" disabled={!paste.trim()} onClick={() => load(paste)}>
-            讀取
+          <Button className="w-full" onClick={() => fileInput.current?.click()}>
+            <IconFile size={20} aria-hidden />
+            選擇 JSON 檔案（單場或多場）
           </Button>
-        </details>
+          {fileName && <p className="mt-1 truncate text-xs text-subtext0">已選擇：{fileName}</p>}
+        </div>
+        <div>
+          <Button
+            variant="ghost"
+            className="min-h-9 px-2 text-sm"
+            aria-expanded={pasteOpen}
+            onClick={() => setPasteOpen((v) => !v)}
+          >
+            <IconClipboardText size={16} aria-hidden />
+            或貼上 JSON 內容
+          </Button>
+          {pasteOpen && (
+            <div className="mt-2">
+              <textarea
+                aria-label="貼上 JSON"
+                className="h-32 w-full rounded-xl border border-overlay0 bg-base p-2 font-mono text-xs"
+                value={paste}
+                onChange={(e) => setPaste(e.target.value)}
+              />
+              <Button className="mt-2" disabled={!paste.trim()} onClick={() => load(paste)}>
+                讀取
+              </Button>
+            </div>
+          )}
+        </div>
 
         {result && <output className="block rounded-xl bg-surface0 p-3 text-sm">{result}</output>}
 
