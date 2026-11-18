@@ -14,7 +14,7 @@ export const TOOLS = [
     icon: 'IconBuildingCastle',
     accent: 'mauve',
     status: 'stable',
-    version: '0.0.0',
+    version: '2.0.0',
   },
   {
     id: 'record',
@@ -25,7 +25,7 @@ export const TOOLS = [
     icon: 'IconClipboardList',
     accent: 'green',
     status: 'stable',
-    version: '1.9.1',
+    version: '2.0.0',
   },
   {
     id: 'narrator',
