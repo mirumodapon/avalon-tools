@@ -20,7 +20,6 @@ import {
   IconAlertTriangle,
   IconArrowRight,
   IconCheck,
-  IconPencil,
   IconX,
 } from '@tabler/icons-react'
 import { DeclarationMark, LadyIcon, LadyTruthMark } from '../lady/marks.tsx'
@@ -55,15 +54,12 @@ export function HistoryTable({
   game,
   viewMode,
   showRoles = false,
-  onEditLady,
   display: displayOverride,
 }: {
   game: Game
   viewMode: ViewMode
   /** When false, no role or faction information is rendered at all. */
   showRoles?: boolean
-  /** Enables editing recorded Lady of the Lake uses. */
-  onEditLady?: (index: number) => void
   /** Defaults to the global display settings. */
   display?: DisplayOptions
 }) {
@@ -104,7 +100,6 @@ export function HistoryTable({
                 errors={ladyErrors[li] ?? []}
                 showRoles={showRoles}
                 detail={display.ladyResult}
-                onEdit={onEditLady}
               />
             ) : null,
           )}
@@ -329,7 +324,6 @@ function LadyRow({
   errors,
   showRoles,
   detail,
-  onEdit,
 }: {
   game: Game
   use: LadyUse
@@ -337,7 +331,6 @@ function LadyRow({
   errors: string[]
   showRoles: boolean
   detail: DisplayOptions['ladyResult']
-  onEdit?: (index: number) => void
 }) {
   const truth = showRoles ? ladyTruth(game, use) : null
   const lied = showRoles && ladyLied(game, use)
@@ -385,16 +378,6 @@ function LadyRow({
           <IconAlertCircle size={18} aria-hidden />
           <span className="sr-only">{errors.join('、')}</span>
         </span>
-      )}
-      {onEdit && (
-        <button
-          type="button"
-          aria-label={`編輯第 ${index + 1} 次湖中女神`}
-          onClick={() => onEdit(index)}
-          className="inline-flex size-9 items-center justify-center rounded-lg text-subtext1 hover:bg-surface0"
-        >
-          <IconPencil size={16} />
-        </button>
       )}
     </section>
   )

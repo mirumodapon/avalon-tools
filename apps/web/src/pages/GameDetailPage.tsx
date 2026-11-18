@@ -16,7 +16,6 @@ import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
 import { GlobalDisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { ExportSheet } from '../export/ExportSheet.tsx'
 import { useGame, useGames } from '../games/store.ts'
-import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
@@ -33,7 +32,6 @@ export function GameDetailPage({ id }: { id: string }) {
   const title = useDisplayName(game)
   const [editOpen, setEditOpen] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
-  const [editingLady, setEditingLady] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   if (!game) return <NotFoundPage message="找不到這場遊戲" />
   const s = deriveState(game)
@@ -106,12 +104,7 @@ export function GameDetailPage({ id }: { id: string }) {
             <span className="flex-1" />
             <GlobalDisplaySettingsButton />
           </div>
-          <HistoryTable
-            game={game}
-            viewMode={viewMode}
-            showRoles={showRoles}
-            onEditLady={setEditingLady}
-          />
+          <HistoryTable game={game} viewMode={viewMode} showRoles={showRoles} />
         </section>
 
         <Card>
@@ -136,12 +129,6 @@ export function GameDetailPage({ id }: { id: string }) {
         dispatch={dispatch}
       />
       <ExportSheet game={game} open={exportOpen} onClose={() => setExportOpen(false)} />
-      <LadyEditSheet
-        game={game}
-        index={editingLady}
-        onClose={() => setEditingLady(null)}
-        dispatch={dispatch}
-      />
     </Page>
   )
 }

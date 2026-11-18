@@ -11,7 +11,6 @@ import { useGame, useGames } from '../games/store.ts'
 import { AssassinationForm } from '../play/AssassinationForm.tsx'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { ProposalForm } from '../play/ProposalForm.tsx'
-import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { LadyForm } from '../lady/LadyForm.tsx'
 import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
@@ -26,7 +25,6 @@ export function PlayPage({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<'record' | 'history'>('record')
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const [editingLady, setEditingLady] = useState<number | null>(null)
   const title = useDisplayName(game)
   // In-progress games always start with roles hidden, regardless of the global setting.
   const [showRoles, setShowRoles] = useState(false)
@@ -96,12 +94,7 @@ export function PlayPage({ id }: { id: string }) {
             <span className="flex-1" />
             <DisplaySettingsButton showRoles={showRoles} onShowRoles={setShowRoles} />
           </div>
-          <HistoryTable
-            game={game}
-            viewMode={viewMode}
-            showRoles={showRoles}
-            onEditLady={setEditingLady}
-          />
+          <HistoryTable game={game} viewMode={viewMode} showRoles={showRoles} />
         </div>
       ) : (
         <>
@@ -166,12 +159,6 @@ export function PlayPage({ id }: { id: string }) {
         game={game}
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-        dispatch={dispatch}
-      />
-      <LadyEditSheet
-        game={game}
-        index={editingLady}
-        onClose={() => setEditingLady(null)}
         dispatch={dispatch}
       />
     </Page>
