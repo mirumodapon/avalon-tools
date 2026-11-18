@@ -1,5 +1,5 @@
 import { allProposals } from './game.ts'
-import { playerFaction, teamHasEvil } from './roles.ts'
+import { playerFaction, teamHasEvil } from './game-roles.ts'
 import type { Faction, Game, PlayerId } from './types.ts'
 
 export interface PlayerStats {

@@ -2,7 +2,7 @@ import { deriveState, playerName } from '../game.ts'
 import { cellAnomaly, historyRows, type HistoryRow } from '../history.ts'
 import { LADY_DECLARATION_LABEL, ladyLied, ladyTruth } from '../lady.ts'
 import { dateKey, formatTime, WINNER_LABEL } from '../naming.ts'
-import { FACTION_LABEL, roleDef } from '../roles.ts'
+import { FACTION_LABEL, roleDef } from '@avalon/rules'
 import type { Game, LadyUse, PlayerId, RoleId, ViewMode } from '../types.ts'
 
 export interface ExportOptions {

@@ -1,5 +1,5 @@
 import { playerName } from '../game.ts'
-import { failsRequired, teamSize } from '../rules.ts'
+import { failsRequired, teamSize } from '@avalon/rules'
 import type { Game, PlayerId } from '../types.ts'
 import {
   historyRows,

@@ -5,7 +5,7 @@
  * The holder inspects a player who has never held the Lady (and is not themself);
  * the Lady then passes to that player. A use cannot be skipped.
  */
-import { playerFaction } from './roles.ts'
+import { playerFaction } from './game-roles.ts'
 import type { Faction, Game, LadyDeclaration, LadyUse, PlayerId } from './types.ts'
 
 export const LADY_QUESTS = [1, 2, 3] as const

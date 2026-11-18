@@ -13,7 +13,7 @@
  * - assassination: [target (-1 = none), manualHit (-1/0/1)]
  * - lady: [initialHolder, ...uses] with use = target * 3 + declared, or [code, note]
  */
-import { ROLE_IDS } from './roles.ts'
+import { ROLE_IDS } from '@avalon/rules'
 import { parseGame } from './schema.ts'
 import type { Game, LadyDeclaration, Proposal, RoleConfig, RoleId, Votes } from './types.ts'
 import { SCHEMA_VERSION } from './types.ts'

@@ -1,5 +1,5 @@
 import { isProposalApproved, playerIds, questOutcome, type QuestOutcome } from './game.ts'
-import { countApprovals, failsRequired } from './rules.ts'
+import { countApprovals, failsRequired } from '@avalon/rules'
 import type { Game, PlayerId, Proposal, QuestResult } from './types.ts'
 import { anomaliesFromVotes, type Anomalies } from './votes.ts'
 

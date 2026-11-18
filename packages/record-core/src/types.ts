@@ -1,27 +1,20 @@
-export type PlayerId = string
+import type {
+  Faction,
+  PlayerId,
+  RoleAssignment,
+  RoleConfig,
+  RoleId,
+  Vote,
+  Votes,
+} from '@avalon/rules'
 
-export type Faction = 'good' | 'evil'
-
-export type RoleId =
-  | 'merlin'
-  | 'percival'
-  | 'loyal'
-  | 'morgana'
-  | 'assassin'
-  | 'mordred'
-  | 'oberon'
-  | 'minion'
+export type { Faction, PlayerId, RoleAssignment, RoleConfig, RoleId, Vote, Votes }
 
 /** Seat order is the order of `Game.players` (clockwise). */
 export interface Player {
   id: PlayerId
   name: string
 }
-
-export type Vote = 'approve' | 'reject'
-
-/** Normalized votes: every player has exactly one vote. */
-export type Votes = Record<PlayerId, Vote>
 
 /** How votes were entered: 派票 (mark approvers) or 派跳 (mark deviations). */
 export type InputMode = 'approvals' | 'anomalies'
@@ -49,12 +42,6 @@ export interface Round {
   proposals: Proposal[]
   result: QuestResult | null
 }
-
-/** Which roles are in play and how many of each. */
-export type RoleConfig = Partial<Record<RoleId, number>>
-
-/** Known roles per player; may be partial. */
-export type RoleAssignment = Partial<Record<PlayerId, RoleId>>
 
 export interface Assassination {
   targetId: PlayerId | null

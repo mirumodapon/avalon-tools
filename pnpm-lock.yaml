@@ -190,8 +190,17 @@ importers:
         specifier: 'catalog:'
         version: 7.4.1
 
+  packages/avalon-rules:
+    devDependencies:
+      '@avalon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+
   packages/record-core:
     dependencies:
+      '@avalon/rules':
+        specifier: workspace:*
+        version: link:../avalon-rules
       zod:
         specifier: 'catalog:'
         version: 4.6.7

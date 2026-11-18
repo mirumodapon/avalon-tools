@@ -8,7 +8,7 @@ import {
   teamSize,
   WINNING_QUESTS,
   countApprovals,
-} from './rules.ts'
+} from '@avalon/rules'
 import type {
   Assassination,
   Faction,

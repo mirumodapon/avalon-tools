@@ -1,5 +1,5 @@
 import { deriveState, playerName } from '../game.ts'
-import { QUEST_COUNT } from '../rules.ts'
+import { QUEST_COUNT } from '@avalon/rules'
 import type { Game } from '../types.ts'
 import {
   historyRows,

@@ -1,5 +1,5 @@
 import { factionCounts, isPlayerCount } from './rules.ts'
-import type { Faction, Game, PlayerId, RoleAssignment, RoleConfig, RoleId } from './types.ts'
+import type { Faction, PlayerId, RoleAssignment, RoleConfig, RoleId } from './types.ts'
 
 export interface RoleDef {
   id: RoleId
@@ -157,24 +157,4 @@ export function validateAssignment(
     }
   }
   return errors
-}
-
-export function playerRole(game: Pick<Game, 'roleAssignment'>, id: PlayerId): RoleId | null {
-  return game.roleAssignment[id] ?? null
-}
-
-export function playerFaction(game: Pick<Game, 'roleAssignment'>, id: PlayerId): Faction | null {
-  const role = playerRole(game, id)
-  return role ? roleFaction(role) : null
-}
-
-export function teamHasEvil(
-  game: Pick<Game, 'roleAssignment'>,
-  team: readonly PlayerId[],
-): boolean {
-  return team.some((id) => playerFaction(game, id) === 'evil')
-}
-
-export function hasAnyRole(game: Pick<Game, 'roleAssignment'>): boolean {
-  return Object.values(game.roleAssignment).some(Boolean)
 }

@@ -3,8 +3,8 @@
  * `schemaVersion`. Add a step to `MIGRATIONS` whenever `SCHEMA_VERSION` is bumped.
  */
 import { z } from 'zod'
-import { isPlayerCount } from './rules.ts'
-import { ROLE_IDS } from './roles.ts'
+import { isPlayerCount } from '@avalon/rules'
+import { ROLE_IDS } from '@avalon/rules'
 import { SCHEMA_VERSION, type Game, type RoleId } from './types.ts'
 
 const id = z.string().min(1)
