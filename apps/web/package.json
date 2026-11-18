@@ -14,7 +14,8 @@
     "@avalon/theme": "workspace:*",
     "@tabler/icons-react": "^3.52.0",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "zustand": "^5.1.0"
   },
   "devDependencies": {
     "@avalon/tsconfig": "workspace:*",
