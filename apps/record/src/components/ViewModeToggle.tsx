@@ -1,7 +1,7 @@
 import type { ViewMode } from '@avalon/record-core'
 import { IconFilter, IconTable } from '@tabler/icons-react'
 import { useSettings } from '../settings/store.ts'
-import { Segmented } from './ui.tsx'
+import { Segmented } from '@avalon/ui'
 
 export const VIEW_MODE_OPTIONS: { value: ViewMode; label: string }[] = [
   { value: 'full', label: '派票檢視' },

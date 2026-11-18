@@ -1,7 +1,7 @@
 import { ACCENT_NAMES, THEME_MODE_LABELS, THEME_MODES } from '@avalon/theme'
 import { IconCheck } from '@tabler/icons-react'
 import { useSettings } from '../settings/store.ts'
-import { Segmented } from './ui.tsx'
+import { Segmented } from '@avalon/ui'
 
 export function ThemePicker() {
   const theme = useSettings((s) => s.settings.theme)

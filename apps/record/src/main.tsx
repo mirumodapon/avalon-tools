@@ -1,11 +1,11 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App.tsx'
-import { UpdateGate } from './components/UpdateGate.tsx'
+import { UpdateGate } from '@avalon/ui'
 import { flushPendingSaves, useGames } from './games/store.ts'
 import './index.css'
-import { requestPersistentStorage } from './storage/persist.ts'
-import { installZoomGuard } from './zoomGuard.ts'
+import { requestPersistentStorage } from '@avalon/storage'
+import { installZoomGuard } from '@avalon/ui'
 import { restoreLastScreen, trackSession } from './session/session.ts'
 
 const root = document.getElementById('root')

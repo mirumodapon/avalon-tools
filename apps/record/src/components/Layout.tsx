@@ -1,7 +1,7 @@
 import { IconArrowLeft, IconSettings } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
 import { navigate, type Route } from '../router.ts'
-import { IconButton } from './ui.tsx'
+import { IconButton } from '@avalon/ui'
 
 export function Page({
   title,

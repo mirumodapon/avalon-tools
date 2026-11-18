@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @import '@avalon/theme/tailwind.css';
 
+/* Shared components live outside this app; let Tailwind see their classes. */
+@source '../../../packages/ui/src';
+
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;

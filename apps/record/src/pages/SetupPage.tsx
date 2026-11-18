@@ -28,7 +28,7 @@ import {
 } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 import { Page, SettingsLink } from '../components/Layout.tsx'
-import { SelectField } from '../components/Select.tsx'
+import { SelectField } from '@avalon/ui'
 import {
   BottomBar,
   Button,
@@ -39,7 +39,7 @@ import {
   Segmented,
   Switch,
   TextField,
-} from '../components/ui.tsx'
+} from '@avalon/ui'
 import { newId, useGames } from '../games/store.ts'
 import { LadyIcon } from '../lady/marks.tsx'
 import { RoleAssignmentEditor } from '../roles/RoleAssignmentEditor.tsx'

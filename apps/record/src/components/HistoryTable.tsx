@@ -29,7 +29,7 @@ import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
 import type { DisplayOptions } from '../settings/settings.ts'
 import { useSettings } from '../settings/store.ts'
 import { AnomalyMark, CrownMark, VoteMark } from './marks.tsx'
-import { cx } from './ui.tsx'
+import { cx } from '@avalon/ui'
 
 /** Fixed widths shared by every quest table so player columns line up across quests. */
 const LABEL_W = '1.75rem'

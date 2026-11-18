@@ -9,7 +9,7 @@ import {
   type RoleId,
 } from '@avalon/record-core'
 import { IconMinus, IconPlus, IconRefresh } from '@tabler/icons-react'
-import { Button, cx, IconButton } from '../components/ui.tsx'
+import { Button, cx, IconButton } from '@avalon/ui'
 import { FactionMark, RoleIcon } from './roleIcons.tsx'
 
 /** +/- counts per role, validated against the faction split. */

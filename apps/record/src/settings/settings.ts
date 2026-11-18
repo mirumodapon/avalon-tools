@@ -5,7 +5,7 @@ import {
   type ViewMode,
 } from '@avalon/record-core'
 import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme'
-import type { StoreSpec } from '../storage/storage.ts'
+import type { StoreSpec } from '@avalon/storage'
 import { normalizeRoster } from './roster.ts'
 
 export type Detail = 'simple' | 'detailed'

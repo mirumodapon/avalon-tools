@@ -1,8 +1,8 @@
 import { DATE_FORMATS, DEFAULT_NAMING, PLACEHOLDERS, renderName } from '@avalon/record-core'
 import { IconRestore } from '@tabler/icons-react'
 import { useRef } from 'react'
-import { SelectField } from '../components/Select.tsx'
-import { Button } from '../components/ui.tsx'
+import { SelectField } from '@avalon/ui'
+import { Button } from '@avalon/ui'
 import { useSettings } from '../settings/store.ts'
 
 const SAMPLE_DATE = () => new Date()

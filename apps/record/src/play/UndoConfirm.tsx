@@ -1,5 +1,5 @@
 import { lastStep, type Game, type LastStep } from '@avalon/record-core'
-import { ConfirmSheet } from '../components/Sheet.tsx'
+import { ConfirmSheet } from '@avalon/ui'
 
 export function describeStep(step: LastStep): string {
   switch (step.kind) {

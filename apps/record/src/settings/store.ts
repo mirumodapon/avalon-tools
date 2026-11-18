@@ -1,6 +1,6 @@
 import type { ThemeSettings } from '@avalon/theme'
 import { create } from 'zustand'
-import { readStore, writeStore } from '../storage/storage.ts'
+import { readStore, writeStore } from '@avalon/storage'
 import { DEFAULT_SETTINGS, SETTINGS_STORE, type Settings } from './settings.ts'
 
 interface SettingsState {

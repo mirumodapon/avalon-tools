@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@avalon/record-core": "workspace:*",
+    "@avalon/storage": "workspace:*",
     "@avalon/theme": "workspace:*",
+    "@avalon/ui": "workspace:*",
     "@tabler/icons-react": "catalog:",
     "dexie": "catalog:",
     "html-to-image": "catalog:",

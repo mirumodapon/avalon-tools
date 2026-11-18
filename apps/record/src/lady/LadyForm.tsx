@@ -6,7 +6,7 @@ import {
   type PlayerId,
 } from '@avalon/record-core'
 import { IconSend } from '@tabler/icons-react'
-import { BottomBar, Button } from '../components/ui.tsx'
+import { BottomBar, Button } from '@avalon/ui'
 import { usePersistentState } from '../session/usePersistentState.ts'
 import { LadyFields } from './LadyFields.tsx'
 import { LadyIcon } from './marks.tsx'

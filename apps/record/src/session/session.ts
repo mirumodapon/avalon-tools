@@ -2,7 +2,7 @@
  * Remembers where the user was so the installed app reopens on the same screen.
  * Stored apart from settings and games; losing it only means starting at home.
  */
-import { storageKey } from '../storage/storage.ts'
+import { storageKey } from '@avalon/storage'
 
 const KEY = storageKey('session')
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { storageKey } from '../storage/storage.ts'
+import { storageKey } from '@avalon/storage'
 
 /**
  * Like useState, but the value survives the app being closed. Each `scope` keeps a

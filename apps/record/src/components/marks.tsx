@@ -8,7 +8,7 @@ import {
   IconThumbUp,
   IconX,
 } from '@tabler/icons-react'
-import { cx } from './ui.tsx'
+import { cx } from '@avalon/ui'
 
 /** Approve / reject, shown with icon + text so color is never the only signal. */
 export function VoteMark({

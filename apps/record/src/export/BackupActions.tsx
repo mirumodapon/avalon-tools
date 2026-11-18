@@ -1,7 +1,7 @@
 import { gamesToJson } from '@avalon/record-core'
 import { IconDownload, IconFileImport } from '@tabler/icons-react'
 import { useState } from 'react'
-import { Button } from '../components/ui.tsx'
+import { Button } from '@avalon/ui'
 import { useGames } from '../games/store.ts'
 import { ScanButton } from '../share/QrScanner.tsx'
 import { ImportSheet } from './ImportSheet.tsx'

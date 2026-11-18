@@ -12,8 +12,8 @@ import {
 import { IconArrowLeft, IconArrowRight, IconSend } from '@tabler/icons-react'
 import { useState, type ReactNode } from 'react'
 import { AnomalyMark, CrownMark, ForcedBadge, TeamMark, VoteMark } from '../components/marks.tsx'
-import { BottomBar, Button, Card, cx, Segmented } from '../components/ui.tsx'
-import { Sheet } from '../components/Sheet.tsx'
+import { BottomBar, Button, Card, cx, Segmented } from '@avalon/ui'
+import { Sheet } from '@avalon/ui'
 import { useSettings } from '../settings/store.ts'
 import { usePersistentState } from '../session/usePersistentState.ts'
 import {

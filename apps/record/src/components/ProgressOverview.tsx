@@ -11,7 +11,7 @@ import {
 import { IconAlertTriangle, IconCheck, IconRipple, IconX } from '@tabler/icons-react'
 import { LadyIcon } from '../lady/marks.tsx'
 import { CrownMark } from './marks.tsx'
-import { cx } from './ui.tsx'
+import { cx } from '@avalon/ui'
 
 /** Always-visible game progress: quests, current proposal, leader and vote track. */
 export function ProgressOverview({ game }: { game: Game }) {

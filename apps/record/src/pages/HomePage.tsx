@@ -15,9 +15,9 @@ import {
 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Page, SettingsLink } from '../components/Layout.tsx'
-import { Select } from '../components/Select.tsx'
-import { ConfirmSheet, Sheet } from '../components/Sheet.tsx'
-import { BottomBar, Button, Card, cx, EmptyState, IconButton } from '../components/ui.tsx'
+import { Select } from '@avalon/ui'
+import { ConfirmSheet, Sheet } from '@avalon/ui'
+import { BottomBar, Button, Card, cx, EmptyState, IconButton } from '@avalon/ui'
 import {
   EMPTY_FILTER,
   filterGames,

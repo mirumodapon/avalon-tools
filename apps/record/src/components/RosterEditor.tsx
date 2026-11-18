@@ -2,7 +2,7 @@ import { IconCheck, IconPencil, IconPlus, IconTrash, IconX } from '@tabler/icons
 import { useState, type FormEvent } from 'react'
 import { useSettings } from '../settings/store.ts'
 import { addName, NAME_MAX_LENGTH, removeName, renameName } from '../settings/roster.ts'
-import { Button, IconButton } from './ui.tsx'
+import { Button, IconButton } from '@avalon/ui'
 
 const inputClass =
   'min-h-11 min-w-0 flex-1 rounded-xl border border-overlay0 bg-base px-3 focus:border-accent focus:outline-none'

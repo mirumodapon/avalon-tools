@@ -6,8 +6,8 @@ import {
   getStorageInfo,
   requestPersistentStorage,
   type StorageInfo,
-} from '../storage/persist.ts'
-import { Button } from './ui.tsx'
+} from '@avalon/storage'
+import { Button } from '@avalon/ui'
 
 /** Shows storage usage and whether the browser granted persistent storage. */
 export function StorageStatus() {

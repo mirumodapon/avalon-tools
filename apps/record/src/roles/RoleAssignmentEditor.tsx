@@ -10,7 +10,7 @@ import {
 } from '@avalon/record-core'
 import { IconChevronDown, IconQuestionMark } from '@tabler/icons-react'
 import { useState } from 'react'
-import { cx } from '../components/ui.tsx'
+import { cx } from '@avalon/ui'
 import { RoleIcon } from './roleIcons.tsx'
 
 /** Assign roles to players; partial assignment is fine. Used-up roles are disabled. */

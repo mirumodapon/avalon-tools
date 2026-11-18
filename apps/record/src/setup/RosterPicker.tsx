@@ -1,8 +1,8 @@
 import { MAX_PLAYERS } from '@avalon/record-core'
 import { IconCheck, IconUsersPlus } from '@tabler/icons-react'
 import { useState } from 'react'
-import { Sheet } from '../components/Sheet.tsx'
-import { Button, cx } from '../components/ui.tsx'
+import { Sheet } from '@avalon/ui'
+import { Button, cx } from '@avalon/ui'
 
 /** Pick players from the roster in seat order; tapping again removes a pick. */
 export function RosterPicker({

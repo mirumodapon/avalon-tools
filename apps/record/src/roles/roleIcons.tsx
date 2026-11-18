@@ -12,7 +12,7 @@ import {
   IconWand,
   type Icon,
 } from '@tabler/icons-react'
-import { cx } from '../components/ui.tsx'
+import { cx } from '@avalon/ui'
 
 /** Role → Tabler icon. The leader uses IconCrown, which no role shares. */
 export const ROLE_ICONS: Record<RoleId, Icon> = {

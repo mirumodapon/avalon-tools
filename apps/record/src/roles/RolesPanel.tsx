@@ -1,7 +1,7 @@
 import { defaultRoleConfig, type Game, type GameAction } from '@avalon/record-core'
 import { IconEyeOff, IconMasksTheater } from '@tabler/icons-react'
 import { useState } from 'react'
-import { Button, SectionTitle, Switch } from '../components/ui.tsx'
+import { Button, SectionTitle, Switch } from '@avalon/ui'
 import { RoleAssignmentEditor } from './RoleAssignmentEditor.tsx'
 import { RoleConfigEditor } from './RoleConfigEditor.tsx'
 

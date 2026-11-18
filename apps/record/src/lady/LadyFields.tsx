@@ -4,7 +4,7 @@ import {
   type LadyDeclaration,
   type PlayerId,
 } from '@avalon/record-core'
-import { cx, Segmented } from '../components/ui.tsx'
+import { cx, Segmented } from '@avalon/ui'
 import { SeatNo } from '../play/ProposalForm.tsx'
 
 const SHORT_REASON: Record<string, string> = {

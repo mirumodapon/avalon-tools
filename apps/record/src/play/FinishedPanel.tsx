@@ -1,7 +1,7 @@
 import { deriveState, playerName, type Game } from '@avalon/record-core'
 import { IconMoon, IconSun, IconTrophy } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
-import { Card, cx } from '../components/ui.tsx'
+import { Card, cx } from '@avalon/ui'
 
 const REASON: Record<string, string> = {
   'quests-failed': '3 個任務失敗',

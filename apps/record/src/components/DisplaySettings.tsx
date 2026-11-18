@@ -2,8 +2,8 @@ import { IconAdjustmentsHorizontal } from '@tabler/icons-react'
 import { useState } from 'react'
 import { useSettings } from '../settings/store.ts'
 import type { Detail } from '../settings/settings.ts'
-import { Sheet } from './Sheet.tsx'
-import { Button, Segmented, Switch } from './ui.tsx'
+import { Sheet } from '@avalon/ui'
+import { Button, Segmented, Switch } from '@avalon/ui'
 
 const DETAIL_OPTIONS: { value: Detail; label: string }[] = [
   { value: 'simple', label: '簡化' },

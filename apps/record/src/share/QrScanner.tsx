@@ -1,7 +1,7 @@
 import { IconCameraOff, IconQrcode, IconRefresh, IconScan, IconX } from '@tabler/icons-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { Button, IconButton } from '../components/ui.tsx'
+import { Button, IconButton } from '@avalon/ui'
 import { openShareParam, validScannedShare } from './link.ts'
 
 type Status = 'starting' | 'scanning' | 'checking' | 'failed' | 'no-camera'
