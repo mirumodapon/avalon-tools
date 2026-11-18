@@ -1,10 +1,10 @@
+import { ThemePicker } from '@avalon/ui'
 import { IconTrash } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Page } from '../components/Layout.tsx'
 import { RosterEditor } from '../components/RosterEditor.tsx'
 import { ConfirmSheet } from '@avalon/ui'
 import { StorageStatus } from '../components/StorageStatus.tsx'
-import { ThemePicker } from '../components/ThemePicker.tsx'
 import { Button, Card, SectionTitle, Segmented, Switch } from '@avalon/ui'
 import { VIEW_MODE_OPTIONS } from '../components/ViewModeToggle.tsx'
 import { BackupActions } from '../export/BackupActions.tsx'
@@ -13,6 +13,7 @@ import { NamingSettings } from '../naming/NamingSettings.tsx'
 import { INPUT_MODE_OPTIONS } from '../play/ProposalForm.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
+import { APP_ID } from '../settings/settings.ts'
 import { clearNamespace } from '@avalon/storage'
 import { APP_VERSION } from '../version.ts'
 
@@ -25,7 +26,7 @@ export function SettingsPage() {
 
   async function clearEverything() {
     await clearGames()
-    clearNamespace()
+    clearNamespace(APP_ID)
     resetSettings()
     navigate({ name: 'home' }, { replace: true })
   }

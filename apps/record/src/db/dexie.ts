@@ -1,4 +1,5 @@
 import { dateKey, deriveState, parseGame, type Game } from '@avalon/record-core'
+import { appDatabaseName } from '@avalon/storage'
 import { Dexie, type Table } from 'dexie'
 import type { GameRepository, ImportItem, ImportSummary, LoadResult } from './repository.ts'
 
@@ -16,7 +17,7 @@ export interface GameRecord {
   game: Game
 }
 
-export const DB_NAME = 'avalon-recorder'
+export const DB_NAME = appDatabaseName('record')
 
 export class AvalonDB extends Dexie {
   games!: Table<GameRecord, string>

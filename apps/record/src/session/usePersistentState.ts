@@ -11,7 +11,7 @@ export function usePersistentState<T>(
   key: string,
   initial: T | (() => T),
 ): [T, (value: T | ((prev: T) => T)) => void] {
-  const slot = storageKey(`ui:${scope}`)
+  const slot = storageKey('record', `ui:${scope}`)
   const [value, setValue] = useState<T>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(slot) ?? 'null') as {

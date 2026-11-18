@@ -7,10 +7,24 @@
  * Writes report failure (e.g. quota exceeded) to subscribers instead of throwing.
  */
 
-export const STORAGE_NAMESPACE = 'avalon-recorder'
+/** Every key of every tool starts with `avalon:`. */
+export const STORAGE_ROOT = 'avalon'
 
-export function storageKey(name: string): string {
-  return `${STORAGE_NAMESPACE}:${name}`
+/** Shared by all tools (e.g. the theme). */
+export const GLOBAL_SCOPE = 'global'
+
+/** `avalon:<scope>:<name>`; scope is `global` or an app id such as `record`. */
+export function storageKey(scope: string, name: string): string {
+  return `${STORAGE_ROOT}:${scope}:${name}`
+}
+
+export function globalKey(name: string): string {
+  return storageKey(GLOBAL_SCOPE, name)
+}
+
+/** IndexedDB database of an app: one per app, e.g. `avalon-record`. */
+export function appDatabaseName(appId: string): string {
+  return `${STORAGE_ROOT}-${appId}`
 }
 
 export interface Envelope<T> {
@@ -21,7 +35,8 @@ export interface Envelope<T> {
 export type Migration = (data: unknown) => unknown
 
 export interface StoreSpec<T> {
-  name: string
+  /** Full localStorage key, from `storageKey()` / `globalKey()`. */
+  key: string
   version: number
   /** `migrations[n]` converts data at version n to version n + 1. */
   migrations?: Record<number, Migration>
@@ -76,7 +91,7 @@ export function migrate(
 }
 
 export function readStore<T>(spec: StoreSpec<T>): T {
-  const key = storageKey(spec.name)
+  const key = spec.key
   const storage = getStorage()
   if (!storage) return spec.fallback()
   let raw: string | null
@@ -121,7 +136,7 @@ function isQuotaError(error: unknown): boolean {
 }
 
 export function writeStore<T>(spec: StoreSpec<T>, data: T): boolean {
-  const key = storageKey(spec.name)
+  const key = spec.key
   const storage = getStorage()
   if (!storage) {
     report({ kind: 'unavailable', key, message: '瀏覽器不支援 localStorage' })
@@ -141,22 +156,42 @@ export function writeStore<T>(spec: StoreSpec<T>, data: T): boolean {
   }
 }
 
-export function removeStore(name: string): void {
+export function removeStore(key: string): void {
   try {
-    getStorage()?.removeItem(storageKey(name))
+    getStorage()?.removeItem(key)
   } catch {
     // ignore
   }
 }
 
-/** Removes every key in this app's namespace. */
-export function clearNamespace(): void {
+/** Keys currently stored under a prefix (e.g. `avalon:record:`). */
+export function keysWithPrefix(prefix: string): string[] {
   const storage = getStorage()
-  if (!storage) return
+  if (!storage) return []
   const keys: string[] = []
   for (let i = 0; i < storage.length; i++) {
     const k = storage.key(i)
-    if (k?.startsWith(`${STORAGE_NAMESPACE}:`)) keys.push(k)
+    if (k?.startsWith(prefix)) keys.push(k)
   }
-  for (const k of keys) storage.removeItem(k)
+  return keys
+}
+
+/** Removes every key of one scope (an app id or `global`); other scopes are untouched. */
+export function clearNamespace(scope: string): void {
+  const storage = getStorage()
+  if (!storage) return
+  for (const k of keysWithPrefix(`${STORAGE_ROOT}:${scope}:`)) storage.removeItem(k)
+}
+
+/**
+ * Calls `onChange` when another tab or app changes `key` (the `storage` event never
+ * fires in the window that made the change).
+ */
+export function onStoreChange(key: string, onChange: () => void): () => void {
+  if (typeof window === 'undefined') return () => {}
+  const listener = (e: StorageEvent) => {
+    if (e.key === key || e.key === null) onChange()
+  }
+  window.addEventListener('storage', listener)
+  return () => window.removeEventListener('storage', listener)
 }

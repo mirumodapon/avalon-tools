@@ -87,7 +87,7 @@ function run(stored: unknown, prefersDark: boolean) {
     querySelector: () => meta,
   }
   const win = { matchMedia: () => ({ matches: prefersDark }) }
-  new Function('localStorage', 'document', 'window', themeBootstrapScript({ storageKey: 'k' }))(
+  new Function('localStorage', 'document', 'window', themeBootstrapScript({ storageKeys: ['k'] }))(
     storage,
     doc,
     win,
@@ -111,6 +111,12 @@ describe('bootstrap script', () => {
       'data-accent': 'teal',
     })
     expect(run({ data: { theme: { mode: 'system' } } }, false).attrs['data-flavor']).toBe('latte')
+  })
+  it('reads a theme stored directly (the global key)', () => {
+    expect(run({ version: 1, data: { mode: 'dark', accent: 'green' } }, false).attrs).toEqual({
+      'data-flavor': 'macchiato',
+      'data-accent': 'green',
+    })
   })
   it('migrates legacy stored flavors', () => {
     expect(run({ data: { theme: { flavor: 'latte' } } }, true).attrs['data-flavor']).toBe('latte')

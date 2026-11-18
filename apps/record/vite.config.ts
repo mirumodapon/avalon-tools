@@ -53,7 +53,7 @@ export default defineConfig({
     ],
   },
   plugins: [
-    catppuccinThemePlugin({ storageKey: 'avalon-recorder:settings' }),
+    catppuccinThemePlugin({ storageKeys: ['avalon:global:theme'] }),
     react(),
     tailwindcss(),
     VitePWA({
