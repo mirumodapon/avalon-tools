@@ -7,6 +7,7 @@ import {
   GameRuleError,
   makePlayers,
   defaultPlayerNames,
+  lastStep,
   undoLast,
   type GameAction,
 } from './game.ts'
@@ -236,6 +237,15 @@ describe('undo', () => {
     g = undoLast(g)
     expect(deriveState(g)).toMatchObject({ phase: 'proposal', questIndex: 2, attempt: 1 })
     expect(g.rounds).toHaveLength(2)
+  })
+
+  it('describes the step that undo would remove', () => {
+    let g = newGame(5)
+    expect(lastStep(g)).toBeNull()
+    g = run(g, propose(g, ['p1', 'p2'], false), propose(g, ['p1', 'p2'], true))
+    expect(lastStep(g)).toEqual({ kind: 'proposal', questIndex: 0, attempt: 2 })
+    g = run(g, { type: 'recordQuest', failCount: 0 })
+    expect(lastStep(g)).toEqual({ kind: 'quest', questIndex: 0 })
   })
 
   it('is a no-op on a fresh game', () => {

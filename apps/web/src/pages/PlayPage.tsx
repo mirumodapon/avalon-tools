@@ -14,6 +14,7 @@ import { ProposalForm } from '../play/ProposalForm.tsx'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { LadyForm } from '../lady/LadyForm.tsx'
 import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
+import { UndoConfirm } from '../play/UndoConfirm.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
@@ -25,6 +26,7 @@ export function PlayPage({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<'record' | 'history'>('record')
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [undoOpen, setUndoOpen] = useState(false)
   const title = useDisplayName(game)
   // In-progress games always start with roles hidden, regardless of the global setting.
   const [showRoles, setShowRoles] = useState(false)
@@ -64,7 +66,7 @@ export function PlayPage({ id }: { id: string }) {
           <IconButton
             label="復原上一步"
             disabled={!canUndo(game)}
-            onClick={() => dispatch({ type: 'undo' })}
+            onClick={() => setUndoOpen(true)}
           >
             <IconArrowBackUp size={22} />
           </IconButton>
@@ -160,6 +162,12 @@ export function PlayPage({ id }: { id: string }) {
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         dispatch={dispatch}
+      />
+      <UndoConfirm
+        game={game}
+        open={undoOpen}
+        onConfirm={() => dispatch({ type: 'undo' })}
+        onClose={() => setUndoOpen(false)}
       />
     </Page>
   )
