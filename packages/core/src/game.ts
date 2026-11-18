@@ -283,8 +283,6 @@ export type GameAction =
   | { type: 'setAutoName'; auto: string }
   | { type: 'markSaved' }
   | { type: 'useLady'; targetId: PlayerId; declared: LadyDeclaration; note?: string }
-  | { type: 'editLady'; index: number; patch: Partial<Omit<LadyUse, 'afterQuest'>> }
-  | { type: 'setLady'; lady: { initialHolderId: PlayerId } | null }
 
 export function validateTeam(
   game: Game,
@@ -398,22 +396,6 @@ function apply(game: Game, action: GameAction): Game {
       }
       return { ...game, lady: { ...game.lady, uses: [...game.lady.uses, use] } }
     }
-    case 'editLady': {
-      if (!game.lady?.uses[action.index]) throw new GameRuleError('找不到這次湖中女神紀錄')
-      const uses = game.lady.uses.map((u, i) =>
-        i === action.index ? { ...u, ...action.patch } : u,
-      )
-      return { ...game, lady: { ...game.lady, uses } }
-    }
-    case 'setLady':
-      if (!action.lady) return { ...game, lady: null }
-      if (!game.players.some((p) => p.id === action.lady!.initialHolderId)) {
-        throw new GameRuleError('初始持有者不在玩家名單中')
-      }
-      return {
-        ...game,
-        lady: { initialHolderId: action.lady.initialHolderId, uses: game.lady?.uses ?? [] },
-      }
     case 'markSaved':
       return game
   }
