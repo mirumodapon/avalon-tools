@@ -3,10 +3,12 @@ import { IconCards, IconPlus } from '@tabler/icons-react'
 import { Page, SettingsLink } from '../components/Layout.tsx'
 import { BottomBar, Button, Card, EmptyState } from '../components/ui.tsx'
 import { useGames } from '../games/store.ts'
+import { useNamer } from '../naming/useDisplayName.ts'
 import { navigate } from '../router.ts'
 
 export function HomePage() {
   const games = useGames((s) => s.games)
+  const nameOf = useNamer()
   return (
     <Page title="阿瓦隆紀錄" actions={<SettingsLink />}>
       <div className="flex-1 space-y-3 pt-2">
@@ -15,7 +17,7 @@ export function HomePage() {
         )}
         {games.map((g) => {
           const s = deriveState(g)
-          const name = g.name.custom ?? (g.name.auto || '未命名')
+          const name = nameOf(g)
           return (
             <button
               key={g.id}

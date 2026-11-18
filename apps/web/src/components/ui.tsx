@@ -159,30 +159,41 @@ export function TextField({
   multiline?: boolean
   maxLength?: number
 }) {
+  const id = useId()
+  const hintId = `${id}-hint`
   const cls =
     'w-full rounded-xl border border-overlay0 bg-base px-3 py-2.5 text-text placeholder:text-overlay1 focus:border-accent focus:outline-none'
+  const common = {
+    id,
+    value,
+    placeholder,
+    maxLength,
+    'aria-describedby': hint ? hintId : undefined,
+  }
   return (
-    <label className="block">
-      <span className="mb-1 block text-sm text-subtext0">{label}</span>
+    <div>
+      <label htmlFor={id} className="mb-1 block text-sm text-subtext0">
+        {label}
+      </label>
       {multiline ? (
         <textarea
+          {...common}
           className={cx(cls, 'min-h-24')}
-          value={value}
-          placeholder={placeholder}
-          maxLength={maxLength}
           onChange={(e) => onChange(e.target.value)}
         />
       ) : (
         <input
+          {...common}
           className={cx(cls, 'min-h-11')}
-          value={value}
-          placeholder={placeholder}
-          maxLength={maxLength}
           onChange={(e) => onChange(e.target.value)}
         />
       )}
-      {hint && <span className="mt-1 block text-xs text-subtext0">{hint}</span>}
-    </label>
+      {hint && (
+        <p id={hintId} className="mt-1 text-xs text-subtext0">
+          {hint}
+        </p>
+      )}
+    </div>
   )
 }
 

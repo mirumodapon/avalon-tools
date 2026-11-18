@@ -1,5 +1,5 @@
 import { deriveState, canUndo, GameRuleError, type GameAction } from '@avalon/core'
-import { IconArrowBackUp, IconChecklist, IconMasksTheater } from '@tabler/icons-react'
+import { IconArrowBackUp, IconChecklist, IconSettings } from '@tabler/icons-react'
 import { useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
@@ -11,9 +11,10 @@ import { AssassinationForm } from '../play/AssassinationForm.tsx'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { ProposalForm } from '../play/ProposalForm.tsx'
 import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
+import { useDisplayName } from '../naming/useDisplayName.ts'
 import { LadyForm } from '../lady/LadyForm.tsx'
+import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
-import { RolesSheet } from '../roles/RolesSheet.tsx'
 import { ShowRolesButton } from '../roles/ShowRolesToggle.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
@@ -24,8 +25,9 @@ export function PlayPage({ id }: { id: string }) {
   const dispatchGame = useGames((s) => s.dispatch)
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<'record' | 'history'>('record')
-  const [rolesOpen, setRolesOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [editingLady, setEditingLady] = useState<number | null>(null)
+  const title = useDisplayName(game)
   // In-progress games always start with roles hidden, regardless of the global setting.
   const [showRoles, setShowRoles] = useState(false)
   const viewMode = useSettings((st) => st.settings.viewMode)
@@ -48,12 +50,12 @@ export function PlayPage({ id }: { id: string }) {
 
   return (
     <Page
-      title={game.name.custom ?? '進行中'}
+      title={title}
       back={{ name: 'home' }}
       actions={
         <>
-          <IconButton label="角色" onClick={() => setRolesOpen(true)}>
-            <IconMasksTheater size={22} />
+          <IconButton label="遊戲設定" onClick={() => setSettingsOpen(true)}>
+            <IconSettings size={22} />
           </IconButton>
           <IconButton
             label="復原上一步"
@@ -151,10 +153,10 @@ export function PlayPage({ id }: { id: string }) {
           )}
         </>
       )}
-      <RolesSheet
+      <GameSettingsSheet
         game={game}
-        open={rolesOpen}
-        onClose={() => setRolesOpen(false)}
+        open={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
         dispatch={dispatch}
       />
       <LadyEditSheet
