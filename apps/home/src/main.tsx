@@ -1,5 +1,5 @@
 import { requestPersistentStorage } from '@avalon/storage'
-import { installZoomGuard, UpdateGate } from '@avalon/ui'
+import { installZoomGuard, markHomeWindow, UpdateGate } from '@avalon/ui'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App.tsx'
@@ -12,6 +12,8 @@ function start() {
   if (!root) throw new Error('#root not found')
 
   installZoomGuard()
+  // Tools opened from the installed home keep their link back to it.
+  markHomeWindow()
   void requestPersistentStorage()
   void clearLegacyCaches()
 
