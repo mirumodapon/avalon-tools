@@ -38,16 +38,19 @@ export function ExportSheet({
   game,
   open,
   onClose,
+  defaultIncludeRoles,
 }: {
   game: Game
   open: boolean
   onClose: () => void
+  /** Whether roles start included; defaults to the browsing role setting. */
+  defaultIncludeRoles?: boolean
 }) {
   const settings = useSettings((s) => s.settings)
   const name = useDisplayName(game)
   const [format, setFormat] = useState<ExportFormat>('json')
   const [viewMode, setViewMode] = useState<ViewMode>(settings.viewMode)
-  const [includeRoles, setIncludeRoles] = useState(settings.showRoles)
+  const [includeRoles, setIncludeRoles] = useState(defaultIncludeRoles ?? settings.showRoles)
   const [status, setStatus] = useState<string | null>(null)
   /** Action in progress; buttons are disabled and show a spinner meanwhile. */
   const [busy, setBusy] = useState<Action | null>(null)

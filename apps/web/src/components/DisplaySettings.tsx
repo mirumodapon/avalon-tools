@@ -12,7 +12,8 @@ const DETAIL_OPTIONS: { value: Detail; label: string }[] = [
 
 /**
  * 「顯示設定」: role visibility plus quest / Lady result detail.
- * `showRoles` is passed in because in-progress games keep their own (default off) value.
+ * `showRoles` belongs to the current view: it starts from the settings default
+ * (always hidden for in-progress games) and toggling it never changes that default.
  */
 export function DisplaySettingsButton({
   showRoles,
@@ -76,14 +77,5 @@ export function DisplaySettingsButton({
         </div>
       </Sheet>
     </>
-  )
-}
-
-/** Uses the global (remembered) role visibility; for browsing views. */
-export function GlobalDisplaySettingsButton() {
-  const showRoles = useSettings((s) => s.settings.showRoles)
-  const update = useSettings((s) => s.update)
-  return (
-    <DisplaySettingsButton showRoles={showRoles} onShowRoles={(v) => update({ showRoles: v })} />
   )
 }
