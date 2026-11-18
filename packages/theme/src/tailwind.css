@@ -1,0 +1,66 @@
+/*
+ * Maps Catppuccin CSS variables (see flavors.generated.css) to semantic Tailwind tokens.
+ * Components must only use these tokens; no raw color values.
+ */
+@import './flavors.generated.css';
+
+@theme inline {
+  --color-*: initial;
+
+  --color-base: var(--ctp-base);
+  --color-mantle: var(--ctp-mantle);
+  --color-crust: var(--ctp-crust);
+  --color-surface0: var(--ctp-surface0);
+  --color-surface1: var(--ctp-surface1);
+  --color-surface2: var(--ctp-surface2);
+  --color-overlay0: var(--ctp-overlay0);
+  --color-overlay1: var(--ctp-overlay1);
+  --color-overlay2: var(--ctp-overlay2);
+  --color-subtext0: var(--ctp-subtext0);
+  --color-subtext1: var(--ctp-subtext1);
+  --color-text: var(--ctp-text);
+
+  --color-rosewater: var(--ctp-rosewater);
+  --color-flamingo: var(--ctp-flamingo);
+  --color-pink: var(--ctp-pink);
+  --color-mauve: var(--ctp-mauve);
+  --color-red: var(--ctp-red);
+  --color-maroon: var(--ctp-maroon);
+  --color-peach: var(--ctp-peach);
+  --color-yellow: var(--ctp-yellow);
+  --color-green: var(--ctp-green);
+  --color-teal: var(--ctp-teal);
+  --color-sky: var(--ctp-sky);
+  --color-sapphire: var(--ctp-sapphire);
+  --color-blue: var(--ctp-blue);
+  --color-lavender: var(--ctp-lavender);
+
+  --color-accent: var(--ctp-accent);
+  --color-accent-fg: var(--ctp-accent-fg);
+  --color-on-accent: var(--ctp-on-accent);
+
+  /* Game semantics: raw color for fills/borders, -fg for text on base. */
+  --color-success: var(--ctp-green);
+  --color-success-fg: var(--ctp-green-fg);
+  --color-fail: var(--ctp-red);
+  --color-fail-fg: var(--ctp-red-fg);
+  --color-good: var(--ctp-blue);
+  --color-good-fg: var(--ctp-blue-fg);
+  --color-evil: var(--ctp-red);
+  --color-evil-fg: var(--ctp-red-fg);
+  --color-approve: var(--ctp-green);
+  --color-approve-fg: var(--ctp-green-fg);
+  --color-reject: var(--ctp-overlay1);
+  --color-reject-fg: var(--ctp-overlay1-fg);
+  --color-outside-approve: var(--ctp-yellow);
+  --color-outside-approve-fg: var(--ctp-yellow-fg);
+  --color-inside-reject: var(--ctp-mauve);
+  --color-inside-reject-fg: var(--ctp-mauve-fg);
+  --color-crown: var(--ctp-yellow);
+  --color-crown-fg: var(--ctp-yellow-fg);
+  --color-forced: var(--ctp-peach);
+  --color-forced-fg: var(--ctp-peach-fg);
+
+  --color-transparent: transparent;
+  --color-current: currentColor;
+}
