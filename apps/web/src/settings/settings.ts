@@ -10,6 +10,8 @@ export interface DisplayOptions {
   questResult: Detail
   /** Lady of the Lake: `seat → seat: faction icon`, or names with declaration/truth. */
   ladyResult: Detail
+  /** Lady uses inline after each quest (compact), or as one chain above the quests (separate). */
+  ladyLayout: 'compact' | 'separate'
 }
 
 export interface Settings {
@@ -37,7 +39,7 @@ export const DEFAULT_SETTINGS: Settings = {
   naming: DEFAULT_NAMING,
   viewMode: 'full',
   showRoles: false,
-  display: { questResult: 'simple', ladyResult: 'simple' },
+  display: { questResult: 'simple', ladyResult: 'simple', ladyLayout: 'compact' },
 }
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -66,6 +68,7 @@ function normalizeDisplay(value: unknown): DisplayOptions {
   return {
     questResult: pick(v.questResult, details, d.questResult),
     ladyResult: pick(v.ladyResult, details, d.ladyResult),
+    ladyLayout: pick(v.ladyLayout, ['compact', 'separate'] as const, d.ladyLayout),
   }
 }
 
