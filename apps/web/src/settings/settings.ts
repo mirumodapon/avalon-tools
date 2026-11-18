@@ -1,4 +1,4 @@
-import type { InputMode } from '@avalon/core'
+import type { InputMode, ViewMode } from '@avalon/core'
 import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme'
 import type { StoreSpec } from '../storage/storage.ts'
 import { normalizeRoster } from './roster.ts'
@@ -11,6 +11,8 @@ export interface Settings {
   forcedAutoReject: boolean
   /** Saved player names for quick seat filling. */
   roster: string[]
+  /** How votes are displayed; the toggle on every history view updates this. */
+  viewMode: ViewMode
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -18,6 +20,7 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultInputMode: 'approvals',
   forcedAutoReject: true,
   roster: [],
+  viewMode: 'full',
 }
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -37,6 +40,7 @@ export function normalizeSettings(value: unknown): Settings {
     defaultInputMode: pick(v.defaultInputMode, ['approvals', 'anomalies'], d.defaultInputMode),
     forcedAutoReject: bool(v.forcedAutoReject, d.forcedAutoReject),
     roster: normalizeRoster(v.roster),
+    viewMode: pick(v.viewMode, ['full', 'anomaly'], d.viewMode),
   }
 }
 
