@@ -15,13 +15,13 @@ export function StorageStatus() {
   const [info, setInfo] = useState<StorageInfo | null>(null)
 
   // Re-measure usage whenever the number of stored games changes.
-  // oxlint-disable-next-line react/exhaustive-effect-dependencies
   useEffect(() => {
     let alive = true
     void getStorageInfo().then((i) => alive && setInfo(i))
     return () => {
       alive = false
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies -- count is a refresh trigger
   }, [count])
 
   async function request() {
