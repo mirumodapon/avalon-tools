@@ -54,72 +54,72 @@
   --ctp-crust: #dce0e8;
   --ctp-crust-fg: #696c82;
 }
-[data-flavor='latte'][data-accent='rosewater'] {
+[data-flavor='latte'][data-accent='rosewater'], [data-flavor='latte'] [data-accent='rosewater'], [data-accent='rosewater'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-rosewater);
   --ctp-accent-fg: var(--ctp-rosewater-fg);
   --ctp-on-accent: #4c4f69;
 }
-[data-flavor='latte'][data-accent='flamingo'] {
+[data-flavor='latte'][data-accent='flamingo'], [data-flavor='latte'] [data-accent='flamingo'], [data-accent='flamingo'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-flamingo);
   --ctp-accent-fg: var(--ctp-flamingo-fg);
   --ctp-on-accent: #4c4f69;
 }
-[data-flavor='latte'][data-accent='pink'] {
+[data-flavor='latte'][data-accent='pink'], [data-flavor='latte'] [data-accent='pink'], [data-accent='pink'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-pink);
   --ctp-accent-fg: var(--ctp-pink-fg);
   --ctp-on-accent: #4c4f69;
 }
-[data-flavor='latte'][data-accent='mauve'] {
+[data-flavor='latte'][data-accent='mauve'], [data-flavor='latte'] [data-accent='mauve'], [data-accent='mauve'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-mauve);
   --ctp-accent-fg: var(--ctp-mauve-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='red'] {
+[data-flavor='latte'][data-accent='red'], [data-flavor='latte'] [data-accent='red'], [data-accent='red'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-red);
   --ctp-accent-fg: var(--ctp-red-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='maroon'] {
+[data-flavor='latte'][data-accent='maroon'], [data-flavor='latte'] [data-accent='maroon'], [data-accent='maroon'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-maroon);
   --ctp-accent-fg: var(--ctp-maroon-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='peach'] {
+[data-flavor='latte'][data-accent='peach'], [data-flavor='latte'] [data-accent='peach'], [data-accent='peach'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-peach);
   --ctp-accent-fg: var(--ctp-peach-fg);
   --ctp-on-accent: #4c4f69;
 }
-[data-flavor='latte'][data-accent='yellow'] {
+[data-flavor='latte'][data-accent='yellow'], [data-flavor='latte'] [data-accent='yellow'], [data-accent='yellow'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-yellow);
   --ctp-accent-fg: var(--ctp-yellow-fg);
   --ctp-on-accent: #4c4f69;
 }
-[data-flavor='latte'][data-accent='green'] {
+[data-flavor='latte'][data-accent='green'], [data-flavor='latte'] [data-accent='green'], [data-accent='green'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-green);
   --ctp-accent-fg: var(--ctp-green-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='teal'] {
+[data-flavor='latte'][data-accent='teal'], [data-flavor='latte'] [data-accent='teal'], [data-accent='teal'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-teal);
   --ctp-accent-fg: var(--ctp-teal-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='sky'] {
+[data-flavor='latte'][data-accent='sky'], [data-flavor='latte'] [data-accent='sky'], [data-accent='sky'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-sky);
   --ctp-accent-fg: var(--ctp-sky-fg);
   --ctp-on-accent: #4c4f69;
 }
-[data-flavor='latte'][data-accent='sapphire'] {
+[data-flavor='latte'][data-accent='sapphire'], [data-flavor='latte'] [data-accent='sapphire'], [data-accent='sapphire'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-sapphire);
   --ctp-accent-fg: var(--ctp-sapphire-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='blue'] {
+[data-flavor='latte'][data-accent='blue'], [data-flavor='latte'] [data-accent='blue'], [data-accent='blue'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-blue);
   --ctp-accent-fg: var(--ctp-blue-fg);
   --ctp-on-accent: #eff1f5;
 }
-[data-flavor='latte'][data-accent='lavender'] {
+[data-flavor='latte'][data-accent='lavender'], [data-flavor='latte'] [data-accent='lavender'], [data-accent='lavender'] [data-flavor='latte'] {
   --ctp-accent: var(--ctp-lavender);
   --ctp-accent-fg: var(--ctp-lavender-fg);
   --ctp-on-accent: #eff1f5;
@@ -179,72 +179,72 @@
   --ctp-crust: #232634;
   --ctp-crust-fg: #959dbb;
 }
-[data-flavor='frappe'][data-accent='rosewater'] {
+[data-flavor='frappe'][data-accent='rosewater'], [data-flavor='frappe'] [data-accent='rosewater'], [data-accent='rosewater'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-rosewater);
   --ctp-accent-fg: var(--ctp-rosewater-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='flamingo'] {
+[data-flavor='frappe'][data-accent='flamingo'], [data-flavor='frappe'] [data-accent='flamingo'], [data-accent='flamingo'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-flamingo);
   --ctp-accent-fg: var(--ctp-flamingo-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='pink'] {
+[data-flavor='frappe'][data-accent='pink'], [data-flavor='frappe'] [data-accent='pink'], [data-accent='pink'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-pink);
   --ctp-accent-fg: var(--ctp-pink-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='mauve'] {
+[data-flavor='frappe'][data-accent='mauve'], [data-flavor='frappe'] [data-accent='mauve'], [data-accent='mauve'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-mauve);
   --ctp-accent-fg: var(--ctp-mauve-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='red'] {
+[data-flavor='frappe'][data-accent='red'], [data-flavor='frappe'] [data-accent='red'], [data-accent='red'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-red);
   --ctp-accent-fg: var(--ctp-red-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='maroon'] {
+[data-flavor='frappe'][data-accent='maroon'], [data-flavor='frappe'] [data-accent='maroon'], [data-accent='maroon'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-maroon);
   --ctp-accent-fg: var(--ctp-maroon-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='peach'] {
+[data-flavor='frappe'][data-accent='peach'], [data-flavor='frappe'] [data-accent='peach'], [data-accent='peach'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-peach);
   --ctp-accent-fg: var(--ctp-peach-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='yellow'] {
+[data-flavor='frappe'][data-accent='yellow'], [data-flavor='frappe'] [data-accent='yellow'], [data-accent='yellow'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-yellow);
   --ctp-accent-fg: var(--ctp-yellow-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='green'] {
+[data-flavor='frappe'][data-accent='green'], [data-flavor='frappe'] [data-accent='green'], [data-accent='green'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-green);
   --ctp-accent-fg: var(--ctp-green-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='teal'] {
+[data-flavor='frappe'][data-accent='teal'], [data-flavor='frappe'] [data-accent='teal'], [data-accent='teal'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-teal);
   --ctp-accent-fg: var(--ctp-teal-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='sky'] {
+[data-flavor='frappe'][data-accent='sky'], [data-flavor='frappe'] [data-accent='sky'], [data-accent='sky'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-sky);
   --ctp-accent-fg: var(--ctp-sky-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='sapphire'] {
+[data-flavor='frappe'][data-accent='sapphire'], [data-flavor='frappe'] [data-accent='sapphire'], [data-accent='sapphire'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-sapphire);
   --ctp-accent-fg: var(--ctp-sapphire-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='blue'] {
+[data-flavor='frappe'][data-accent='blue'], [data-flavor='frappe'] [data-accent='blue'], [data-accent='blue'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-blue);
   --ctp-accent-fg: var(--ctp-blue-fg);
   --ctp-on-accent: #303446;
 }
-[data-flavor='frappe'][data-accent='lavender'] {
+[data-flavor='frappe'][data-accent='lavender'], [data-flavor='frappe'] [data-accent='lavender'], [data-accent='lavender'] [data-flavor='frappe'] {
   --ctp-accent: var(--ctp-lavender);
   --ctp-accent-fg: var(--ctp-lavender-fg);
   --ctp-on-accent: #303446;
@@ -304,72 +304,72 @@
   --ctp-crust: #181926;
   --ctp-crust-fg: #8c92ad;
 }
-[data-flavor='macchiato'][data-accent='rosewater'] {
+[data-flavor='macchiato'][data-accent='rosewater'], [data-flavor='macchiato'] [data-accent='rosewater'], [data-accent='rosewater'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-rosewater);
   --ctp-accent-fg: var(--ctp-rosewater-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='flamingo'] {
+[data-flavor='macchiato'][data-accent='flamingo'], [data-flavor='macchiato'] [data-accent='flamingo'], [data-accent='flamingo'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-flamingo);
   --ctp-accent-fg: var(--ctp-flamingo-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='pink'] {
+[data-flavor='macchiato'][data-accent='pink'], [data-flavor='macchiato'] [data-accent='pink'], [data-accent='pink'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-pink);
   --ctp-accent-fg: var(--ctp-pink-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='mauve'] {
+[data-flavor='macchiato'][data-accent='mauve'], [data-flavor='macchiato'] [data-accent='mauve'], [data-accent='mauve'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-mauve);
   --ctp-accent-fg: var(--ctp-mauve-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='red'] {
+[data-flavor='macchiato'][data-accent='red'], [data-flavor='macchiato'] [data-accent='red'], [data-accent='red'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-red);
   --ctp-accent-fg: var(--ctp-red-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='maroon'] {
+[data-flavor='macchiato'][data-accent='maroon'], [data-flavor='macchiato'] [data-accent='maroon'], [data-accent='maroon'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-maroon);
   --ctp-accent-fg: var(--ctp-maroon-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='peach'] {
+[data-flavor='macchiato'][data-accent='peach'], [data-flavor='macchiato'] [data-accent='peach'], [data-accent='peach'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-peach);
   --ctp-accent-fg: var(--ctp-peach-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='yellow'] {
+[data-flavor='macchiato'][data-accent='yellow'], [data-flavor='macchiato'] [data-accent='yellow'], [data-accent='yellow'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-yellow);
   --ctp-accent-fg: var(--ctp-yellow-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='green'] {
+[data-flavor='macchiato'][data-accent='green'], [data-flavor='macchiato'] [data-accent='green'], [data-accent='green'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-green);
   --ctp-accent-fg: var(--ctp-green-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='teal'] {
+[data-flavor='macchiato'][data-accent='teal'], [data-flavor='macchiato'] [data-accent='teal'], [data-accent='teal'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-teal);
   --ctp-accent-fg: var(--ctp-teal-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='sky'] {
+[data-flavor='macchiato'][data-accent='sky'], [data-flavor='macchiato'] [data-accent='sky'], [data-accent='sky'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-sky);
   --ctp-accent-fg: var(--ctp-sky-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='sapphire'] {
+[data-flavor='macchiato'][data-accent='sapphire'], [data-flavor='macchiato'] [data-accent='sapphire'], [data-accent='sapphire'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-sapphire);
   --ctp-accent-fg: var(--ctp-sapphire-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='blue'] {
+[data-flavor='macchiato'][data-accent='blue'], [data-flavor='macchiato'] [data-accent='blue'], [data-accent='blue'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-blue);
   --ctp-accent-fg: var(--ctp-blue-fg);
   --ctp-on-accent: #24273a;
 }
-[data-flavor='macchiato'][data-accent='lavender'] {
+[data-flavor='macchiato'][data-accent='lavender'], [data-flavor='macchiato'] [data-accent='lavender'], [data-accent='lavender'] [data-flavor='macchiato'] {
   --ctp-accent: var(--ctp-lavender);
   --ctp-accent-fg: var(--ctp-lavender-fg);
   --ctp-on-accent: #24273a;
@@ -429,72 +429,72 @@
   --ctp-crust: #11111b;
   --ctp-crust-fg: #82879d;
 }
-[data-flavor='mocha'][data-accent='rosewater'] {
+[data-flavor='mocha'][data-accent='rosewater'], [data-flavor='mocha'] [data-accent='rosewater'], [data-accent='rosewater'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-rosewater);
   --ctp-accent-fg: var(--ctp-rosewater-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='flamingo'] {
+[data-flavor='mocha'][data-accent='flamingo'], [data-flavor='mocha'] [data-accent='flamingo'], [data-accent='flamingo'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-flamingo);
   --ctp-accent-fg: var(--ctp-flamingo-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='pink'] {
+[data-flavor='mocha'][data-accent='pink'], [data-flavor='mocha'] [data-accent='pink'], [data-accent='pink'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-pink);
   --ctp-accent-fg: var(--ctp-pink-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='mauve'] {
+[data-flavor='mocha'][data-accent='mauve'], [data-flavor='mocha'] [data-accent='mauve'], [data-accent='mauve'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-mauve);
   --ctp-accent-fg: var(--ctp-mauve-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='red'] {
+[data-flavor='mocha'][data-accent='red'], [data-flavor='mocha'] [data-accent='red'], [data-accent='red'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-red);
   --ctp-accent-fg: var(--ctp-red-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='maroon'] {
+[data-flavor='mocha'][data-accent='maroon'], [data-flavor='mocha'] [data-accent='maroon'], [data-accent='maroon'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-maroon);
   --ctp-accent-fg: var(--ctp-maroon-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='peach'] {
+[data-flavor='mocha'][data-accent='peach'], [data-flavor='mocha'] [data-accent='peach'], [data-accent='peach'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-peach);
   --ctp-accent-fg: var(--ctp-peach-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='yellow'] {
+[data-flavor='mocha'][data-accent='yellow'], [data-flavor='mocha'] [data-accent='yellow'], [data-accent='yellow'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-yellow);
   --ctp-accent-fg: var(--ctp-yellow-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='green'] {
+[data-flavor='mocha'][data-accent='green'], [data-flavor='mocha'] [data-accent='green'], [data-accent='green'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-green);
   --ctp-accent-fg: var(--ctp-green-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='teal'] {
+[data-flavor='mocha'][data-accent='teal'], [data-flavor='mocha'] [data-accent='teal'], [data-accent='teal'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-teal);
   --ctp-accent-fg: var(--ctp-teal-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='sky'] {
+[data-flavor='mocha'][data-accent='sky'], [data-flavor='mocha'] [data-accent='sky'], [data-accent='sky'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-sky);
   --ctp-accent-fg: var(--ctp-sky-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='sapphire'] {
+[data-flavor='mocha'][data-accent='sapphire'], [data-flavor='mocha'] [data-accent='sapphire'], [data-accent='sapphire'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-sapphire);
   --ctp-accent-fg: var(--ctp-sapphire-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='blue'] {
+[data-flavor='mocha'][data-accent='blue'], [data-flavor='mocha'] [data-accent='blue'], [data-accent='blue'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-blue);
   --ctp-accent-fg: var(--ctp-blue-fg);
   --ctp-on-accent: #1e1e2e;
 }
-[data-flavor='mocha'][data-accent='lavender'] {
+[data-flavor='mocha'][data-accent='lavender'], [data-flavor='mocha'] [data-accent='lavender'], [data-accent='lavender'] [data-flavor='mocha'] {
   --ctp-accent: var(--ctp-lavender);
   --ctp-accent-fg: var(--ctp-lavender-fg);
   --ctp-on-accent: #1e1e2e;

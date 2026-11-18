@@ -36,7 +36,7 @@ describe('generateThemeCss', () => {
       expect(css).toContain(`[data-flavor='${f}'] {`)
       expect(css).toContain(`--ctp-base: ${flavors[f].colors.base.hex};`)
       for (const a of ACCENT_NAMES)
-        expect(css).toContain(`[data-flavor='${f}'][data-accent='${a}']`)
+        expect(css).toContain(`[data-flavor='${f}'][data-accent='${a}'],`)
     }
   })
 

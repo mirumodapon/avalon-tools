@@ -27,7 +27,10 @@ export function generateThemeCss(): string {
     for (const accent of ACCENT_NAMES) {
       const hex = hexOf(flavor, accent)
       const onAccent = contrastRatio(base, hex) >= contrastRatio(text, hex) ? base : text
-      lines.push(`[data-flavor='${flavor}'][data-accent='${accent}'] {`)
+      // Same element, or nested (e.g. accent/flavor preview swatches inside <html>).
+      lines.push(
+        `[data-flavor='${flavor}'][data-accent='${accent}'], [data-flavor='${flavor}'] [data-accent='${accent}'], [data-accent='${accent}'] [data-flavor='${flavor}'] {`,
+      )
       lines.push(`  --ctp-accent: var(--ctp-${accent});`)
       lines.push(`  --ctp-accent-fg: var(--ctp-${accent}-fg);`)
       lines.push(`  --ctp-on-accent: ${onAccent};`)
