@@ -19,7 +19,17 @@ dist/404.html    = 首頁的 index.html，顯示 404 頁面
 
 ## GitHub Pages（預設）
 
-`.github/workflows/deploy.yml` 在 push 到 `main` 時檢查、建置並上傳 `dist/`。Pages 已內建 1、2，`sw.js` 等檔案的快取時間為 10 分鐘，可接受。
+`.github/workflows/deploy.yml` 在 push 到 `main`（或手動執行）時：
+
+1. lint、format:check、typecheck、單元測試
+2. 確認 Pages 部署在網域根目錄（需設定自訂網域；`/<repo>/` 這類子路徑會讓工作流程失敗）
+3. `pnpm build` 建置 registry 中所有工具並組合 `dist/`
+4. Playwright E2E：各工具的 service worker、離線使用、1.x 升級
+5. 在執行摘要列出部署的工具與路徑，上傳 `dist/` 並部署
+
+設定：Settings → Pages 的 Source 選 GitHub Actions，Custom domain 填網域（目前為 `avalon.mirumo.net`），並勾選 Enforce HTTPS（service worker 只能在 HTTPS 下運作）。新增工具不需要改工作流程。
+
+Pages 已內建 1、2，`sw.js` 等檔案的快取時間為 10 分鐘，可接受。
 
 ## Netlify（`dist/_redirects` 與 `dist/_headers`）
 
