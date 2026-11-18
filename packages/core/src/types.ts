@@ -69,11 +69,8 @@ export interface LadyUse {
   /** 0-based quest index after which the Lady was used (1, 2 or 3). */
   afterQuest: number
   holderId: PlayerId
-  /** Null when skipped. */
-  targetId: PlayerId | null
+  targetId: PlayerId
   declared: LadyDeclaration
-  /** Forgotten at the table; the Lady stays with the holder. */
-  skipped: boolean
   note: string
 }
 
