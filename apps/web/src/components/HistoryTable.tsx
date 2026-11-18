@@ -73,47 +73,12 @@ export function HistoryTable({
   if (rows.length === 0) {
     return <p className="py-8 text-center text-subtext0">還沒有任何派票紀錄</p>
   }
-  const n = game.players.length
   const quests = [...new Set(rows.map((r) => r.questIndex))]
   const ladyUses = game.lady?.uses ?? []
   const ladyErrors = validateLadyUses(game)
-  const heldLady = game.lady ? previousHolders(game, ladyUses.length) : new Set<string>()
 
   return (
     <div className="space-y-2 text-sm">
-      <table className="w-full table-fixed border-collapse">
-        <Cols n={n} />
-        <thead>
-          <tr>
-            <th scope="col" className="align-bottom text-[10px] font-normal text-subtext0">
-              次
-            </th>
-            {game.players.map((p, i) => (
-              <th
-                key={p.id}
-                scope="col"
-                aria-label={p.name}
-                className="px-0 align-bottom font-normal"
-              >
-                <span className="flex flex-col items-center gap-0.5 overflow-hidden">
-                  <span className="max-h-16 overflow-hidden text-xs leading-tight [writing-mode:vertical-rl]">
-                    {p.name}
-                  </span>
-                  <span className="text-[10px] text-subtext0">{i + 1}</span>
-                  {showRoles && game.roleAssignment[p.id] && (
-                    <RoleIcon role={game.roleAssignment[p.id]!} size={14} />
-                  )}
-                  {heldLady.has(p.id) && <LadyIcon size={12} label="曾持有湖中女神" />}
-                </span>
-              </th>
-            ))}
-            <th scope="col" className="align-bottom text-[10px] font-normal text-subtext0">
-              票
-            </th>
-          </tr>
-        </thead>
-      </table>
-
       {quests.map((q) => (
         <div key={q} className="space-y-2">
           <QuestTable
@@ -123,6 +88,11 @@ export function HistoryTable({
             viewMode={viewMode}
             showRoles={showRoles}
             display={display}
+            heldLady={
+              game.lady
+                ? previousHolders(game, ladyUses.filter((u) => u.afterQuest < q).length)
+                : new Set()
+            }
           />
           {ladyUses.map((use, li) =>
             use.afterQuest === q ? (
@@ -193,6 +163,7 @@ function QuestTable({
   viewMode,
   showRoles,
   display,
+  heldLady,
 }: {
   game: Game
   questIndex: number
@@ -200,6 +171,8 @@ function QuestTable({
   viewMode: ViewMode
   showRoles: boolean
   display: DisplayOptions
+  /** Players who had held the Lady before this quest. */
+  heldLady: Set<string>
 }) {
   const n = game.players.length
   const resultRow = rows.find((r) => r.quest)
@@ -235,6 +208,30 @@ function QuestTable({
               </span>
               <QuestResultBadge row={resultRow} detail={display.questResult} />
             </span>
+          </th>
+        </tr>
+        <tr className="text-[10px] text-subtext0">
+          <th scope="col" className="border-t border-surface0 py-0.5 font-normal">
+            次
+          </th>
+          {game.players.map((p, i) => (
+            <th
+              key={p.id}
+              scope="col"
+              aria-label={`${i + 1} 號 ${p.name}`}
+              className="border-t border-surface0 px-0 py-0.5 font-semibold"
+            >
+              <span className="flex flex-col items-center leading-tight">
+                {i + 1}
+                {showRoles && game.roleAssignment[p.id] && (
+                  <RoleIcon role={game.roleAssignment[p.id]!} size={12} />
+                )}
+                {heldLady.has(p.id) && <LadyIcon size={11} label="曾持有湖中女神" />}
+              </span>
+            </th>
+          ))}
+          <th scope="col" className="border-t border-surface0 py-0.5 font-normal">
+            票
           </th>
         </tr>
       </thead>
