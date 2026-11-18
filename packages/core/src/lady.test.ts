@@ -74,10 +74,10 @@ describe('Lady of the Lake flow', () => {
     g = run(g, { type: 'useLady', targetId: 'p5', declared: 'evil' })
     g = quest(g, 0)
     expect(deriveState(g)).toMatchObject({ phase: 'lady', questIndex: 3, ladyHolderId: 'p5' })
-    g = run(g, { type: 'skipLady' })
-    expect(currentLadyHolder(g)).toBe('p5')
+    g = run(g, { type: 'useLady', targetId: 'p1', declared: 'none' })
+    expect(currentLadyHolder(g)).toBe('p1')
     expect(g.lady!.uses.map((u) => u.afterQuest)).toEqual([1, 2, 3])
-    expect(g.lady!.uses[2]).toMatchObject({ skipped: true, targetId: null })
+    expect(deriveState(g).phase).toBe('proposal')
   })
 
   it('is not used when the game ended on that quest', () => {
@@ -85,14 +85,14 @@ describe('Lady of the Lake flow', () => {
     g = quest(g, 1)
     g = quest(g, 1)
     expect(deriveState(g).phase).toBe('lady')
-    g = run(g, { type: 'skipLady' })
+    g = run(g, { type: 'useLady', targetId: 'p1', declared: 'good' })
     g = quest(g, 1)
     expect(deriveState(g)).toMatchObject({ phase: 'finished', winner: 'evil' })
   })
 
   it('goes to assassination instead of the Lady after a third success', () => {
     let g = quest(quest(newGame(), 0), 0)
-    g = run(g, { type: 'skipLady' })
+    g = run(g, { type: 'useLady', targetId: 'p1', declared: 'good' })
     g = quest(g, 0)
     expect(deriveState(g).phase).toBe('assassination')
   })
@@ -147,10 +147,18 @@ describe('editing and validation', () => {
     expect(validateLadyUses(g)[1]).toEqual(['曾持有過湖中女神'])
   })
 
-  it('clears target and declaration when marked skipped', () => {
-    const g = run(threeUses(), { type: 'editLady', index: 1, patch: { skipped: true } })
-    expect(g.lady!.uses[1]).toMatchObject({ skipped: true, targetId: null, declared: 'none' })
-    expect(currentLadyHolder(g)).toBe('p3')
+  it('cannot proceed to the next quest without using the Lady', () => {
+    let g = quest(quest(newGame(), 0), 1)
+    expect(deriveState(g).phase).toBe('lady')
+    const ids = g.players.map((p) => p.id)
+    expect(() =>
+      run(g, {
+        type: 'propose',
+        team: ids.slice(0, 3),
+        votes: uniformVotes(ids, 'approve'),
+        inputMode: 'approvals',
+      }),
+    ).toThrow(GameRuleError)
   })
 
   it('can change the initial holder and revalidates', () => {

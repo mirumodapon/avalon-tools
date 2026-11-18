@@ -29,9 +29,8 @@ const roundSchema = z.object({
 const ladyUseSchema = z.object({
   afterQuest: z.number().int().min(0).max(4),
   holderId: id,
-  targetId: id.nullable(),
+  targetId: id,
   declared: z.enum(['good', 'evil', 'none']),
-  skipped: z.boolean(),
   note: z.string(),
 })
 

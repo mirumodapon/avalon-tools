@@ -65,8 +65,7 @@ export function resultText(row: HistoryRow): string {
 
 export function ladyText(game: Game, use: LadyUse, opts: ExportOptions): string {
   const holder = playerName(game, use.holderId)
-  if (use.skipped) return `湖中女神：已跳過（${holder} 持有）`
-  const target = use.targetId ? playerName(game, use.targetId) : '？'
+  const target = playerName(game, use.targetId)
   let text = `湖中女神：${holder} → ${target}：${LADY_DECLARATION_LABEL[use.declared]}`
   if (opts.includeRoles) {
     const truth = ladyTruth(game, use)

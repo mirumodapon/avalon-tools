@@ -134,7 +134,6 @@ export function PlayPage({ id }: { id: string }) {
               game={game}
               state={s}
               onUse={(u) => dispatch({ type: 'useLady', ...u })}
-              onSkip={(u) => dispatch({ type: 'skipLady', ...u })}
             />
           )}
           {s.phase === 'assassination' && (

@@ -283,7 +283,6 @@ export type GameAction =
   | { type: 'setAutoName'; auto: string }
   | { type: 'markSaved' }
   | { type: 'useLady'; targetId: PlayerId; declared: LadyDeclaration; note?: string }
-  | { type: 'skipLady'; note?: string }
   | { type: 'editLady'; index: number; patch: Partial<Omit<LadyUse, 'afterQuest'>> }
   | { type: 'setLady'; lady: { initialHolderId: PlayerId } | null }
 
@@ -379,38 +378,31 @@ function apply(game: Game, action: GameAction): Game {
       return { ...game, roleAssignment: pruneAssignment(game, action.roleAssignment) }
     case 'setAutoName':
       return { ...game, name: { ...game.name, auto: action.auto } }
-    case 'useLady':
-    case 'skipLady': {
+    case 'useLady': {
       const s = deriveState(game)
       if (s.phase !== 'lady' || !game.lady) throw new GameRuleError('目前不是湖中女神階段')
       const holderId = s.ladyHolderId!
-      if (action.type === 'useLady') {
-        if (!game.players.some((p) => p.id === action.targetId)) {
-          throw new GameRuleError('查驗對象不在玩家名單中')
-        }
-        const option = ladyTargetOptionsFor(game, holderId).find(
-          (o) => o.playerId === action.targetId,
-        )
-        if (option?.disabledReason) throw new GameRuleError(option.disabledReason)
+      if (!game.players.some((p) => p.id === action.targetId)) {
+        throw new GameRuleError('查驗對象不在玩家名單中')
       }
+      const option = ladyTargetOptionsFor(game, holderId).find(
+        (o) => o.playerId === action.targetId,
+      )
+      if (option?.disabledReason) throw new GameRuleError(option.disabledReason)
       const use: LadyUse = {
         afterQuest: s.questIndex,
         holderId,
-        targetId: action.type === 'useLady' ? action.targetId : null,
-        declared: action.type === 'useLady' ? action.declared : 'none',
-        skipped: action.type === 'skipLady',
+        targetId: action.targetId,
+        declared: action.declared,
         note: action.note?.trim() ?? '',
       }
       return { ...game, lady: { ...game.lady, uses: [...game.lady.uses, use] } }
     }
     case 'editLady': {
       if (!game.lady?.uses[action.index]) throw new GameRuleError('找不到這次湖中女神紀錄')
-      const uses = game.lady.uses.map((u, i) => {
-        if (i !== action.index) return u
-        const next = { ...u, ...action.patch }
-        if (next.skipped) return { ...next, targetId: null, declared: 'none' as const }
-        return next
-      })
+      const uses = game.lady.uses.map((u, i) =>
+        i === action.index ? { ...u, ...action.patch } : u,
+      )
       return { ...game, lady: { ...game.lady, uses } }
     }
     case 'setLady':

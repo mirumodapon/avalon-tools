@@ -5,7 +5,7 @@ import {
   type LadyDeclaration,
   type PlayerId,
 } from '@avalon/core'
-import { IconPlayerSkipForward, IconSend } from '@tabler/icons-react'
+import { IconSend } from '@tabler/icons-react'
 import { useState } from 'react'
 import { BottomBar, Button, Card } from '../components/ui.tsx'
 import { LadyFields } from './LadyFields.tsx'
@@ -15,12 +15,10 @@ export function LadyForm({
   game,
   state,
   onUse,
-  onSkip,
 }: {
   game: Game
   state: GameState
   onUse: (input: { targetId: PlayerId; declared: LadyDeclaration; note: string }) => void
-  onSkip: (input: { note: string }) => void
 }) {
   const holderId = state.ladyHolderId!
   const [targetId, setTargetId] = useState<PlayerId | null>(null)
@@ -52,21 +50,15 @@ export function LadyForm({
       />
       <div className="flex-1" />
       <BottomBar>
-        <div className="flex gap-2">
-          <Button onClick={() => onSkip({ note: note.trim() })}>
-            <IconPlayerSkipForward size={20} aria-hidden />
-            跳過這次
-          </Button>
-          <Button
-            variant="primary"
-            className="flex-1"
-            disabled={!targetId}
-            onClick={() => targetId && onUse({ targetId, declared, note: note.trim() })}
-          >
-            <IconSend size={20} aria-hidden />
-            送出查驗
-          </Button>
-        </div>
+        <Button
+          variant="primary"
+          className="w-full"
+          disabled={!targetId}
+          onClick={() => targetId && onUse({ targetId, declared, note: note.trim() })}
+        >
+          <IconSend size={20} aria-hidden />
+          {targetId ? '送出查驗' : '選擇查驗對象'}
+        </Button>
       </BottomBar>
     </div>
   )

@@ -3,7 +3,7 @@
  *
  * Used once after quests 2, 3 and 4 (0-based 1, 2, 3) unless the game already ended.
  * The holder inspects a player who has never held the Lady (and is not themself);
- * the Lady then passes to that player. A skipped use leaves the Lady with the holder.
+ * the Lady then passes to that player. A use cannot be skipped.
  */
 import { playerFaction } from './roles.ts'
 import type { Faction, Game, LadyDeclaration, LadyUse, PlayerId } from './types.ts'
@@ -38,7 +38,7 @@ export function ladyEnabledByDefault(playerCount: number): boolean {
 /** The holder expected for the next use given the recorded uses (by chain, ignoring stored holders). */
 function nextHolderAfter(initial: PlayerId, uses: readonly LadyUse[]): PlayerId {
   let holder = initial
-  for (const u of uses) if (!u.skipped && u.targetId) holder = u.targetId
+  for (const u of uses) holder = u.targetId
   return holder
 }
 
@@ -55,7 +55,7 @@ export function previousHolders(game: Pick<Game, 'lady'>, index: number): Set<Pl
   out.add(game.lady.initialHolderId)
   for (const u of game.lady.uses.slice(0, index)) {
     out.add(u.holderId)
-    if (!u.skipped && u.targetId) out.add(u.targetId)
+    out.add(u.targetId)
   }
   return out
 }
@@ -87,9 +87,8 @@ export function validateLadyUses(game: Pick<Game, 'lady' | 'players'>): string[]
     const expected = nextHolderAfter(game.lady!.initialHolderId, game.lady!.uses.slice(0, i))
     if (u.holderId !== expected) errors.push('持有者與前一次查驗結果不一致')
     if (!isLadyQuest(u.afterQuest)) errors.push('湖中女神只能在第 2、3、4 個任務後使用')
-    if (u.skipped) return errors
-    if (!u.targetId || !ids.has(u.targetId)) {
-      errors.push('沒有選擇查驗對象')
+    if (!ids.has(u.targetId)) {
+      errors.push('查驗對象不在玩家名單中')
       return errors
     }
     const option = ladyTargetOptions(game, i, u.holderId).find((o) => o.playerId === u.targetId)
@@ -100,7 +99,6 @@ export function validateLadyUses(game: Pick<Game, 'lady' | 'players'>): string[]
 
 /** The inspected player's real faction, when their role is known. */
 export function ladyTruth(game: Pick<Game, 'roleAssignment'>, use: LadyUse): Faction | null {
-  if (use.skipped || !use.targetId) return null
   return playerFaction(game, use.targetId)
 }
 
@@ -122,7 +120,6 @@ export interface LadyHolderStats {
 export function ladyHolderStats(game: Game): LadyHolderStats[] {
   const map = new Map<PlayerId, LadyHolderStats>()
   for (const u of game.lady?.uses ?? []) {
-    if (u.skipped) continue
     const s = map.get(u.holderId) ?? {
       playerId: u.holderId,
       uses: 0,
