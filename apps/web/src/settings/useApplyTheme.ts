@@ -7,7 +7,7 @@ export function useApplyTheme() {
   const theme = useSettings((s) => s.settings.theme)
   useEffect(() => {
     applyTheme(theme)
-    if (theme.flavor !== 'system' || typeof window.matchMedia !== 'function') return
+    if (theme.mode !== 'system' || typeof window.matchMedia !== 'function') return
     const mq = window.matchMedia(PREFERS_DARK_QUERY)
     const onChange = () => applyTheme(theme)
     mq.addEventListener('change', onChange)
