@@ -126,7 +126,7 @@ scripts/                 build-all、dev、preview、new-app、檢查
 
 ## 開發
 
-需要 Node 24+ 與 pnpm 10。
+需要 Node 24+ 與 pnpm 12（版本由 `packageManager` 指定，corepack 會自動使用）。
 
 ```sh
 pnpm install
