@@ -1,8 +1,13 @@
 import { IconX } from '@tabler/icons-react'
 import { useEffect, useId, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { IconButton } from './ui.tsx'
 
-/** Bottom sheet modal, thumb-friendly on phones. */
+/**
+ * Bottom sheet modal, thumb-friendly on phones. Rendered into <body> via a portal:
+ * ancestors with backdrop-filter (e.g. the sticky header) would otherwise become the
+ * containing block for `position: fixed` and clip the sheet.
+ */
 export function Sheet({
   title,
   open,
@@ -30,7 +35,7 @@ export function Sheet({
   }, [open, onClose])
 
   if (!open) return null
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
       <button
         type="button"
@@ -60,7 +65,8 @@ export function Sheet({
           </div>
         )}
       </dialog>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
