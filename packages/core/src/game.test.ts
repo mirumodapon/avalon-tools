@@ -112,16 +112,29 @@ describe('deriveState', () => {
     expect(deriveState(g)).toMatchObject({ phase: 'quest', attempt: 2 })
   })
 
-  it('marks the 5th proposal as forced and sends it on the quest even if all reject', () => {
+  it('sends an approved 5th proposal on the quest', () => {
     let g = newGame(5)
     for (let i = 0; i < 4; i++) g = run(g, propose(g, ['p1', 'p2'], false))
     expect(deriveState(g)).toMatchObject({ phase: 'proposal', attempt: 5, forced: true })
-    g = run(g, propose(g, ['p1', 'p2'], false))
+    g = run(g, propose(g, ['p1', 'p2'], true))
     const round = g.rounds[0]!
     expect(round.proposals).toHaveLength(5)
     expect(round.proposals[4]!.forced).toBe(true)
     expect(round.proposals[4]!.id).toBe('q1-p5')
     expect(deriveState(g)).toMatchObject({ phase: 'quest', forced: true })
+  })
+
+  it('ends with evil winning when the 5th proposal is voted down', () => {
+    let g = newGame(5)
+    for (let i = 0; i < 5; i++) g = run(g, propose(g, ['p1', 'p2'], false))
+    expect(deriveState(g)).toMatchObject({
+      phase: 'finished',
+      winner: 'evil',
+      winReason: 'forced-rejected',
+    })
+    expect(() => run(g, { type: 'recordQuest', failCount: 0 })).toThrow(GameRuleError)
+    // undo brings the 5th proposal back
+    expect(deriveState(undoLast(g))).toMatchObject({ phase: 'proposal', attempt: 5 })
   })
 
   it('applies the two-fail rule on quest 4 with 7 players', () => {

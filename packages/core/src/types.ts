@@ -36,7 +36,7 @@ export interface Proposal {
   team: PlayerId[]
   votes: Votes
   inputMode: InputMode
-  /** The 5th proposal of a quest goes on the quest regardless of votes. */
+  /** The 5th proposal of a quest; if it is voted down, evil wins. */
   forced: boolean
 }
 
