@@ -47,6 +47,13 @@ describe('createPwaConfig', () => {
     expect(createPwaConfig(record).workbox!.navigateFallbackDenylist).toEqual([])
   })
 
+  it('uses the scope-exact cleanup instead of Workbox’s', () => {
+    expect(createPwaConfig(home).workbox).toMatchObject({
+      cleanupOutdatedCaches: false,
+      importScripts: ['sw-cleanup.js'],
+    })
+  })
+
   it('prefixes caches with the app id', () => {
     expect(createPwaConfig(home).workbox!.cacheId).toBe('avalon-home')
     expect(createPwaConfig(record).workbox!.cacheId).toBe('avalon-record')
@@ -61,7 +68,7 @@ describe('createPwaConfig', () => {
 
   it('passes extra service worker scripts through', () => {
     expect(createPwaConfig(home, { importScripts: ['cleanup.js'] }).workbox!.importScripts).toEqual(
-      ['cleanup.js'],
+      ['sw-cleanup.js', 'cleanup.js'],
     )
   })
 })

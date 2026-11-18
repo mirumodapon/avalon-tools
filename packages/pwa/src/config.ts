@@ -1,6 +1,8 @@
 import { manifestName, nestedToolPaths, tools as allTools, type ToolMeta } from '@avalon/registry'
 import { flavors } from '@catppuccin/palette'
-import type { VitePWAOptions } from 'vite-plugin-pwa'
+import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa'
+import type { PluginOption } from 'vite'
+import { CLEANUP_SCRIPT, swCleanupPlugin } from './cleanup.ts'
 
 /** Splash / title-bar color: base of the app's dark flavor (unchanged from 1.x). */
 export const PWA_THEME_COLOR = flavors.macchiato.colors.base.hex
@@ -63,8 +65,15 @@ export function createPwaConfig(
       globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
       navigateFallback: 'index.html',
       navigateFallbackDenylist: nestedToolPaths(tool, tools).map(pathPattern),
-      cleanupOutdatedCaches: true,
-      importScripts,
+      // Replaced by CLEANUP_SCRIPT: Workbox's version would delete nested apps' caches.
+      cleanupOutdatedCaches: false,
+      globIgnores: [CLEANUP_SCRIPT],
+      importScripts: [CLEANUP_SCRIPT, ...importScripts],
     },
   }
+}
+
+/** The PWA plugins for one tool: vite-plugin-pwa plus the cache-cleanup script it imports. */
+export function avalonPwa(tool: ToolMeta, options?: PwaConfigOptions): PluginOption[] {
+  return [swCleanupPlugin(cacheIdOf(tool)), VitePWA(createPwaConfig(tool, options))]
 }

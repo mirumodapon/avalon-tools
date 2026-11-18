@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "@avalon/registry": "workspace:*",
-    "@catppuccin/palette": "catalog:"
+    "@catppuccin/palette": "catalog:",
+    "vite-plugin-pwa": "catalog:"
   },
   "devDependencies": {
     "@avalon/tsconfig": "workspace:*",
@@ -23,6 +24,6 @@
     "@vite-pwa/assets-generator": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "vite-plugin-pwa": "catalog:"
+    "vite": "catalog:"
   }
 }

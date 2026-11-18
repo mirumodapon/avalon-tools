@@ -1,22 +1,13 @@
 import { listedTools, type ToolMeta } from '@avalon/registry'
 import { AppShell, Card, cx, IconButton } from '@avalon/ui'
 import { IconChevronRight, IconDeviceMobileDown, IconInfoCircle } from '@tabler/icons-react'
+import { isStandalone } from '../standalone.ts'
 import { TOOL_ICONS } from '../toolIcons.ts'
+import { UpgradeCard } from '../UpgradeCard.tsx'
 
 const STATUS_LABEL: Partial<Record<ToolMeta['status'], string>> = {
   beta: 'Beta',
   'coming-soon': '即將推出',
-}
-
-function isStandalone(): boolean {
-  try {
-    return (
-      window.matchMedia?.('(display-mode: standalone)').matches === true ||
-      (navigator as { standalone?: boolean }).standalone === true
-    )
-  } catch {
-    return false
-  }
 }
 
 function ToolCard({ tool }: { tool: ToolMeta }) {
@@ -72,6 +63,7 @@ export function ToolsPage() {
       }
     >
       <div className="space-y-4 pt-2">
+        <UpgradeCard />
         <p className="text-subtext1">《阿瓦隆》桌遊的輔助工具。點選工具開始使用。</p>
         <ul className="space-y-3" aria-label="工具">
           {tools.map((t) => (
