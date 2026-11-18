@@ -9,6 +9,25 @@ import { VitePWA } from 'vite-plugin-pwa'
 const DARK_BASE = flavors.macchiato.colors.base.hex
 
 export default defineConfig({
+  // Pre-bundle every runtime dependency up front. Otherwise Vite discovers some of them
+  // (e.g. react-dom used by portals, the lazily imported html-to-image) mid-session,
+  // re-optimizes, and the open page fails to load stale chunks.
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      'zustand',
+      'dexie',
+      '@avalon/core > zod',
+      '@tabler/icons-react',
+      '@catppuccin/palette',
+      'html-to-image',
+      'workbox-window',
+    ],
+  },
   plugins: [
     catppuccinThemePlugin({ storageKey: 'avalon-recorder:settings' }),
     react(),
