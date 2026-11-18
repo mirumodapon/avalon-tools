@@ -3,6 +3,15 @@ import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme
 import type { StoreSpec } from '../storage/storage.ts'
 import { normalizeRoster } from './roster.ts'
 
+export type Detail = 'simple' | 'detailed'
+
+export interface DisplayOptions {
+  /** Quest result: colored chip with fail count, or full text. */
+  questResult: Detail
+  /** Lady of the Lake: `seat → seat: faction icon`, or names with declaration/truth. */
+  ladyResult: Detail
+}
+
 export interface Settings {
   theme: ThemeSettings
   /** Input mode for a game's first proposal; follows the mode last used to record. */
@@ -17,6 +26,7 @@ export interface Settings {
   viewMode: ViewMode
   /** Show roles/factions when browsing history (in-progress games always start hidden). */
   showRoles: boolean
+  display: DisplayOptions
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -27,6 +37,7 @@ export const DEFAULT_SETTINGS: Settings = {
   naming: DEFAULT_NAMING,
   viewMode: 'full',
   showRoles: false,
+  display: { questResult: 'simple', ladyResult: 'simple' },
 }
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -48,6 +59,16 @@ function normalizeNaming(value: unknown): NamingTemplate {
   return { template, dateFormat }
 }
 
+function normalizeDisplay(value: unknown): DisplayOptions {
+  const v = (typeof value === 'object' && value !== null ? value : {}) as Record<string, unknown>
+  const d = DEFAULT_SETTINGS.display
+  const details = ['simple', 'detailed'] as const
+  return {
+    questResult: pick(v.questResult, details, d.questResult),
+    ladyResult: pick(v.ladyResult, details, d.ladyResult),
+  }
+}
+
 /** Coerces stored settings, filling missing/invalid fields with defaults. */
 export function normalizeSettings(value: unknown): Settings {
   const v = (typeof value === 'object' && value !== null ? value : {}) as Record<string, unknown>
@@ -60,6 +81,7 @@ export function normalizeSettings(value: unknown): Settings {
     naming: normalizeNaming(v.naming),
     viewMode: pick(v.viewMode, ['full', 'anomaly'], d.viewMode),
     showRoles: bool(v.showRoles, d.showRoles),
+    display: normalizeDisplay(v.display),
   }
 }
 
