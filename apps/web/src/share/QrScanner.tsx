@@ -193,13 +193,13 @@ export function ScanButton({ variant = 'icon' }: { variant?: 'icon' | 'full' }) 
   return (
     <>
       {variant === 'icon' ? (
-        <IconButton label="掃描 QR code 匯入" onClick={() => setOpen(true)}>
+        <IconButton label="掃描 QR" onClick={() => setOpen(true)}>
           <IconScan size={22} />
         </IconButton>
       ) : (
         <Button className="flex-1" onClick={() => setOpen(true)}>
           <IconScan size={20} aria-hidden />
-          掃描 QR 匯入
+          掃描 QR
         </Button>
       )}
       {open && <ScannerOverlay onClose={close} />}
