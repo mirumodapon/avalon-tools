@@ -1,6 +1,12 @@
 import type { Game, ViewMode } from '@avalon/core'
-import { IconClipboard, IconDownload, IconLoader2, IconShare } from '@tabler/icons-react'
-import { useRef, useState } from 'react'
+import {
+  IconClipboard,
+  IconDownload,
+  IconLoader2,
+  IconPhotoDown,
+  IconShare,
+} from '@tabler/icons-react'
+import { useEffect, useRef, useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Sheet } from '../components/Sheet.tsx'
 import { Button, cx, Segmented, Switch } from '../components/ui.tsx'
@@ -15,11 +21,18 @@ import {
   mimeOf,
   type ExportFormat,
 } from './formats.ts'
-import { canShare, copyImage, copyText, downloadBlob, shareFile } from './share.ts'
+import {
+  canSaveImageToPhotos,
+  canShare,
+  copyImage,
+  copyText,
+  downloadBlob,
+  shareFile,
+} from './share.ts'
 
 const FORMATS: ExportFormat[] = ['json', 'csv', 'markdown', 'text', 'png']
 
-type Action = 'download' | 'copy' | 'share'
+type Action = 'download' | 'copy' | 'share' | 'photos'
 
 export function ExportSheet({
   game,
@@ -44,8 +57,12 @@ export function ExportSheet({
   const text = format === 'png' ? null : exportText(game, format, opts)
   const filename = exportFilename(name, format)
 
-  async function blob(): Promise<Blob> {
-    if (text !== null) return new Blob([text], { type: mimeOf(format) })
+  const [toPhotos] = useState(canSaveImageToPhotos)
+  const savesToPhotos = format === 'png' && toPhotos
+  /** PNG rendered ahead of time on phones: sharing must start right after the tap. */
+  const [readyPng, setReadyPng] = useState<Blob | null>(null)
+
+  async function renderPng(): Promise<Blob> {
     const node = pngRef.current
     if (!node) throw new Error('無法產生圖片')
     const { toBlob } = await import('html-to-image')
@@ -53,6 +70,41 @@ export function ExportSheet({
     const b = await toBlob(node, { pixelRatio: 2, backgroundColor: bg, cacheBust: true })
     if (!b) throw new Error('無法產生圖片')
     return b
+  }
+
+  useEffect(() => {
+    setReadyPng(null)
+    if (!open || !savesToPhotos) return
+    let alive = true
+    const frame = requestAnimationFrame(() => {
+      renderPng().then(
+        (b) => alive && setReadyPng(b),
+        (e: unknown) => alive && setStatus(e instanceof Error ? e.message : String(e)),
+      )
+    })
+    return () => {
+      alive = false
+      cancelAnimationFrame(frame)
+    }
+    // renderPng reads the rendered preview, which depends on these inputs.
+    // oxlint-disable-next-line react/exhaustive-deps
+  }, [open, savesToPhotos, viewMode, includeRoles, game])
+
+  async function blob(): Promise<Blob> {
+    if (text !== null) return new Blob([text], { type: mimeOf(format) })
+    return readyPng ?? renderPng()
+  }
+
+  function saveToPhotos() {
+    if (!readyPng) return
+    setStatus(null)
+    setBusy('photos')
+    // No await before share(): iOS only allows it directly in response to the tap.
+    shareFile(new File([readyPng], filename, { type: 'image/png' }))
+      .then((ok) => {
+        if (ok) setStatus('在分享選單選擇「儲存影像」即可存進相簿')
+      })
+      .finally(() => setBusy(null))
   }
 
   async function run(action: Action) {
@@ -89,16 +141,38 @@ export function ExportSheet({
       onClose={onClose}
       footer={
         <div className="flex gap-2">
-          <Button
-            variant="primary"
-            className="flex-1"
-            disabled={busy !== null}
-            aria-busy={busy === 'download'}
-            onClick={() => void run('download')}
-          >
-            {busy === 'download' ? spinner : <IconDownload size={20} aria-hidden />}
-            {busy === 'download' ? '產生中…' : '下載'}
-          </Button>
+          {savesToPhotos ? (
+            <>
+              <Button
+                variant="primary"
+                className="flex-1"
+                disabled={busy !== null || !readyPng}
+                aria-busy={!readyPng || busy === 'photos'}
+                onClick={saveToPhotos}
+              >
+                {!readyPng || busy === 'photos' ? spinner : <IconPhotoDown size={20} aria-hidden />}
+                {readyPng ? '儲存到相簿' : '產生中…'}
+              </Button>
+              <Button
+                disabled={busy !== null || !readyPng}
+                onClick={() => void run('download')}
+                aria-label="下載檔案"
+              >
+                <IconDownload size={20} aria-hidden />
+              </Button>
+            </>
+          ) : (
+            <Button
+              variant="primary"
+              className="flex-1"
+              disabled={busy !== null}
+              aria-busy={busy === 'download'}
+              onClick={() => void run('download')}
+            >
+              {busy === 'download' ? spinner : <IconDownload size={20} aria-hidden />}
+              {busy === 'download' ? '產生中…' : '下載'}
+            </Button>
+          )}
           <Button
             disabled={busy !== null}
             aria-busy={busy === 'copy'}
@@ -107,7 +181,7 @@ export function ExportSheet({
           >
             {busy === 'copy' ? spinner : <IconClipboard size={20} aria-hidden />}
           </Button>
-          {canShare() && (
+          {canShare() && !savesToPhotos && (
             <Button
               disabled={busy !== null}
               aria-busy={busy === 'share'}

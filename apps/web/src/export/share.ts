@@ -50,3 +50,22 @@ export async function shareFile(file: File, text?: string): Promise<boolean> {
     return false
   }
 }
+
+/**
+ * Whether images can go to the photo library: on touch devices that can share
+ * files, the system share sheet offers "Save Image" (iOS) / saving to the gallery
+ * (Android). Web pages cannot write to the photo library directly.
+ */
+export function canSaveImageToPhotos(): boolean {
+  try {
+    const touch = window.matchMedia?.('(pointer: coarse)').matches ?? false
+    const probe = new File([''], 'probe.png', { type: 'image/png' })
+    return (
+      touch &&
+      typeof navigator.share === 'function' &&
+      navigator.canShare?.({ files: [probe] }) === true
+    )
+  } catch {
+    return false
+  }
+}
