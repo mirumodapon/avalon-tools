@@ -9,7 +9,8 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "typecheck": "pnpm -r run typecheck",
-    "test": "vitest run"
+    "test": "vitest run",
+    "icons": "node packages/pwa/scripts/icons.ts"
   },
   "devDependencies": {
     "@types/node": "catalog:",
