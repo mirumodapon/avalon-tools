@@ -1,13 +1,17 @@
 import {
   createGame,
+  defaultLadyHolder,
   defaultRoleConfig,
   factionCounts,
+  ladyEnabledByDefault,
+  LADY_RECOMMENDED_MIN_PLAYERS,
   makePlayers,
   PLAYER_COUNTS,
   teamSizes,
   validateAssignment,
   validateRoleConfig,
   type PlayerCount,
+  type PlayerId,
   type RoleAssignment,
   type RoleConfig,
 } from '@avalon/core'
@@ -35,6 +39,7 @@ import {
   TextField,
 } from '../components/ui.tsx'
 import { newId, useGames } from '../games/store.ts'
+import { LadyIcon } from '../lady/marks.tsx'
 import { RoleAssignmentEditor } from '../roles/RoleAssignmentEditor.tsx'
 import { RoleConfigEditor } from '../roles/RoleConfigEditor.tsx'
 import { navigate } from '../router.ts'
@@ -58,10 +63,16 @@ export function SetupPage() {
   const [roleConfig, setRoleConfig] = useState<RoleConfig | null>(null)
   const [assignment, setAssignment] = useState<RoleAssignment>({})
   const [showAssign, setShowAssign] = useState(false)
+  const [ladyOn, setLadyOn] = useState(ladyEnabledByDefault(5))
+  /** Manually chosen initial holder; null follows the default (right of first leader). */
+  const [ladyHolder, setLadyHolder] = useState<PlayerId | null>(null)
 
   const sizes = teamSizes(count)
   const factions = factionCounts(count)
   const players = makePlayers(names)
+  const defaultHolder = defaultLadyHolder(players, players[leader]!.id)
+  const ladyInitial =
+    ladyHolder && players.some((p) => p.id === ladyHolder) ? ladyHolder : defaultHolder
   const configCheck = roleConfig ? validateRoleConfig(roleConfig, count) : null
   const assignmentErrors = validateAssignment(assignment, roleConfig, count)
   const canStart = (configCheck?.ok ?? true) && assignmentErrors.length === 0
@@ -78,6 +89,8 @@ export function SetupPage() {
     setActive(nextEmptySeat(next))
     setLeader((l) => (l < n ? l : 0))
     if (roleConfig) setRoleConfig(defaultRoleConfig(n))
+    setLadyOn(ladyEnabledByDefault(n))
+    setLadyHolder(null)
     setAssignment((a) =>
       Object.fromEntries(Object.entries(a).filter(([id]) => Number(id.slice(1)) <= n)),
     )
@@ -128,6 +141,7 @@ export function SetupPage() {
       name: { custom: customName },
       roleConfig,
       roleAssignment: assignment,
+      lady: ladyOn ? { initialHolderId: ladyInitial } : null,
     })
     add(game)
     updateSettings({ roster: mergeNames(roster, names) })
@@ -279,6 +293,43 @@ export function SetupPage() {
             <IconCrown size={16} className="text-crown-fg" aria-hidden />
             第一位隊長：{names[leader]?.trim() || `${leader + 1}號`}
           </p>
+        </Card>
+
+        <Card>
+          <SectionTitle>擴充</SectionTitle>
+          <Switch
+            label={
+              <span className="flex items-center gap-1">
+                <LadyIcon size={18} />
+                湖中女神
+              </span>
+            }
+            description="第 2、3、4 個任務後查驗一位玩家的陣營"
+            checked={ladyOn}
+            onChange={setLadyOn}
+          />
+          {ladyOn && count < LADY_RECOMMENDED_MIN_PLAYERS && (
+            <p className="mt-1 text-sm text-forced-fg">官方建議湖中女神用於 7 人以上的遊戲</p>
+          )}
+          {ladyOn && (
+            <label className="mt-3 block">
+              <span className="mb-1 block text-sm text-subtext0">
+                初始持有者（預設為第一位隊長右手邊）
+              </span>
+              <select
+                className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3"
+                value={ladyInitial}
+                onChange={(e) => setLadyHolder(e.target.value)}
+              >
+                {players.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                    {p.id === defaultHolder ? '（預設）' : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </Card>
 
         <Card>

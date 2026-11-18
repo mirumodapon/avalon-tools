@@ -10,6 +10,8 @@ import { useGame, useGames } from '../games/store.ts'
 import { AssassinationForm } from '../play/AssassinationForm.tsx'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { ProposalForm } from '../play/ProposalForm.tsx'
+import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
+import { LadyForm } from '../lady/LadyForm.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
 import { RolesSheet } from '../roles/RolesSheet.tsx'
 import { ShowRolesButton } from '../roles/ShowRolesToggle.tsx'
@@ -23,6 +25,7 @@ export function PlayPage({ id }: { id: string }) {
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<'record' | 'history'>('record')
   const [rolesOpen, setRolesOpen] = useState(false)
+  const [editingLady, setEditingLady] = useState<number | null>(null)
   // In-progress games always start with roles hidden, regardless of the global setting.
   const [showRoles, setShowRoles] = useState(false)
   const viewMode = useSettings((st) => st.settings.viewMode)
@@ -84,7 +87,12 @@ export function PlayPage({ id }: { id: string }) {
             <ViewModeToggle className="flex-1" />
             <ShowRolesButton checked={showRoles} onChange={setShowRoles} />
           </div>
-          <HistoryTable game={game} viewMode={viewMode} showRoles={showRoles} />
+          <HistoryTable
+            game={game}
+            viewMode={viewMode}
+            showRoles={showRoles}
+            onEditLady={setEditingLady}
+          />
         </div>
       ) : (
         <>
@@ -107,6 +115,15 @@ export function PlayPage({ id }: { id: string }) {
               game={game}
               state={s}
               onSubmit={(r) => dispatch({ type: 'recordQuest', ...r })}
+            />
+          )}
+          {s.phase === 'lady' && (
+            <LadyForm
+              key={stepKey}
+              game={game}
+              state={s}
+              onUse={(u) => dispatch({ type: 'useLady', ...u })}
+              onSkip={(u) => dispatch({ type: 'skipLady', ...u })}
             />
           )}
           {s.phase === 'assassination' && (
@@ -138,6 +155,12 @@ export function PlayPage({ id }: { id: string }) {
         game={game}
         open={rolesOpen}
         onClose={() => setRolesOpen(false)}
+        dispatch={dispatch}
+      />
+      <LadyEditSheet
+        game={game}
+        index={editingLady}
+        onClose={() => setEditingLady(null)}
         dispatch={dispatch}
       />
     </Page>
