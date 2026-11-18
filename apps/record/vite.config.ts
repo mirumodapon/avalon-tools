@@ -1,3 +1,4 @@
+import { toolById } from '@avalon/registry'
 import { catppuccinThemePlugin } from '@avalon/theme/vite'
 import { flavors } from '@catppuccin/palette'
 import tailwindcss from '@tailwindcss/vite'
@@ -6,6 +7,8 @@ import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+
+const RECORD = toolById('record')
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as {
   version: string
@@ -30,7 +33,8 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(`${pkg.version}-${gitRev()}`),
   },
   // Deployed under a sub-path on GitHub Pages project sites (set by the deploy workflow).
-  base: process.env.BASE_PATH || '/',
+  // Served at /record/ (from the tool registry).
+  base: RECORD.path,
   // Pre-bundle every runtime dependency up front. Otherwise Vite discovers some of them
   // (e.g. react-dom used by portals, the lazily imported html-to-image) mid-session,
   // re-optimizes, and the open page fails to load stale chunks.
