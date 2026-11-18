@@ -1,4 +1,4 @@
-import { MAX_PLAYERS, MIN_PLAYERS } from '@avalon/core'
+import { MAX_PLAYERS } from '@avalon/core'
 import { IconCheck, IconUsersPlus } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Sheet } from '../components/Sheet.tsx'
@@ -8,13 +8,16 @@ import { Button, cx } from '../components/ui.tsx'
 export function RosterPicker({
   roster,
   onDone,
+  className,
 }: {
   roster: readonly string[]
+  /** Called with the picks in seat order (1 to 10 names). */
   onDone: (names: string[]) => void
+  className?: string
 }) {
   const [open, setOpen] = useState(false)
   const [order, setOrder] = useState<string[]>([])
-  const valid = order.length >= MIN_PLAYERS && order.length <= MAX_PLAYERS
+  const valid = order.length > 0
 
   function toggle(name: string) {
     setOrder((o) =>
@@ -30,7 +33,7 @@ export function RosterPicker({
   return (
     <>
       <Button
-        className="w-full"
+        className={cx('w-full', className)}
         disabled={roster.length === 0}
         onClick={() => {
           setOrder([])
@@ -38,7 +41,7 @@ export function RosterPicker({
         }}
       >
         <IconUsersPlus size={20} aria-hidden />
-        從名冊依序選擇玩家
+        從名冊選擇
       </Button>
       <Sheet
         title="依座位順序點選玩家"
@@ -47,7 +50,7 @@ export function RosterPicker({
         footer={
           <div className="flex items-center gap-3">
             <span className="text-sm text-subtext1" aria-live="polite">
-              已選 {order.length} 人{!valid && `（需 ${MIN_PLAYERS}–${MAX_PLAYERS} 人）`}
+              已選 {order.length} 人
             </span>
             <Button variant="primary" className="flex-1" disabled={!valid} onClick={finish}>
               <IconCheck size={20} aria-hidden />
@@ -57,7 +60,7 @@ export function RosterPicker({
         }
       >
         <p className="mb-3 text-sm text-subtext0">
-          從第一位隊長位置開始順時針點選，再點一次可取消。
+          依座位順時針點選，從 1 號位開始填入；不必選滿，再點一次可取消。
         </p>
         <ul className="grid grid-cols-2 gap-2" aria-label="玩家名冊">
           {roster.map((name) => {
