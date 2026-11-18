@@ -4,8 +4,7 @@ import {
   type NamingTemplate,
   type ViewMode,
 } from '@avalon/record-core'
-import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme'
-import type { StoreSpec } from '@avalon/storage'
+import { readStore, storageKey, writeStore, type StoreSpec } from '@avalon/storage'
 import { normalizeRoster } from './roster.ts'
 
 export type Detail = 'simple' | 'detailed'
@@ -19,8 +18,8 @@ export interface DisplayOptions {
   ladyLayout: 'compact' | 'separate'
 }
 
+/** Record's own settings. The theme is global (`avalon:global:theme`), not part of these. */
 export interface Settings {
-  theme: ThemeSettings
   /** Input mode for a game's first proposal; follows the mode last used to record. */
   defaultInputMode: InputMode
   /** Fill the forced (5th) proposal with all-approve votes and skip vote entry. */
@@ -37,7 +36,6 @@ export interface Settings {
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: DEFAULT_THEME,
   defaultInputMode: 'approvals',
   forcedAutoApprove: true,
   roster: [],
@@ -82,7 +80,6 @@ export function normalizeSettings(value: unknown): Settings {
   const v = (typeof value === 'object' && value !== null ? value : {}) as Record<string, unknown>
   const d = DEFAULT_SETTINGS
   return {
-    theme: normalizeTheme(v.theme),
     defaultInputMode: pick(v.defaultInputMode, ['approvals', 'anomalies'], d.defaultInputMode),
     // `forcedAutoReject` is the old name of this switch; keep the user's on/off choice.
     forcedAutoApprove: bool(v.forcedAutoApprove, bool(v.forcedAutoReject, d.forcedAutoApprove)),
@@ -94,9 +91,31 @@ export function normalizeSettings(value: unknown): Settings {
   }
 }
 
-export const SETTINGS_STORE: StoreSpec<Settings> = {
-  name: 'settings',
-  version: 1,
-  parse: normalizeSettings,
-  fallback: () => DEFAULT_SETTINGS,
+/** The app id doubles as the storage scope: `avalon:record:<field>`. */
+export const APP_ID = 'record'
+
+export type SettingField = keyof Settings
+export const SETTING_FIELDS = Object.keys(DEFAULT_SETTINGS) as SettingField[]
+
+/** One localStorage entry per setting, e.g. `avalon:record:defaultInputMode`. */
+export function settingStore<K extends SettingField>(field: K): StoreSpec<Settings[K]> {
+  return {
+    key: storageKey(APP_ID, field),
+    version: 1,
+    parse: (value) => normalizeSettings({ [field]: value })[field],
+    fallback: () => DEFAULT_SETTINGS[field],
+  }
+}
+
+export function readSettings(): Settings {
+  return Object.fromEntries(
+    SETTING_FIELDS.map((f) => [f, readStore(settingStore(f))]),
+  ) as unknown as Settings
+}
+
+/** Writes the fields that differ from `prev` (all of them without `prev`). */
+export function writeSettings(next: Settings, prev?: Settings): void {
+  for (const f of SETTING_FIELDS) {
+    if (!prev || next[f] !== prev[f]) writeStore(settingStore(f), next[f])
+  }
 }

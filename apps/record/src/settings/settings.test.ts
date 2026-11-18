@@ -1,18 +1,34 @@
-import { DEFAULT_THEME } from '@avalon/theme'
 import { describe, expect, it } from 'vitest'
-import { STORAGE_NAMESPACE } from '@avalon/storage'
-import { DEFAULT_SETTINGS, normalizeSettings, SETTINGS_STORE } from './settings.ts'
+import {
+  DEFAULT_SETTINGS,
+  normalizeSettings,
+  readSettings,
+  settingStore,
+  writeSettings,
+} from './settings.ts'
 
 describe('settings', () => {
-  it('normalizes missing fields to defaults', () => {
+  it('normalizes missing fields to defaults (the theme is not a record setting)', () => {
     expect(normalizeSettings(undefined)).toEqual(DEFAULT_SETTINGS)
-    expect(normalizeSettings({ theme: { accent: 'blue' } }).theme).toEqual({
-      ...DEFAULT_THEME,
-      accent: 'blue',
-    })
+    expect(normalizeSettings({ theme: { accent: 'blue' } })).toEqual(DEFAULT_SETTINGS)
   })
-  it('matches the key used by the anti-FOUC bootstrap script', () => {
-    expect(`${STORAGE_NAMESPACE}:${SETTINGS_STORE.name}`).toBe('avalon-recorder:settings')
+
+  it('stores each setting under avalon:record:<field>', () => {
+    expect(settingStore('defaultInputMode').key).toBe('avalon:record:defaultInputMode')
+    writeSettings({ ...DEFAULT_SETTINGS, viewMode: 'anomaly', roster: ['阿明'] })
+    expect(JSON.parse(localStorage.getItem('avalon:record:viewMode')!)).toEqual({
+      version: 1,
+      data: 'anomaly',
+    })
+    expect(readSettings()).toEqual({ ...DEFAULT_SETTINGS, viewMode: 'anomaly', roster: ['阿明'] })
+    expect(Object.keys(localStorage).filter((k) => !k.startsWith('avalon:record:'))).toEqual([])
+  })
+
+  it('only rewrites changed fields', () => {
+    writeSettings(DEFAULT_SETTINGS)
+    localStorage.removeItem('avalon:record:naming')
+    writeSettings({ ...DEFAULT_SETTINGS, viewMode: 'anomaly' }, DEFAULT_SETTINGS)
+    expect(localStorage.getItem('avalon:record:naming')).toBeNull()
   })
 })
 

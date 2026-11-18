@@ -4,7 +4,7 @@
  */
 import { storageKey } from '@avalon/storage'
 
-const KEY = storageKey('session')
+const KEY = storageKey('record', 'session')
 
 export interface Session {
   /** Last route hash, e.g. `#/play/<id>`. */

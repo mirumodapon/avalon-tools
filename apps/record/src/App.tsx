@@ -1,3 +1,4 @@
+import { useApplyGlobalTheme } from '@avalon/ui'
 import { useGames } from './games/store.ts'
 import { SharedGamePage } from './share/SharedGamePage.tsx'
 import { useShareParam } from './share/useShareParam.ts'
@@ -9,12 +10,11 @@ import { SettingsPage } from './pages/SettingsPage.tsx'
 import { SetupPage } from './pages/SetupPage.tsx'
 import { SummaryPage } from './pages/SummaryPage.tsx'
 import { useRoute, type Route } from './router.ts'
-import { useApplyTheme } from './settings/useApplyTheme.ts'
 import { savedScroll } from './session/session.ts'
 import { useEffect, useRef } from 'react'
 
 export function App() {
-  useApplyTheme()
+  useApplyGlobalTheme()
   const route = useRoute()
   const ready = useGames((s) => s.ready)
   const storageError = useGames((s) => s.storageError)
