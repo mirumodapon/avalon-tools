@@ -4,12 +4,9 @@
 
 ## 自動化
 
-| 指令                     | 涵蓋                                                                                                                         |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm test`              | 規則、紀錄、儲存、主題、registry、`createPwaConfig`、SW 快取清理、1.x 資料搬移（fake-indexeddb）、舊網址轉址、1.9.1 備份匯入 |
-| `pnpm build && pnpm e2e` | 實際瀏覽器：四個 service worker 情境、1.9.1 使用者升級流程                                                                   |
+`pnpm test`：規則、紀錄、儲存、主題、registry、`createPwaConfig`、SW 快取清理、1.x 資料搬移（fake-indexeddb）、舊網址轉址、1.9.1 備份匯入。
 
-`pnpm e2e` 第一次執行前需要 `pnpm exec playwright install chromium`。
+service worker 與升級流程沒有自動化的瀏覽器測試，以下各節需手動確認。
 
 ## 升級（裝置上已有 1.9.1）
 
