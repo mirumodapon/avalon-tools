@@ -9,6 +9,8 @@ import { VitePWA } from 'vite-plugin-pwa'
 const DARK_BASE = flavors.macchiato.colors.base.hex
 
 export default defineConfig({
+  // Deployed under a sub-path on GitHub Pages project sites (set by the deploy workflow).
+  base: process.env.BASE_PATH || '/',
   // Pre-bundle every runtime dependency up front. Otherwise Vite discovers some of them
   // (e.g. react-dom used by portals, the lazily imported html-to-image) mid-session,
   // re-optimizes, and the open page fails to load stale chunks.
