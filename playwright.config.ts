@@ -7,6 +7,7 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: 'e2e',
   fullyParallel: false,
+  forbidOnly: !!process.env.CI,
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:4317',
