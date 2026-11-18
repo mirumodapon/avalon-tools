@@ -84,7 +84,11 @@ describe('PlayPage roles', () => {
     useGames.setState({ games: [playedGame()] })
     render(<PlayPage id="g" />)
     fireEvent.click(screen.getByRole('radio', { name: '歷史表格' }))
-    expect(screen.getByRole('table').textContent).not.toMatch(ROLE_WORDS)
+    const tables = screen
+      .getAllByRole('table')
+      .map((t) => t.textContent)
+      .join('')
+    expect(tables).not.toMatch(ROLE_WORDS)
     fireEvent.click(screen.getByRole('button', { name: '遊戲設定' }))
     const dialog = screen.getByRole('dialog')
     expect(dialog.textContent).not.toMatch(/梅林|莫甘娜/)

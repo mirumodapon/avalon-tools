@@ -6,6 +6,7 @@ import { Page } from '../components/Layout.tsx'
 import { ProgressOverview } from '../components/ProgressOverview.tsx'
 import { BottomBar, Button, IconButton, Segmented } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
+import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { AssassinationForm } from '../play/AssassinationForm.tsx'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
@@ -15,7 +16,6 @@ import { useDisplayName } from '../naming/useDisplayName.ts'
 import { LadyForm } from '../lady/LadyForm.tsx'
 import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
-import { ShowRolesButton } from '../roles/ShowRolesToggle.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
 import { NotFoundPage } from './NotFoundPage.tsx'
@@ -92,8 +92,9 @@ export function PlayPage({ id }: { id: string }) {
       {tab === 'history' ? (
         <div className="pt-2">
           <div className="mb-3 flex gap-2">
-            <ViewModeToggle className="flex-1" />
-            <ShowRolesButton checked={showRoles} onChange={setShowRoles} />
+            <ViewModeToggle className="w-28" />
+            <span className="flex-1" />
+            <DisplaySettingsButton showRoles={showRoles} onShowRoles={setShowRoles} />
           </div>
           <HistoryTable
             game={game}
