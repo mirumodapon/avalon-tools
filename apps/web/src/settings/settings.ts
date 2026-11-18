@@ -1,4 +1,4 @@
-import type { InputMode, ViewMode } from '@avalon/core'
+import { DEFAULT_NAMING, type InputMode, type NamingTemplate, type ViewMode } from '@avalon/core'
 import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme'
 import type { StoreSpec } from '../storage/storage.ts'
 import { normalizeRoster } from './roster.ts'
@@ -11,6 +11,8 @@ export interface Settings {
   forcedAutoReject: boolean
   /** Saved player names for quick seat filling. */
   roster: string[]
+  /** Template for games without a custom name. */
+  naming: NamingTemplate
   /** How votes are displayed; the toggle on every history view updates this. */
   viewMode: ViewMode
   /** Show roles/factions when browsing history (in-progress games always start hidden). */
@@ -22,6 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   defaultInputMode: 'approvals',
   forcedAutoReject: true,
   roster: [],
+  naming: DEFAULT_NAMING,
   viewMode: 'full',
   showRoles: false,
 }
@@ -34,6 +37,17 @@ function bool(value: unknown, fallback: boolean): boolean {
   return typeof value === 'boolean' ? value : fallback
 }
 
+function normalizeNaming(value: unknown): NamingTemplate {
+  const v = (typeof value === 'object' && value !== null ? value : {}) as Record<string, unknown>
+  const template =
+    typeof v.template === 'string' && v.template.trim() ? v.template : DEFAULT_NAMING.template
+  const dateFormat =
+    typeof v.dateFormat === 'string' && v.dateFormat.trim()
+      ? v.dateFormat
+      : DEFAULT_NAMING.dateFormat
+  return { template, dateFormat }
+}
+
 /** Coerces stored settings, filling missing/invalid fields with defaults. */
 export function normalizeSettings(value: unknown): Settings {
   const v = (typeof value === 'object' && value !== null ? value : {}) as Record<string, unknown>
@@ -43,6 +57,7 @@ export function normalizeSettings(value: unknown): Settings {
     defaultInputMode: pick(v.defaultInputMode, ['approvals', 'anomalies'], d.defaultInputMode),
     forcedAutoReject: bool(v.forcedAutoReject, d.forcedAutoReject),
     roster: normalizeRoster(v.roster),
+    naming: normalizeNaming(v.naming),
     viewMode: pick(v.viewMode, ['full', 'anomaly'], d.viewMode),
     showRoles: bool(v.showRoles, d.showRoles),
   }
