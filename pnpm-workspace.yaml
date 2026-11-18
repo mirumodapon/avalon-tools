@@ -8,6 +8,8 @@ catalogMode: strict
 
 catalog:
   '@catppuccin/palette': '^1.8.0'
+  # Exact: each Playwright release pins its own browser build.
+  '@playwright/test': 1.55.0
   '@tabler/icons-react': '^3.52.0'
   '@tailwindcss/vite': '^4.3.5'
   '@testing-library/react': '^16.3.3'

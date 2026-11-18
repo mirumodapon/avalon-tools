@@ -12,9 +12,11 @@
     "typecheck": "pnpm -r run typecheck",
     "test": "vitest run",
     "icons": "node packages/pwa/scripts/icons.ts",
-    "new:app": "node scripts/new-app.ts"
+    "new:app": "node scripts/new-app.ts",
+    "e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "catalog:",
     "@types/node": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
