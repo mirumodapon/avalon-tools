@@ -1,11 +1,10 @@
 import { ACCENT_NAMES, THEME_MODE_LABELS, THEME_MODES } from '@avalon/theme'
 import { IconCheck } from '@tabler/icons-react'
-import { useSettings } from '../settings/store.ts'
-import { Segmented } from '@avalon/ui'
+import { useGlobalTheme } from './globalTheme.ts'
+import { Segmented } from './ui.tsx'
 
 export function ThemePicker() {
-  const theme = useSettings((s) => s.settings.theme)
-  const updateTheme = useSettings((s) => s.updateTheme)
+  const [theme, updateTheme] = useGlobalTheme()
 
   return (
     <div className="space-y-4">

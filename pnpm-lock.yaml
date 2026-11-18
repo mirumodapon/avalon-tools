@@ -254,6 +254,12 @@ importers:
 
   packages/ui:
     dependencies:
+      '@avalon/storage':
+        specifier: workspace:*
+        version: link:../storage
+      '@avalon/theme':
+        specifier: workspace:*
+        version: link:../theme
       '@tabler/icons-react':
         specifier: 'catalog:'
         version: 3.52.0(react@19.3.1)

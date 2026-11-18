@@ -11,6 +11,8 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@avalon/storage": "workspace:*",
+    "@avalon/theme": "workspace:*",
     "@tabler/icons-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"
