@@ -9,7 +9,7 @@ import {
   type PlayerId,
   type Votes,
 } from '@avalon/core'
-import { IconArrowLeft, IconArrowRight, IconNote, IconSend } from '@tabler/icons-react'
+import { IconArrowLeft, IconArrowRight, IconSend } from '@tabler/icons-react'
 import { useState, type ReactNode } from 'react'
 import { AnomalyMark, CrownMark, ForcedBadge, TeamMark, VoteMark } from '../components/marks.tsx'
 import { BottomBar, Button, Card, cx, Segmented, SectionTitle } from '../components/ui.tsx'
@@ -36,7 +36,6 @@ export interface ProposalInput {
   votes: Votes
   inputMode: InputMode
   leaderId: PlayerId
-  note: string
 }
 
 export function ProposalForm({
@@ -54,8 +53,6 @@ export function ProposalForm({
   const [step, setStep] = useState<Step>('team')
   const [leaderId, setLeaderId] = useState(state.leaderId)
   const [pickingLeader, setPickingLeader] = useState(false)
-  const [note, setNote] = useState('')
-  const [showNote, setShowNote] = useState(false)
 
   const autoReject = state.forced && settings.forcedAutoReject
   const teamFull = draft.team.length === state.teamSize
@@ -64,7 +61,7 @@ export function ProposalForm({
   const passes = state.forced || isMajority(approvals, ids.length)
 
   function submit() {
-    onSubmit({ team: draft.team, votes, inputMode: draft.mode, leaderId, note: note.trim() })
+    onSubmit({ team: draft.team, votes, inputMode: draft.mode, leaderId })
   }
 
   const leaderName = game.players.find((p) => p.id === leaderId)?.name
@@ -246,29 +243,6 @@ export function ProposalForm({
               </div>
             </>
           )}
-
-          <div className="mt-3">
-            {showNote ? (
-              <label className="block">
-                <span className="mb-1 block text-sm text-subtext0">這次派票的備註</span>
-                <input
-                  className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3 focus:border-accent focus:outline-none"
-                  value={note}
-                  maxLength={200}
-                  onChange={(e) => setNote(e.target.value)}
-                />
-              </label>
-            ) : (
-              <Button
-                variant="ghost"
-                className="min-h-9 px-2 text-sm"
-                onClick={() => setShowNote(true)}
-              >
-                <IconNote size={16} aria-hidden />
-                加備註
-              </Button>
-            )}
-          </div>
         </section>
       )}
 

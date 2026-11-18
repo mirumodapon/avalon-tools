@@ -241,17 +241,9 @@ describe('undo', () => {
 })
 
 describe('notes and meta', () => {
-  it('sets proposal and quest notes', () => {
+  it('sets the game note and name', () => {
     let g = quest(newGame(5), 1)
-    g = run(
-      g,
-      { type: 'setProposalNote', questIndex: 0, proposalIndex: 0, note: '帶風向' },
-      { type: 'setQuestNote', questIndex: 0, note: '一張失敗' },
-      { type: 'setNote', note: '在咖啡廳' },
-      { type: 'rename', custom: '  ' },
-    )
-    expect(g.rounds[0]!.proposals[0]!.note).toBe('帶風向')
-    expect(g.rounds[0]!.result!.note).toBe('一張失敗')
+    g = run(g, { type: 'setNote', note: '在咖啡廳' }, { type: 'rename', custom: '  ' })
     expect(g.note).toBe('在咖啡廳')
     expect(g.name.custom).toBeNull()
   })

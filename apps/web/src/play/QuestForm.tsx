@@ -1,5 +1,5 @@
 import { playerName, questSucceeded, type Game, type GameState } from '@avalon/core'
-import { IconCircleCheckFilled, IconCircleXFilled, IconNote, IconSend } from '@tabler/icons-react'
+import { IconCircleCheckFilled, IconCircleXFilled, IconSend } from '@tabler/icons-react'
 import { useState } from 'react'
 import { ForcedBadge, TeamMark } from '../components/marks.tsx'
 import { BottomBar, Button, Card, cx, SectionTitle } from '../components/ui.tsx'
@@ -11,11 +11,9 @@ export function QuestForm({
 }: {
   game: Game
   state: GameState
-  onSubmit: (input: { failCount: number; note: string }) => void
+  onSubmit: (input: { failCount: number }) => void
 }) {
   const [failCount, setFailCount] = useState<number | null>(null)
-  const [note, setNote] = useState('')
-  const [showNote, setShowNote] = useState(false)
   const proposal = game.rounds[state.questIndex]?.proposals.at(-1)
   const success =
     failCount !== null && questSucceeded(game.players.length, state.questIndex, failCount)
@@ -62,29 +60,6 @@ export function QuestForm({
         ))}
       </div>
 
-      <div className="mt-3">
-        {showNote ? (
-          <label className="block">
-            <span className="mb-1 block text-sm text-subtext0">這個任務的備註</span>
-            <input
-              className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3 focus:border-accent focus:outline-none"
-              value={note}
-              maxLength={200}
-              onChange={(e) => setNote(e.target.value)}
-            />
-          </label>
-        ) : (
-          <Button
-            variant="ghost"
-            className="min-h-9 px-2 text-sm"
-            onClick={() => setShowNote(true)}
-          >
-            <IconNote size={16} aria-hidden />
-            加備註
-          </Button>
-        )}
-      </div>
-
       <div className="flex-1" />
       <BottomBar>
         {failCount !== null && (
@@ -107,7 +82,7 @@ export function QuestForm({
           variant="primary"
           className="w-full"
           disabled={failCount === null}
-          onClick={() => failCount !== null && onSubmit({ failCount, note: note.trim() })}
+          onClick={() => failCount !== null && onSubmit({ failCount })}
         >
           <IconSend size={20} aria-hidden />
           送出任務結果
