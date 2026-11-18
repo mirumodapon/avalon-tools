@@ -115,3 +115,18 @@ describe('PlayPage game settings', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('週五團')
   })
 })
+
+describe('HistoryTable role legend', () => {
+  it('lists the icons of roles in the game only when roles are shown', () => {
+    const { unmount } = render(<HistoryTable game={playedGame()} viewMode="full" />)
+    expect(screen.queryByRole('list', { name: '角色圖例' })).toBeNull()
+    unmount()
+    render(<HistoryTable game={playedGame()} viewMode="full" showRoles />)
+    const legend = screen.getByRole('list', { name: '角色圖例' })
+    expect(
+      within(legend)
+        .getAllByRole('listitem')
+        .map((li) => li.textContent?.trim()),
+    ).toEqual(['梅林', '派西維爾', '亞瑟的忠臣', '莫甘娜', '刺客', '隊伍含壞人'])
+  })
+})
