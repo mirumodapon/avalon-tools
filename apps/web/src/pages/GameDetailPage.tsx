@@ -1,5 +1,11 @@
 import { deriveState, type GameAction } from '@avalon/core'
-import { IconChecklist, IconCopy, IconPencil, IconPlayerPlay } from '@tabler/icons-react'
+import {
+  IconChecklist,
+  IconCopy,
+  IconFileExport,
+  IconPencil,
+  IconPlayerPlay,
+} from '@tabler/icons-react'
 import { useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
@@ -9,6 +15,7 @@ import { Button, Card, IconButton, SectionTitle } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
 import { GlobalDisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { ShareButton } from '../share/ShareButton.tsx'
+import { ExportSheet } from '../export/ExportSheet.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
@@ -25,6 +32,7 @@ export function GameDetailPage({ id }: { id: string }) {
   const showRoles = useSettings((s) => s.settings.showRoles)
   const title = useDisplayName(game)
   const [editOpen, setEditOpen] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
   const [error, setError] = useState<string | null>(null)
   if (!game) return <NotFoundPage message="找不到這場遊戲" />
   const s = deriveState(game)
@@ -106,8 +114,13 @@ export function GameDetailPage({ id }: { id: string }) {
           <IconCopy size={20} aria-hidden />
           複製為新局
         </Button>
+        <Button className="w-full" onClick={() => setExportOpen(true)}>
+          <IconFileExport size={20} aria-hidden />
+          匯出這場
+        </Button>
       </div>
 
+      <ExportSheet game={game} open={exportOpen} onClose={() => setExportOpen(false)} />
       <GameSettingsSheet
         game={game}
         open={editOpen}
