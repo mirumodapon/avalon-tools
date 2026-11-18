@@ -3,12 +3,11 @@ import type { AccentName, ColorName, FlavorName } from '@catppuccin/palette'
 
 export type { AccentName, ColorName, FlavorName }
 
-export const FLAVOR_NAMES = [
-  'latte',
-  'frappe',
-  'macchiato',
-  'mocha',
-] as const satisfies readonly FlavorName[]
+/** Light and dark flavors used by the app. */
+export const LIGHT_FLAVOR = 'latte' satisfies FlavorName
+export const DARK_FLAVOR = 'macchiato' satisfies FlavorName
+export const FLAVOR_NAMES = [LIGHT_FLAVOR, DARK_FLAVOR] as const
+export type AppFlavor = (typeof FLAVOR_NAMES)[number]
 
 export const ACCENT_NAMES = [
   'rosewater',
@@ -43,13 +42,6 @@ export const MONOCHROMATIC_NAMES = [
 ] as const
 
 export const COLOR_NAMES: readonly ColorName[] = [...ACCENT_NAMES, ...MONOCHROMATIC_NAMES]
-
-export const FLAVOR_LABELS: Record<FlavorName, string> = {
-  latte: 'Latte',
-  frappe: 'Frappé',
-  macchiato: 'Macchiato',
-  mocha: 'Mocha',
-}
 
 export function hexOf(flavor: FlavorName, color: ColorName): string {
   return flavors[flavor].colors[color].hex

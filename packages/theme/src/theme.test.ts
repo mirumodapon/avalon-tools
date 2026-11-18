@@ -52,26 +52,29 @@ describe('generateThemeCss', () => {
 })
 
 describe('theme settings', () => {
-  it('resolves system flavor to Latte (light) or Macchiato (dark)', () => {
+  it('resolves modes to Latte (light) or Macchiato (dark)', () => {
     expect(resolveFlavor(DEFAULT_THEME, true)).toBe('macchiato')
     expect(resolveFlavor(DEFAULT_THEME, false)).toBe('latte')
-    expect(resolveFlavor({ ...DEFAULT_THEME, flavor: 'mocha' }, false)).toBe('mocha')
+    expect(resolveFlavor({ ...DEFAULT_THEME, mode: 'dark' }, false)).toBe('macchiato')
+    expect(resolveFlavor({ ...DEFAULT_THEME, mode: 'light' }, true)).toBe('latte')
   })
-  it('drops the legacy darkFlavor field', () => {
-    expect(normalizeTheme({ flavor: 'system', darkFlavor: 'frappe', accent: 'teal' })).toEqual({
-      flavor: 'system',
+  it('migrates legacy flavor values', () => {
+    expect(normalizeTheme({ flavor: 'latte', accent: 'teal' })).toEqual({
+      mode: 'light',
       accent: 'teal',
     })
+    expect(normalizeTheme({ flavor: 'mocha' }).mode).toBe('dark')
+    expect(normalizeTheme({ flavor: 'system', darkFlavor: 'frappe' }).mode).toBe('system')
   })
   it('normalizes garbage to defaults', () => {
     expect(normalizeTheme(null)).toEqual(DEFAULT_THEME)
-    expect(normalizeTheme({ flavor: 'nope', accent: 'teal' })).toEqual({
+    expect(normalizeTheme({ mode: 'nope', accent: 'teal' })).toEqual({
       ...DEFAULT_THEME,
       accent: 'teal',
     })
   })
   it('uses the flavor base color for theme-color', () => {
-    expect(themeColorOf('mocha')).toBe(flavors.mocha.colors.base.hex)
+    expect(themeColorOf('macchiato')).toBe(flavors.macchiato.colors.base.hex)
   })
 })
 
@@ -99,18 +102,20 @@ describe('bootstrap script', () => {
     expect(meta.content).toBe(flavors.macchiato.colors.base.hex)
   })
   it('applies the stored theme', () => {
-    expect(run({ data: { theme: { flavor: 'frappe', accent: 'blue' } } }, false).attrs).toEqual({
-      'data-flavor': 'frappe',
+    expect(run({ data: { theme: { mode: 'light', accent: 'blue' } } }, true).attrs).toEqual({
+      'data-flavor': 'latte',
       'data-accent': 'blue',
     })
-    const { attrs } = run(
-      { version: 1, data: { theme: { flavor: 'system', darkFlavor: 'frappe', accent: 'teal' } } },
-      true,
+    expect(run({ data: { theme: { mode: 'dark', accent: 'teal' } } }, false).attrs).toEqual({
+      'data-flavor': 'macchiato',
+      'data-accent': 'teal',
+    })
+    expect(run({ data: { theme: { mode: 'system' } } }, false).attrs['data-flavor']).toBe('latte')
+  })
+  it('migrates legacy stored flavors', () => {
+    expect(run({ data: { theme: { flavor: 'latte' } } }, true).attrs['data-flavor']).toBe('latte')
+    expect(run({ data: { theme: { flavor: 'mocha' } } }, false).attrs['data-flavor']).toBe(
+      'macchiato',
     )
-    expect(attrs).toEqual({ 'data-flavor': 'macchiato', 'data-accent': 'teal' })
-    expect(
-      run({ data: { theme: { flavor: 'system', darkFlavor: 'frappe', accent: 'teal' } } }, false)
-        .attrs['data-flavor'],
-    ).toBe('latte')
   })
 })
