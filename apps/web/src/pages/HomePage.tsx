@@ -10,9 +10,11 @@ import {
   IconSun,
   IconTrash,
   IconUsers,
+  IconX,
 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Page, SettingsLink } from '../components/Layout.tsx'
+import { Select } from '../components/Select.tsx'
 import { ConfirmSheet, Sheet } from '../components/Sheet.tsx'
 import { BottomBar, Button, Card, cx, EmptyState, IconButton } from '../components/ui.tsx'
 import {
@@ -59,8 +61,6 @@ export function HomePage() {
   const filtering =
     filter !== EMPTY_FILTER && JSON.stringify(filter) !== JSON.stringify(EMPTY_FILTER)
 
-  const selectCls = 'min-h-11 min-w-0 flex-1 rounded-xl border border-overlay0 bg-base px-2 text-sm'
-
   return (
     <Page title="阿瓦隆紀錄" actions={<SettingsLink />}>
       <div className="flex-1 space-y-4 pt-2">
@@ -101,46 +101,47 @@ export function HomePage() {
 
         {ready && games.length > 0 && (
           <section aria-label="遊戲列表" className="space-y-3">
-            <label className="relative block">
+            <div className="relative">
               <IconSearch
                 size={18}
                 className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-overlay1"
                 aria-hidden
               />
               <input
-                type="search"
+                type="text"
+                inputMode="search"
+                enterKeyHint="search"
                 aria-label="搜尋名稱或備註"
                 placeholder="搜尋名稱或備註"
-                className="min-h-11 w-full rounded-xl border border-overlay0 bg-base pr-3 pl-9 focus:border-accent focus:outline-none"
+                className="min-h-11 w-full rounded-xl border border-overlay0 bg-base pr-11 pl-9 focus:border-accent focus:outline-none"
                 value={filter.query}
                 onChange={(e) => setFilter({ ...filter, query: e.target.value })}
               />
-            </label>
+              {filter.query && (
+                <IconButton
+                  label="清除搜尋"
+                  className="absolute top-0 right-0"
+                  onClick={() => setFilter({ ...filter, query: '' })}
+                >
+                  <IconX size={18} />
+                </IconButton>
+              )}
+            </div>
             <div className="flex gap-2">
-              <select
-                aria-label="依勝方篩選"
-                className={selectCls}
+              <Select
+                label="依勝方篩選"
                 value={filter.winner}
-                onChange={(e) => setFilter({ ...filter, winner: e.target.value as WinnerFilter })}
-              >
-                {WINNER_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-              <select
-                aria-label="依日期篩選"
-                className={selectCls}
+                options={WINNER_OPTIONS}
+                onChange={(winner) => setFilter({ ...filter, winner })}
+                className="flex-1 text-sm"
+              />
+              <Select
+                label="依日期篩選"
                 value={filter.date}
-                onChange={(e) => setFilter({ ...filter, date: e.target.value as DateFilter })}
-              >
-                {DATE_OPTIONS.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
+                options={DATE_OPTIONS}
+                onChange={(date) => setFilter({ ...filter, date })}
+                className="flex-1 text-sm"
+              />
             </div>
 
             {shown.length === 0 && (

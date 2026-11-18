@@ -11,7 +11,7 @@ afterEach(() => {
 })
 
 const seat = (i: number) =>
-  screen.getByRole<HTMLInputElement>('combobox', { name: `第 ${i} 位玩家名稱` }).value
+  screen.getByRole<HTMLInputElement>('textbox', { name: `第 ${i} 位玩家名稱` }).value
 
 describe('App', () => {
   it('renders the home page', () => {
@@ -25,8 +25,8 @@ describe('App', () => {
     })
     render(<App />)
     fireEvent.click(screen.getByRole('radio', { name: '7' }))
-    expect(screen.getAllByRole('combobox', { name: /玩家名稱/ })).toHaveLength(7)
-    fireEvent.change(screen.getByRole('combobox', { name: '第 1 位玩家名稱' }), {
+    expect(screen.getAllByRole('textbox', { name: /玩家名稱/ })).toHaveLength(7)
+    fireEvent.change(screen.getByRole('textbox', { name: '第 1 位玩家名稱' }), {
       target: { value: '阿明' },
     })
     fireEvent.click(screen.getAllByRole('button', { name: '設為第一位隊長' })[0]!)
@@ -58,7 +58,7 @@ describe('App', () => {
     expect([1, 2, 3, 4, 5].map(seat)).toEqual(['小美', '阿明', '小華', '大雄', '靜香'])
     expect(screen.getByRole('radio', { name: '5' })).toHaveProperty('checked', true)
 
-    fireEvent.change(screen.getByRole('combobox', { name: '第 5 位玩家名稱' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: '第 5 位玩家名稱' }), {
       target: { value: '新朋友' },
     })
     fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ }))

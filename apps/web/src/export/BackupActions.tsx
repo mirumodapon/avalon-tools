@@ -1,6 +1,7 @@
 import { gamesToJson, type Game } from '@avalon/core'
 import { IconDownload, IconFileExport, IconFileImport } from '@tabler/icons-react'
 import { useState } from 'react'
+import { SelectField } from '../components/Select.tsx'
 import { Button } from '../components/ui.tsx'
 import { useGames } from '../games/store.ts'
 import { useNamer } from '../naming/useDisplayName.ts'
@@ -28,24 +29,14 @@ export function BackupActions() {
   return (
     <div className="space-y-3">
       <div className="space-y-2">
-        <label className="block">
-          <span className="mb-1 block text-sm text-subtext0">
-            匯出單場（JSON、CSV、Markdown、文字、PNG）
-          </span>
-          <select
-            className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3"
-            disabled={games.length === 0}
-            value={selected?.id ?? ''}
-            onChange={(e) => setSelectedId(e.target.value)}
-          >
-            {games.length === 0 && <option value="">沒有遊戲</option>}
-            {games.map((g) => (
-              <option key={g.id} value={g.id}>
-                {nameOf(g)}
-              </option>
-            ))}
-          </select>
-        </label>
+        <SelectField
+          label="匯出單場（JSON、CSV、Markdown、文字、PNG）"
+          value={selected?.id ?? null}
+          disabled={games.length === 0}
+          placeholder="沒有遊戲"
+          options={games.map((g) => ({ value: g.id, label: nameOf(g) }))}
+          onChange={setSelectedId}
+        />
         <Button
           className="w-full"
           disabled={!selected}
