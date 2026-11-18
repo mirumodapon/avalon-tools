@@ -38,7 +38,6 @@ export default defineConfig({
       'react/jsx-runtime',
       'react/jsx-dev-runtime',
       '@tabler/icons-react',
-      '@catppuccin/palette',
       'workbox-window',
     ],
   },
