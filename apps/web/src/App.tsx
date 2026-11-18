@@ -1,4 +1,3 @@
-import { UpdatePrompt } from './components/UpdatePrompt.tsx'
 import { useGames } from './games/store.ts'
 import { SharedGamePage } from './share/SharedGamePage.tsx'
 import { useShareParam } from './share/useShareParam.ts'
@@ -43,7 +42,6 @@ export function App() {
       ) : (
         <p className="py-20 text-center text-subtext0">載入中…</p>
       )}
-      <UpdatePrompt />
     </>
   )
 }
