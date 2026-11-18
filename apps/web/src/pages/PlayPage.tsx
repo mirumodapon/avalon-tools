@@ -152,10 +152,10 @@ export function PlayPage({ id }: { id: string }) {
                 <Button
                   variant="primary"
                   className="w-full"
-                  onClick={() => navigate({ name: 'home' })}
+                  onClick={() => navigate({ name: 'summary', id })}
                 >
                   <IconChecklist size={20} aria-hidden />
-                  完成
+                  前往結算
                 </Button>
               </BottomBar>
             </div>

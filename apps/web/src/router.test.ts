@@ -6,6 +6,7 @@ describe('router', () => {
     ['', { name: 'home' }],
     ['#/', { name: 'home' }],
     ['#/new', { name: 'new' }],
+    ['#/new/abc', { name: 'new', from: 'abc' }],
     ['#/settings', { name: 'settings' }],
     ['#/play/abc', { name: 'play', id: 'abc' }],
     ['#/summary/a%20b', { name: 'summary', id: 'a b' }],

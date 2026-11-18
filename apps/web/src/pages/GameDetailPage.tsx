@@ -1,0 +1,128 @@
+import { deriveState, type GameAction } from '@avalon/core'
+import { IconChecklist, IconCopy, IconPencil, IconPlayerPlay } from '@tabler/icons-react'
+import { useState } from 'react'
+import { HistoryTable } from '../components/HistoryTable.tsx'
+import { Page } from '../components/Layout.tsx'
+import { ProgressOverview } from '../components/ProgressOverview.tsx'
+import { StatsPanel } from '../components/StatsPanel.tsx'
+import { Button, Card, IconButton, SectionTitle } from '../components/ui.tsx'
+import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
+import { useGame, useGames } from '../games/store.ts'
+import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
+import { useDisplayName } from '../naming/useDisplayName.ts'
+import { FinishedPanel } from '../play/FinishedPanel.tsx'
+import { GameSettingsSheet } from '../play/GameSettingsSheet.tsx'
+import { GlobalShowRolesButton } from '../roles/ShowRolesToggle.tsx'
+import { navigate } from '../router.ts'
+import { useSettings } from '../settings/store.ts'
+import { NotFoundPage } from './NotFoundPage.tsx'
+
+/** Read-mostly view of a game: history, stats, name/note and roles editing. */
+export function GameDetailPage({ id }: { id: string }) {
+  const game = useGame(id)
+  const dispatchGame = useGames((s) => s.dispatch)
+  const viewMode = useSettings((s) => s.settings.viewMode)
+  const showRoles = useSettings((s) => s.settings.showRoles)
+  const title = useDisplayName(game)
+  const [editOpen, setEditOpen] = useState(false)
+  const [editingLady, setEditingLady] = useState<number | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  if (!game) return <NotFoundPage message="找不到這場遊戲" />
+  const s = deriveState(game)
+
+  function dispatch(action: GameAction) {
+    try {
+      dispatchGame(id, action)
+      setError(null)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    }
+  }
+
+  return (
+    <Page
+      title={title}
+      back={{ name: 'home' }}
+      actions={
+        <IconButton label="編輯名稱、備註與角色" onClick={() => setEditOpen(true)}>
+          <IconPencil size={22} />
+        </IconButton>
+      }
+      header={<ProgressOverview game={game} />}
+    >
+      <div className="space-y-4 pt-2">
+        {error && (
+          <p role="alert" className="rounded-xl border border-fail p-3 text-sm text-fail-fg">
+            {error}
+          </p>
+        )}
+        {s.phase === 'finished' ? (
+          <FinishedPanel game={game}>
+            {game.savedAt === null && (
+              <Button
+                variant="primary"
+                className="mt-3"
+                onClick={() => navigate({ name: 'summary', id })}
+              >
+                <IconChecklist size={20} aria-hidden />
+                前往結算
+              </Button>
+            )}
+          </FinishedPanel>
+        ) : (
+          <Button
+            variant="primary"
+            className="w-full"
+            onClick={() => navigate({ name: 'play', id })}
+          >
+            <IconPlayerPlay size={20} aria-hidden />
+            繼續記錄
+          </Button>
+        )}
+
+        {game.note && (
+          <Card>
+            <SectionTitle>備註</SectionTitle>
+            <p className="text-sm whitespace-pre-wrap">{game.note}</p>
+          </Card>
+        )}
+
+        <section aria-label="歷史表格">
+          <div className="mb-3 flex gap-2">
+            <ViewModeToggle className="flex-1" />
+            <GlobalShowRolesButton />
+          </div>
+          <HistoryTable
+            game={game}
+            viewMode={viewMode}
+            showRoles={showRoles}
+            onEditLady={setEditingLady}
+          />
+        </section>
+
+        <Card>
+          <SectionTitle>賽後統計</SectionTitle>
+          <StatsPanel game={game} showRoles={showRoles} />
+        </Card>
+
+        <Button className="w-full" onClick={() => navigate({ name: 'new', from: id })}>
+          <IconCopy size={20} aria-hidden />
+          複製為新局
+        </Button>
+      </div>
+
+      <GameSettingsSheet
+        game={game}
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        dispatch={dispatch}
+      />
+      <LadyEditSheet
+        game={game}
+        index={editingLady}
+        onClose={() => setEditingLady(null)}
+        dispatch={dispatch}
+      />
+    </Page>
+  )
+}

@@ -49,25 +49,34 @@ import { mergeNames } from '../settings/roster.ts'
 import { useSettings } from '../settings/store.ts'
 import { emptySeats, nextEmptySeat, resizeSeats, tapRosterName } from '../setup/seats.ts'
 
-export function SetupPage() {
+/**
+ * New game setup. With `from`, players and role config are copied from that game
+ * (複製為新局); role assignments are never copied.
+ */
+export function SetupPage({ from }: { from?: string }) {
   const games = useGames((s) => s.games)
   const add = useGames((s) => s.add)
   const recent = games[0]
+  const source = from ? games.find((g) => g.id === from) : undefined
   const roster = useSettings((s) => s.settings.roster)
   const naming = useSettings((s) => s.settings.naming)
   const [startedAt] = useState(() => new Date())
   const updateSettings = useSettings((s) => s.update)
 
-  const [count, setCount] = useState<PlayerCount>(5)
-  const [names, setNames] = useState<string[]>(() => emptySeats(5))
+  const [count, setCount] = useState<PlayerCount>(
+    () => (source?.players.length as PlayerCount | undefined) ?? 5,
+  )
+  const [names, setNames] = useState<string[]>(
+    () => source?.players.map((p) => p.name) ?? emptySeats(5),
+  )
   /** Seat that the next tapped roster name goes into. */
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState(source ? -1 : 0)
   const [leader, setLeader] = useState(0)
   const [customName, setCustomName] = useState('')
-  const [roleConfig, setRoleConfig] = useState<RoleConfig | null>(null)
+  const [roleConfig, setRoleConfig] = useState<RoleConfig | null>(source?.roleConfig ?? null)
   const [assignment, setAssignment] = useState<RoleAssignment>({})
   const [showAssign, setShowAssign] = useState(false)
-  const [ladyOn, setLadyOn] = useState(ladyEnabledByDefault(5))
+  const [ladyOn, setLadyOn] = useState(source ? source.lady !== null : ladyEnabledByDefault(5))
   /** Manually chosen initial holder; null follows the default (right of first leader). */
   const [ladyHolder, setLadyHolder] = useState<PlayerId | null>(null)
 
@@ -133,6 +142,8 @@ export function SetupPage() {
     setNames(recent.players.map((p) => p.name))
     setRoleConfig(recent.roleConfig)
     setAssignment({})
+    setLadyOn(recent.lady !== null)
+    setLadyHolder(null)
     setActive(-1)
     setLeader(0)
   }
@@ -155,7 +166,11 @@ export function SetupPage() {
   }
 
   return (
-    <Page title="開新局" back={{ name: 'home' }} actions={<SettingsLink />}>
+    <Page
+      title={source ? '複製為新局' : '開新局'}
+      back={{ name: 'home' }}
+      actions={<SettingsLink />}
+    >
       <div className="space-y-4">
         <Card>
           <TextField
