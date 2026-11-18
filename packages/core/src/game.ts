@@ -445,6 +445,24 @@ export function gameReducer(
   return { ...next, updatedAt: now, ...(action.type === 'markSaved' ? { savedAt: now } : {}) }
 }
 
+export type LastStep =
+  | { kind: 'assassination' }
+  | { kind: 'lady'; questIndex: number }
+  | { kind: 'quest'; questIndex: number }
+  | { kind: 'proposal'; questIndex: number; attempt: number }
+
+/** What `undoLast` would remove, or null for a fresh game. */
+export function lastStep(game: Game): LastStep | null {
+  if (game.assassination) return { kind: 'assassination' }
+  const last = game.rounds.at(-1)
+  if (!last) return null
+  const q = game.rounds.length - 1
+  if (last.result && game.lady?.uses.some((u) => u.afterQuest === q))
+    return { kind: 'lady', questIndex: q }
+  if (last.result) return { kind: 'quest', questIndex: q }
+  return { kind: 'proposal', questIndex: q, attempt: last.proposals.length }
+}
+
 /** Removes the most recently recorded step (assassination → quest result → proposal). */
 export function undoLast(game: Game): Game {
   if (game.assassination) return { ...game, assassination: null }
