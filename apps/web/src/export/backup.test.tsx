@@ -27,7 +27,9 @@ describe('export/import placement', () => {
   it('offers single-game export only at the bottom of the game page', () => {
     useGames.setState({ games: [{ ...game('a', '週五團'), savedAt: '2026-11-18T11:00:00.000Z' }] })
     const { unmount } = render(<App />)
-    expect(screen.queryByRole('button', { name: /匯出|匯入/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /匯出|^匯入$/ })).toBeNull()
+    // the QR scanner is the one import entry point on the home page
+    expect(screen.getByRole('button', { name: '掃描 QR code 匯入' })).toBeTruthy()
     unmount()
     go('#/game/a')
     render(<App />)

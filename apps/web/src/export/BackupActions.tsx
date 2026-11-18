@@ -3,6 +3,7 @@ import { IconDownload, IconFileImport } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Button } from '../components/ui.tsx'
 import { useGames } from '../games/store.ts'
+import { ScanButton } from '../share/QrScanner.tsx'
 import { ImportSheet } from './ImportSheet.tsx'
 import { canShare, downloadBlob, shareFile } from './share.ts'
 
@@ -20,15 +21,16 @@ export function BackupActions() {
   }
 
   return (
-    <div className="flex gap-2">
-      <Button className="flex-1" disabled={games.length === 0} onClick={() => void exportAll()}>
+    <div className="grid grid-cols-2 gap-2">
+      <Button className="col-span-2" disabled={games.length === 0} onClick={() => void exportAll()}>
         <IconDownload size={20} aria-hidden />
         全部匯出
       </Button>
-      <Button className="flex-1" onClick={() => setImportOpen(true)}>
+      <Button onClick={() => setImportOpen(true)}>
         <IconFileImport size={20} aria-hidden />
         匯入
       </Button>
+      <ScanButton variant="full" />
       <ImportSheet open={importOpen} onClose={() => setImportOpen(false)} />
     </div>
   )
