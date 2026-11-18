@@ -241,13 +241,10 @@ export type GameAction =
       inputMode: InputMode
       /** Overrides the derived leader (e.g. to correct a mistake). */
       leaderId?: PlayerId
-      note?: string
     }
-  | { type: 'recordQuest'; failCount: number; note?: string }
+  | { type: 'recordQuest'; failCount: number }
   | { type: 'assassinate'; targetId: PlayerId | null; manualHit: boolean | null }
   | { type: 'undo' }
-  | { type: 'setProposalNote'; questIndex: number; proposalIndex: number; note: string }
-  | { type: 'setQuestNote'; questIndex: number; note: string }
   | { type: 'rename'; custom: string | null }
   | { type: 'setNote'; note: string }
   | { type: 'setRoleConfig'; roleConfig: RoleConfig | null }
@@ -302,7 +299,6 @@ function apply(game: Game, action: GameAction): Game {
         votes: Object.fromEntries(order.map((id) => [id, action.votes[id]!])),
         inputMode: action.inputMode,
         forced: s.forced,
-        note: action.note ?? '',
       }
       const rounds =
         s.attempt === 1
@@ -321,7 +317,7 @@ function apply(game: Game, action: GameAction): Game {
       }
       return updateRound(game, s.questIndex, (r) => ({
         ...r,
-        result: { failCount: action.failCount, note: action.note ?? '' },
+        result: { failCount: action.failCount },
       }))
     }
     case 'assassinate': {
@@ -336,21 +332,6 @@ function apply(game: Game, action: GameAction): Game {
     }
     case 'undo':
       return undoLast(game)
-    case 'setProposalNote':
-      return updateRound(game, action.questIndex, (r) => {
-        if (!r.proposals[action.proposalIndex]) throw new GameRuleError('找不到該次派票')
-        return {
-          ...r,
-          proposals: r.proposals.map((p, i) =>
-            i === action.proposalIndex ? { ...p, note: action.note } : p,
-          ),
-        }
-      })
-    case 'setQuestNote':
-      return updateRound(game, action.questIndex, (r) => {
-        if (!r.result) throw new GameRuleError('該任務尚無結果')
-        return { ...r, result: { ...r.result, note: action.note } }
-      })
     case 'rename': {
       const custom = action.custom?.trim()
       return { ...game, name: { ...game.name, custom: custom ? custom : null } }

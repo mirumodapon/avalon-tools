@@ -38,12 +38,10 @@ export interface Proposal {
   inputMode: InputMode
   /** The 5th proposal of a quest goes on the quest regardless of votes. */
   forced: boolean
-  note: string
 }
 
 export interface QuestResult {
   failCount: number
-  note: string
 }
 
 /** One quest: up to 5 proposals and (once approved) its result. */
