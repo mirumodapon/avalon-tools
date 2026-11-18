@@ -41,6 +41,15 @@ pnpm --filter @avalon/theme generate   # 由 @catppuccin/palette 重新產生 fl
 pnpm --filter @avalon/web icons        # 重新產生 PWA 圖示（Tabler crown + Catppuccin）
 ```
 
+## 部署（GitHub Pages）
+
+`.github/workflows/deploy.yml` 在推送到 `main`（或手動執行）時，執行 lint、format:check、typecheck、test，再建置並部署 `apps/web/dist`。
+
+1. 在 GitHub 專案的 **Settings → Pages → Build and deployment** 將 Source 設為 **GitHub Actions**。
+2. 推送到 `main`。
+
+base path 由 `actions/configure-pages` 自動提供：專案站台為 `/<repo>/`，自訂網域或使用者站台為 `/`。本機可用 `BASE_PATH=/repo/ pnpm build` 模擬。
+
 ## 專案結構
 
 ```
