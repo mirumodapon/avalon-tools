@@ -1,0 +1,81 @@
+# 部署
+
+`pnpm build` 會把所有 app 組成一個靜態網站放在 `dist/`：
+
+```
+dist/            阿瓦隆工具集（apps/home）
+dist/record/     遊戲紀錄（apps/record）
+dist/404.html    = 首頁的 index.html，顯示 404 頁面
+```
+
+`pnpm preview` 以和 GitHub Pages 相同的規則在本機提供 `dist/`。
+
+## 伺服器需要做到的事
+
+1. **資料夾導向結尾斜線**：`/record` → `/record/`（301）。
+2. **找不到的路徑回 `/404.html`**（狀態碼 404）。不需要 SPA rewrite：各工具都用 hash 路由。
+3. **`sw.js`、`workbox-*.js`、`sw-cleanup.js`、`*.webmanifest`、`*.html` 不可被長期快取**（`Cache-Control: no-cache`），否則更新不會生效。`assets/` 內的檔名含 hash，可長期快取。
+4. **1.x 的舊網址**（`/#/play/…`、`/?s=…`）由首頁在瀏覽器端轉到 `/record/`；hash 與查詢字串到不了伺服器，所以伺服器不用設定。
+
+## GitHub Pages（預設）
+
+`.github/workflows/deploy.yml` 在 push 到 `main` 時檢查、建置並上傳 `dist/`。Pages 已內建 1、2，`sw.js` 等檔案的快取時間為 10 分鐘，可接受。
+
+## Netlify（`dist/_redirects` 與 `dist/_headers`）
+
+```
+# _redirects
+/*  /404.html  404
+```
+
+```
+# _headers
+/sw.js
+  Cache-Control: no-cache
+/record/sw.js
+  Cache-Control: no-cache
+/*.webmanifest
+  Cache-Control: no-cache
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+```
+
+## Vercel（`vercel.json`）
+
+```json
+{
+  "outputDirectory": "dist",
+  "buildCommand": "pnpm build",
+  "trailingSlash": true,
+  "headers": [
+    {
+      "source": "/(.*)sw(-cleanup)?\\.js",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    },
+    {
+      "source": "/(.*)\\.webmanifest",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    }
+  ]
+}
+```
+
+Vercel 找不到檔案時會自動使用 `404.html`。
+
+## nginx
+
+```nginx
+server {
+  root /srv/avalon/dist;
+
+  location / {
+    try_files $uri $uri/ =404;   # $uri/ 會自動 301 到結尾斜線
+  }
+  error_page 404 /404.html;
+
+  location ~ (sw|sw-cleanup|workbox-[^/]*)\.js$ { add_header Cache-Control "no-cache"; }
+  location ~ \.(webmanifest|html)$            { add_header Cache-Control "no-cache"; }
+  location /assets/  { add_header Cache-Control "public, max-age=31536000, immutable"; }
+  location ~ ^/[^/]+/assets/ { add_header Cache-Control "public, max-age=31536000, immutable"; }
+}
+```

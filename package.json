@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @avalon/record dev",
-    "build": "pnpm -r run build",
+    "dev": "node scripts/dev.ts",
+    "build": "node scripts/build-all.ts",
+    "preview": "node scripts/preview.ts",
     "lint": "oxlint && node scripts/check-catalog.ts && node scripts/check-boundaries.ts",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
