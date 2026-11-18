@@ -133,22 +133,33 @@ describe('Markdown', () => {
 })
 
 describe('plain text', () => {
-  it('summarises quests briefly', () => {
+  it('records every proposal with full votes', () => {
     const t = gameToText(sample(), opts())
     expect(t).toContain('【2026-11-18 第3場】')
-    expect(t).toContain('任務1（2人，第2次）❌1敗：阿明、小華（5票通過）')
+    expect(t).toContain('玩家：1.阿明 2.小華 3.小美 4.大雄 5.靜香 6.胖虎 7.小夫')
+    expect(t).toContain(
+      [
+        '任務1・2人',
+        '1. 👑阿明｜隊員：阿明、小華｜否決',
+        '   贊成 2：阿明、大雄｜反對 5：小華、小美、靜香、胖虎、小夫',
+        '2. 👑小華｜隊員：阿明、小華｜通過',
+        '   贊成 5：阿明、小華、大雄、靜香、胖虎｜反對 2：小美、小夫',
+        '→ ❌任務失敗・失敗票 1 張',
+      ].join('\n'),
+    )
+    expect(t).toContain('→ ✅任務成功・失敗票 0 張\n🌊湖中女神：小夫 → 小華：宣告好人')
     expect(t).not.toMatch(ROLE_WORDS)
   })
 
-  it('lists anomalies in anomaly view', () => {
-    expect(gameToText(sample(), opts({ viewMode: 'anomaly' }))).toContain(
-      '（場外白 大雄、靜香、胖虎）',
-    )
+  it('lists only anomalies in anomaly view', () => {
+    const t = gameToText(sample(), opts({ viewMode: 'anomaly' }))
+    expect(t).toContain('1. 👑阿明｜隊員：阿明、小華｜否決\n   場外白：大雄｜場內黑：小華')
+    expect(t).toContain('   場外白：大雄、靜香、胖虎')
   })
 
   it('adds roles when included', () => {
-    expect(gameToText(sample(), opts({ includeRoles: true }))).toContain(
-      '角色：阿明(🧙梅林)、小華(🎭莫甘娜)、小美(🗡️刺客)',
-    )
+    const t = gameToText(sample(), opts({ includeRoles: true }))
+    expect(t).toContain('角色：阿明(🧙梅林)、小華(🎭莫甘娜)、小美(🗡️刺客)')
+    expect(t).toContain('宣告好人（實際壞人，說謊）')
   })
 })
