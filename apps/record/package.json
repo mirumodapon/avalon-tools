@@ -1,5 +1,5 @@
 {
-  "name": "@avalon/web",
+  "name": "@avalon/record",
   "version": "1.9.1",
   "private": true,
   "type": "module",
@@ -11,7 +11,7 @@
     "icons": "node scripts/icon.ts && pwa-assets-generator"
   },
   "dependencies": {
-    "@avalon/core": "workspace:*",
+    "@avalon/record-core": "workspace:*",
     "@avalon/theme": "workspace:*",
     "@tabler/icons-react": "catalog:",
     "dexie": "catalog:",

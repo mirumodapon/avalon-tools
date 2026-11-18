@@ -7,7 +7,7 @@ import {
   type RoleAssignment,
   type RoleConfig,
   type RoleId,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { IconChevronDown, IconQuestionMark } from '@tabler/icons-react'
 import { useState } from 'react'
 import { cx } from '../components/ui.tsx'

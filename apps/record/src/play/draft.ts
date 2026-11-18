@@ -7,7 +7,7 @@ import {
   type InputMode,
   type PlayerId,
   type Votes,
-} from '@avalon/core'
+} from '@avalon/record-core'
 
 /**
  * Proposal being entered. `flags` are the players marked in the current input mode:

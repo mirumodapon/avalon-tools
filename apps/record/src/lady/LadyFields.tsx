@@ -1,4 +1,9 @@
-import { ladyTargetOptions, type Game, type LadyDeclaration, type PlayerId } from '@avalon/core'
+import {
+  ladyTargetOptions,
+  type Game,
+  type LadyDeclaration,
+  type PlayerId,
+} from '@avalon/record-core'
 import { cx, Segmented } from '../components/ui.tsx'
 import { SeatNo } from '../play/ProposalForm.tsx'
 

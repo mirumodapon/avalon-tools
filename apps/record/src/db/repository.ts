@@ -1,4 +1,4 @@
-import type { Game } from '@avalon/core'
+import type { Game } from '@avalon/record-core'
 
 export type ConflictChoice = 'overwrite' | 'copy'
 

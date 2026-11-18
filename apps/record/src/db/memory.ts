@@ -1,4 +1,4 @@
-import type { Game } from '@avalon/core'
+import type { Game } from '@avalon/record-core'
 import type { GameRepository, ImportItem, ImportSummary, LoadResult } from './repository.ts'
 
 /** In-memory repository for tests. Mirrors the atomic import semantics. */

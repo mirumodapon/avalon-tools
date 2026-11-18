@@ -1,4 +1,4 @@
-import { deriveState, dateKey, formatTime, type Game } from '@avalon/core'
+import { deriveState, dateKey, formatTime, type Game } from '@avalon/record-core'
 import { IconDownload, IconLinkOff, IconX } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'

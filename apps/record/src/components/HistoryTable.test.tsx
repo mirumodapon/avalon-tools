@@ -6,7 +6,7 @@ import {
   votesFromAnomalies,
   votesFromApprovals,
   type Game,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { HistoryTable } from './HistoryTable.tsx'

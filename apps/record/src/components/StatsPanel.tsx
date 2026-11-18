@@ -5,7 +5,7 @@ import {
   type Faction,
   type Game,
   type PlayerStats,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { LadyIcon } from '../lady/marks.tsx'
 import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
 

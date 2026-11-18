@@ -4,7 +4,7 @@ import {
   type GameState,
   type LadyDeclaration,
   type PlayerId,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { IconSend } from '@tabler/icons-react'
 import { BottomBar, Button } from '../components/ui.tsx'
 import { usePersistentState } from '../session/usePersistentState.ts'

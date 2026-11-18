@@ -16,7 +16,7 @@ import {
   type PlayerId,
   type RoleAssignment,
   type RoleConfig,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import {
   IconArrowDown,
   IconArrowUp,

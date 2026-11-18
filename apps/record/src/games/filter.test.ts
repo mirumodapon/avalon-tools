@@ -5,7 +5,7 @@ import {
   makePlayers,
   uniformVotes,
   type Game,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { describe, expect, it } from 'vitest'
 import { filterGames } from './filter.ts'
 

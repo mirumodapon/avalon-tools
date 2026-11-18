@@ -1,4 +1,4 @@
-import { createGame, defaultPlayerNames, gamesToJson, makePlayers } from '@avalon/core'
+import { createGame, defaultPlayerNames, gamesToJson, makePlayers } from '@avalon/record-core'
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MemoryGameRepository } from '../db/memory.ts'

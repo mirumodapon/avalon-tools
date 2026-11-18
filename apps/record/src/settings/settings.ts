@@ -1,4 +1,9 @@
-import { DEFAULT_NAMING, type InputMode, type NamingTemplate, type ViewMode } from '@avalon/core'
+import {
+  DEFAULT_NAMING,
+  type InputMode,
+  type NamingTemplate,
+  type ViewMode,
+} from '@avalon/record-core'
 import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme'
 import type { StoreSpec } from '../storage/storage.ts'
 import { normalizeRoster } from './roster.ts'

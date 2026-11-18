@@ -1,4 +1,4 @@
-import { dateKey, deriveState, type Game } from '@avalon/core'
+import { dateKey, deriveState, type Game } from '@avalon/record-core'
 
 export type WinnerFilter = 'all' | 'good' | 'evil' | 'unfinished'
 export type DateFilter = 'all' | 'today' | '7d' | '30d'

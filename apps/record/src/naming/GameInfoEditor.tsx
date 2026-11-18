@@ -1,4 +1,4 @@
-import type { Game, GameAction } from '@avalon/core'
+import type { Game, GameAction } from '@avalon/record-core'
 import { useState } from 'react'
 import { TextField } from '../components/ui.tsx'
 import { useDisplayName } from './useDisplayName.ts'

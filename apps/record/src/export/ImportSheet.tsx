@@ -1,4 +1,4 @@
-import { parseGamesJson, type Game } from '@avalon/core'
+import { parseGamesJson, type Game } from '@avalon/record-core'
 import { IconClipboardText, IconFile, IconFileImport } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
 import { Sheet } from '../components/Sheet.tsx'

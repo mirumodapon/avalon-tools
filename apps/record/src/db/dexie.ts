@@ -1,4 +1,4 @@
-import { dateKey, deriveState, parseGame, type Game } from '@avalon/core'
+import { dateKey, deriveState, parseGame, type Game } from '@avalon/record-core'
 import { Dexie, type Table } from 'dexie'
 import type { GameRepository, ImportItem, ImportSummary, LoadResult } from './repository.ts'
 

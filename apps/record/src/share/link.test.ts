@@ -4,7 +4,7 @@ import {
   gameReducer,
   makePlayers,
   uniformVotes,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { describe, expect, it } from 'vitest'
 import { decodeGame, encodeGame } from './link.ts'
 

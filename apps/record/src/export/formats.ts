@@ -6,7 +6,7 @@ import {
   sanitizeFilename,
   type ExportOptions,
   type Game,
-} from '@avalon/core'
+} from '@avalon/record-core'
 
 export type ExportFormat = 'json' | 'csv' | 'markdown' | 'text' | 'png'
 

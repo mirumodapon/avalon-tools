@@ -1,4 +1,4 @@
-import { deriveState, playerName, type Game } from '@avalon/core'
+import { deriveState, playerName, type Game } from '@avalon/record-core'
 import { IconMoon, IconSun, IconTrophy } from '@tabler/icons-react'
 import type { ReactNode } from 'react'
 import { Card, cx } from '../components/ui.tsx'

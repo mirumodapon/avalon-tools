@@ -1,4 +1,4 @@
-import type { ViewMode } from '@avalon/core'
+import type { ViewMode } from '@avalon/record-core'
 import { IconFilter, IconTable } from '@tabler/icons-react'
 import { useSettings } from '../settings/store.ts'
 import { Segmented } from './ui.tsx'

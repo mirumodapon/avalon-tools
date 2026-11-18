@@ -1,4 +1,4 @@
-import { deriveState, displayName, type Game } from '@avalon/core'
+import { deriveState, displayName, type Game } from '@avalon/record-core'
 import { useSettings } from '../settings/store.ts'
 
 /** Live display name: custom name, else the current naming template. */

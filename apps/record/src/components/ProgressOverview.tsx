@@ -7,7 +7,7 @@ import {
   failsRequired,
   isLadyQuest,
   type Game,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { IconAlertTriangle, IconCheck, IconRipple, IconX } from '@tabler/icons-react'
 import { LadyIcon } from '../lady/marks.tsx'
 import { CrownMark } from './marks.tsx'

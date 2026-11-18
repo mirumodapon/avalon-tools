@@ -1,4 +1,4 @@
-import { packGame, unpackGame, type Game } from '@avalon/core'
+import { packGame, unpackGame, type Game } from '@avalon/record-core'
 
 /** Query parameter carrying a shared game. */
 export const SHARE_PARAM = 's'

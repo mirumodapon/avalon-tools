@@ -1,4 +1,4 @@
-import { playerName, questSucceeded, type Game, type GameState } from '@avalon/core'
+import { playerName, questSucceeded, type Game, type GameState } from '@avalon/record-core'
 import { IconCircleCheckFilled, IconCircleXFilled, IconSend } from '@tabler/icons-react'
 import { ForcedBadge, TeamMark } from '../components/marks.tsx'
 import { BottomBar, Button, Card, cx, SectionTitle } from '../components/ui.tsx'

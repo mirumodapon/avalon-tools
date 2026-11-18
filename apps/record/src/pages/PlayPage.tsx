@@ -1,4 +1,4 @@
-import { deriveState, canUndo, GameRuleError, type GameAction } from '@avalon/core'
+import { deriveState, canUndo, GameRuleError, type GameAction } from '@avalon/record-core'
 import {
   IconArrowBackUp,
   IconChecklist,

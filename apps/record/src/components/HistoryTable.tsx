@@ -16,7 +16,7 @@ import {
   type RoleId,
   type ViewMode,
   ROLE_IDS,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import {
   IconAlertCircle,
   IconAlertTriangle,

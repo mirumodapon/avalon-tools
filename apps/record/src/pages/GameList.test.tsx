@@ -7,7 +7,7 @@ import {
   makePlayers,
   uniformVotes,
   type Game,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { App } from '../App.tsx'

@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto'
-import { createGame, defaultPlayerNames, makePlayers, type Game } from '@avalon/core'
+import { createGame, defaultPlayerNames, makePlayers, type Game } from '@avalon/record-core'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { AvalonDB, DexieGameRepository } from './dexie.ts'
 

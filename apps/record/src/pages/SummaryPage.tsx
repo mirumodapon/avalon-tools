@@ -1,4 +1,4 @@
-import { assassinationHit, deriveState, renderName, type GameAction } from '@avalon/core'
+import { assassinationHit, deriveState, renderName, type GameAction } from '@avalon/record-core'
 import { IconArrowBackUp, IconDeviceFloppy, IconSword } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Page } from '../components/Layout.tsx'

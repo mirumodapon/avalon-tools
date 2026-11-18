@@ -1,4 +1,4 @@
-import { deriveState, type GameAction } from '@avalon/core'
+import { deriveState, type GameAction } from '@avalon/record-core'
 import {
   IconChecklist,
   IconCopy,

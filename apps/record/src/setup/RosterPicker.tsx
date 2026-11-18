@@ -1,4 +1,4 @@
-import { MAX_PLAYERS } from '@avalon/core'
+import { MAX_PLAYERS } from '@avalon/record-core'
 import { IconCheck, IconUsersPlus } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Sheet } from '../components/Sheet.tsx'

@@ -1,9 +1,9 @@
 {
-  "name": "avalon-recorder",
+  "name": "avalon-tools",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --filter @avalon/web dev",
+    "dev": "pnpm --filter @avalon/record dev",
     "build": "pnpm -r run build",
     "lint": "oxlint && node scripts/check-catalog.ts",
     "format": "oxfmt",

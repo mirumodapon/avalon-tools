@@ -43,7 +43,7 @@ export default defineConfig({
       'react/jsx-dev-runtime',
       'zustand',
       'dexie',
-      '@avalon/core > zod',
+      '@avalon/record-core > zod',
       '@tabler/icons-react',
       '@catppuccin/palette',
       'html-to-image',

@@ -1,4 +1,4 @@
-import { dateKey, DEFAULT_NAMING } from '@avalon/core'
+import { dateKey, DEFAULT_NAMING } from '@avalon/record-core'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { App } from '../App.tsx'

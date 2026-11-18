@@ -7,7 +7,7 @@ import {
   validateRoleConfig,
   type RoleConfig,
   type RoleId,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { IconMinus, IconPlus, IconRefresh } from '@tabler/icons-react'
 import { Button, cx, IconButton } from '../components/ui.tsx'
 import { FactionMark, RoleIcon } from './roleIcons.tsx'

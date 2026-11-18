@@ -1,4 +1,4 @@
-import { createGame, defaultPlayerNames, makePlayers, uniformVotes } from '@avalon/core'
+import { createGame, defaultPlayerNames, makePlayers, uniformVotes } from '@avalon/record-core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MemoryGameRepository } from '../db/memory.ts'
 import { flushPendingSaves, SAVE_DEBOUNCE_MS, setRepository, useGames } from './store.ts'

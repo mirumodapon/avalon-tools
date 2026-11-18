@@ -1,4 +1,4 @@
-import type { Vote } from '@avalon/core'
+import type { Vote } from '@avalon/record-core'
 import {
   IconAlertTriangle,
   IconCheck,

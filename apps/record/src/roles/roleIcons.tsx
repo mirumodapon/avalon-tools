@@ -1,4 +1,4 @@
-import { FACTION_LABEL, roleDef, type Faction, type RoleId } from '@avalon/core'
+import { FACTION_LABEL, roleDef, type Faction, type RoleId } from '@avalon/record-core'
 import {
   IconEye,
   IconEyeOff,

@@ -111,11 +111,11 @@ importers:
         specifier: 'catalog:'
         version: 5.1.1(@types/node@26.6.6)(jsdom@31.0.1)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))
 
-  apps/web:
+  apps/record:
     dependencies:
-      '@avalon/core':
+      '@avalon/record-core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../packages/record-core
       '@avalon/theme':
         specifier: workspace:*
         version: link:../../packages/theme
@@ -190,7 +190,7 @@ importers:
         specifier: 'catalog:'
         version: 7.4.1
 
-  packages/core:
+  packages/record-core:
     dependencies:
       zod:
         specifier: 'catalog:'

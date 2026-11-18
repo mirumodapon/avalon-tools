@@ -7,7 +7,7 @@ import {
   uniformVotes,
   type Game,
   type RoleAssignment,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { useState } from 'react'
 import { describe, expect, it } from 'vitest'

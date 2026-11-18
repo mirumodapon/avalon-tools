@@ -1,4 +1,4 @@
-import { createGame, defaultPlayerNames, deriveState, makePlayers } from '@avalon/core'
+import { createGame, defaultPlayerNames, deriveState, makePlayers } from '@avalon/record-core'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useGames } from '../games/store.ts'

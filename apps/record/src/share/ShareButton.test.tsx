@@ -1,4 +1,4 @@
-import { createGame, defaultPlayerNames, makePlayers } from '@avalon/core'
+import { createGame, defaultPlayerNames, makePlayers } from '@avalon/record-core'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { ShareButton } from './ShareButton.tsx'

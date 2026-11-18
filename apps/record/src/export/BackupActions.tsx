@@ -1,4 +1,4 @@
-import { gamesToJson } from '@avalon/core'
+import { gamesToJson } from '@avalon/record-core'
 import { IconDownload, IconFileImport } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Button } from '../components/ui.tsx'

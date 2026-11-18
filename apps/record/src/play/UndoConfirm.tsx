@@ -1,4 +1,4 @@
-import { lastStep, type Game, type LastStep } from '@avalon/core'
+import { lastStep, type Game, type LastStep } from '@avalon/record-core'
 import { ConfirmSheet } from '../components/Sheet.tsx'
 
 export function describeStep(step: LastStep): string {

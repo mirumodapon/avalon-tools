@@ -1,4 +1,4 @@
-import { LADY_DECLARATION_LABEL, type Faction, type LadyDeclaration } from '@avalon/core'
+import { LADY_DECLARATION_LABEL, type Faction, type LadyDeclaration } from '@avalon/record-core'
 import { IconAlertTriangle, IconRipple, IconUserCheck, IconUserX } from '@tabler/icons-react'
 import { cx } from '../components/ui.tsx'
 import { FactionMark } from '../roles/roleIcons.tsx'

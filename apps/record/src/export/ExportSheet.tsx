@@ -1,4 +1,4 @@
-import type { Game, ViewMode } from '@avalon/core'
+import type { Game, ViewMode } from '@avalon/record-core'
 import {
   IconClipboard,
   IconDownload,

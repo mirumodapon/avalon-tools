@@ -8,7 +8,7 @@ import {
   type InputMode,
   type PlayerId,
   type Votes,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { IconArrowLeft, IconArrowRight, IconSend } from '@tabler/icons-react'
 import { useState, type ReactNode } from 'react'
 import { AnomalyMark, CrownMark, ForcedBadge, TeamMark, VoteMark } from '../components/marks.tsx'

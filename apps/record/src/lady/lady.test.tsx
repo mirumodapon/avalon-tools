@@ -6,7 +6,7 @@ import {
   makePlayers,
   uniformVotes,
   type Game,
-} from '@avalon/core'
+} from '@avalon/record-core'
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { HistoryTable } from '../components/HistoryTable.tsx'

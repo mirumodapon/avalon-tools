@@ -1,4 +1,4 @@
-import { defaultRoleConfig, type Game, type GameAction } from '@avalon/core'
+import { defaultRoleConfig, type Game, type GameAction } from '@avalon/record-core'
 import { IconEyeOff, IconMasksTheater } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Button, SectionTitle, Switch } from '../components/ui.tsx'

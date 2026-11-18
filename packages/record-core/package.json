@@ -1,5 +1,5 @@
 {
-  "name": "@avalon/core",
+  "name": "@avalon/record-core",
   "version": "0.0.0",
   "private": true,
   "type": "module",

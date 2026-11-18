@@ -1,4 +1,4 @@
-import { gameReducer, type Game, type GameAction } from '@avalon/core'
+import { gameReducer, type Game, type GameAction } from '@avalon/record-core'
 import { create } from 'zustand'
 import { DexieGameRepository } from '../db/dexie.ts'
 import type { GameRepository, ImportItem, ImportSummary } from '../db/repository.ts'

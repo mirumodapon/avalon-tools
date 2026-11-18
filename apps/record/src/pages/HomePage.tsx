@@ -1,4 +1,4 @@
-import { dateKey, deriveState, formatTime, type Game } from '@avalon/core'
+import { dateKey, deriveState, formatTime, type Game } from '@avalon/record-core'
 import {
   IconCards,
   IconCopy,

@@ -1,4 +1,4 @@
-import type { Game, PlayerId } from '@avalon/core'
+import type { Game, PlayerId } from '@avalon/record-core'
 import { IconSword, IconTarget } from '@tabler/icons-react'
 import { BottomBar, Button, Card, cx, SectionTitle, Segmented } from '../components/ui.tsx'
 import { usePersistentState } from '../session/usePersistentState.ts'

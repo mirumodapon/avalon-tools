@@ -11,7 +11,7 @@ export default defineProject({
     },
   },
   test: {
-    name: 'web',
+    name: 'record',
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
   },

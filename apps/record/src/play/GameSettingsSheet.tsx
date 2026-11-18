@@ -1,4 +1,4 @@
-import type { Game, GameAction } from '@avalon/core'
+import type { Game, GameAction } from '@avalon/record-core'
 import { IconTrash } from '@tabler/icons-react'
 import { useState } from 'react'
 import { Sheet } from '../components/Sheet.tsx'
