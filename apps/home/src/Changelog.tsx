@@ -13,11 +13,20 @@ function inline(text: string): ReactNode[] {
   )
 }
 
+/** Keeps the text before the `limit + 1`-th `## ` version heading. */
+export function latestVersions(source: string, limit: number): string {
+  const lines = source.split('\n')
+  let seen = 0
+  const end = lines.findIndex((line) => line.startsWith('## ') && ++seen > limit)
+  return (end === -1 ? lines : lines.slice(0, end)).join('\n')
+}
+
 /**
  * Renders the subset of Markdown CHANGELOG.md uses: `##`/`###` headings, `-` bullets
- * (with indentation) and paragraphs. The top-level `#` title is dropped.
+ * (with indentation) and paragraphs. The top-level `#` title is dropped. Only the
+ * `limit` most recent versions are shown.
  */
-export function Changelog({ source }: { source: string }) {
+export function Changelog({ source, limit = 3 }: { source: string; limit?: number }) {
   const blocks: ReactNode[] = []
   let items: { depth: number; text: string }[] = []
   const flush = () => {
@@ -36,7 +45,7 @@ export function Changelog({ source }: { source: string }) {
     )
     items = []
   }
-  for (const line of source.split('\n')) {
+  for (const line of latestVersions(source, limit).split('\n')) {
     const bullet = /^(\s*)- (.*)$/.exec(line)
     if (bullet) {
       items.push({ depth: Math.floor(bullet[1]!.length / 2), text: bullet[2]! })
@@ -66,5 +75,5 @@ export function Changelog({ source }: { source: string }) {
     }
   }
   flush()
-  return <div className="max-h-96 overflow-y-auto text-sm text-subtext1">{blocks}</div>
+  return <div className="text-sm text-subtext1">{blocks}</div>
 }
