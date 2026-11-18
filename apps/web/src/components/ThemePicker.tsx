@@ -1,10 +1,4 @@
-import {
-  ACCENT_NAMES,
-  DARK_FLAVOR_NAMES,
-  FLAVOR_LABELS,
-  FLAVOR_NAMES,
-  type FlavorPreference,
-} from '@avalon/theme'
+import { ACCENT_NAMES, FLAVOR_LABELS, FLAVOR_NAMES, type FlavorPreference } from '@avalon/theme'
 import { IconCheck, IconDeviceDesktop } from '@tabler/icons-react'
 import { useSettings } from '../settings/store.ts'
 
@@ -47,30 +41,8 @@ export function ThemePicker() {
             </label>
           ))}
         </div>
+        <p className="mt-2 text-xs text-subtext0">跟隨系統：淺色使用 Latte，深色使用 Macchiato</p>
       </fieldset>
-
-      {theme.flavor === 'system' && (
-        <fieldset>
-          <legend className="mb-2 text-sm text-subtext0">系統深色時使用</legend>
-          <div className="flex gap-2">
-            {DARK_FLAVOR_NAMES.map((f) => (
-              <label
-                key={f}
-                className="flex min-h-11 flex-1 cursor-pointer items-center justify-center rounded-lg border border-overlay0 px-2 has-checked:border-accent has-checked:bg-accent has-checked:text-on-accent"
-              >
-                <input
-                  type="radio"
-                  name="darkFlavor"
-                  className="sr-only"
-                  checked={theme.darkFlavor === f}
-                  onChange={() => updateTheme({ darkFlavor: f })}
-                />
-                {FLAVOR_LABELS[f]}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      )}
 
       <fieldset>
         <legend className="mb-2 text-sm text-subtext0">強調色</legend>
