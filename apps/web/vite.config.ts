@@ -48,6 +48,7 @@ export default defineConfig({
       '@catppuccin/palette',
       'html-to-image',
       'qrcode',
+      'jsqr',
       'workbox-window',
     ],
   },
