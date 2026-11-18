@@ -7,6 +7,7 @@ import { StorageStatus } from '../components/StorageStatus.tsx'
 import { ThemePicker } from '../components/ThemePicker.tsx'
 import { Button, Card, SectionTitle, Segmented, Switch } from '../components/ui.tsx'
 import { VIEW_MODE_OPTIONS } from '../components/ViewModeToggle.tsx'
+import { BackupActions } from '../export/BackupActions.tsx'
 import { useGames } from '../games/store.ts'
 import { NamingSettings } from '../naming/NamingSettings.tsx'
 import { INPUT_MODE_OPTIONS } from '../play/ProposalForm.tsx'
@@ -83,6 +84,11 @@ export function SettingsPage() {
         <Card>
           <SectionTitle>儲存空間</SectionTitle>
           <StorageStatus />
+        </Card>
+
+        <Card>
+          <SectionTitle>資料備份</SectionTitle>
+          <BackupActions />
         </Card>
 
         <Card>
