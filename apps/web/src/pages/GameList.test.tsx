@@ -65,6 +65,18 @@ describe('game list', () => {
     expect(within(list).queryByRole('button', { name: '週六團' })).toBeNull()
   })
 
+  it('opens the share panel from the item menu', async () => {
+    useGames.setState({ games: [finished('a', '週五團')] })
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: '週五團 的選項' }))
+    fireEvent.click(screen.getByRole('button', { name: /^分享$/ }))
+    const panel = await screen.findByRole('dialog', { name: '分享連結' })
+    expect(
+      within(panel).getByRole<HTMLTextAreaElement>('textbox', { name: '分享連結' }).value,
+    ).toMatch(/\?s=[zj]/)
+    expect(screen.queryByRole('dialog', { name: '週五團' })).toBeNull()
+  })
+
   it('asks before deleting', async () => {
     useGames.setState({ games: [finished('a', '週五團')] })
     render(<App />)
