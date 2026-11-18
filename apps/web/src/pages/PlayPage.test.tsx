@@ -35,7 +35,7 @@ describe('PlayPage', () => {
       settings: {
         ...useSettings.getState().settings,
         defaultInputMode: 'approvals',
-        forcedAutoReject: true,
+        forcedAutoApprove: true,
       },
     })
   })
@@ -85,7 +85,7 @@ describe('PlayPage', () => {
     expect(deriveState(current())).toMatchObject({ phase: 'proposal', attempt: 2 })
   })
 
-  it('auto-rejects the forced proposal when enabled', () => {
+  it('auto-approves the forced proposal when enabled', () => {
     const current = setup()
     for (let i = 0; i < 4; i++) {
       pickTeam('1號', '2號')
@@ -93,11 +93,11 @@ describe('PlayPage', () => {
     }
     expect(screen.getAllByText('強制局').length).toBeGreaterThan(0)
     pickTeam('1號', '2號')
-    expect(screen.getByText(/已自動記為全員不贊成/)).toBeTruthy()
+    expect(screen.getByText(/已自動記為全員贊成/)).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: /送出派票/ }))
     const p = current().rounds[0]!.proposals[4]!
     expect(p.forced).toBe(true)
-    expect(Object.values(p.votes).every((v) => v === 'reject')).toBe(true)
+    expect(Object.values(p.votes).every((v) => v === 'approve')).toBe(true)
     expect(deriveState(current()).phase).toBe('quest')
   })
 

@@ -85,6 +85,6 @@ export function setAll(
   return { ...draft, flags, touched: true }
 }
 
-export function forcedRejectVotes(playerIds: readonly PlayerId[]): Votes {
-  return uniformVotes(playerIds, 'reject')
+export function forcedApproveVotes(playerIds: readonly PlayerId[]): Votes {
+  return uniformVotes(playerIds, 'approve')
 }

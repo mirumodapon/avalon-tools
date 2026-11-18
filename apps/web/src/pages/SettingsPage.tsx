@@ -58,16 +58,16 @@ export function SettingsPage() {
             />
           </div>
           <Switch
-            label="瀏覽時預設顯示角色"
+            label="瀏覽時預設隱藏角色"
             description="進行中的遊戲永遠預設隱藏"
-            checked={settings.showRoles}
-            onChange={(v) => update({ showRoles: v })}
+            checked={!settings.showRoles}
+            onChange={(hide) => update({ showRoles: !hide })}
           />
           <Switch
-            label="強制局自動設為全員不贊成"
+            label="強制局自動設為全員贊成"
             description="第 5 次派票只需選隊員"
-            checked={settings.forcedAutoReject}
-            onChange={(v) => update({ forcedAutoReject: v })}
+            checked={settings.forcedAutoApprove}
+            onChange={(v) => update({ forcedAutoApprove: v })}
           />
         </Card>
 

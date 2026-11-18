@@ -22,13 +22,15 @@ describe('SettingsPage', () => {
     render(<SettingsPage />)
     fireEvent.click(screen.getByRole('radio', { name: /派跳（記異常）/ }))
     fireEvent.click(screen.getByRole('radio', { name: '派跳檢視' }))
-    fireEvent.click(screen.getByRole('switch', { name: /瀏覽時預設顯示角色/ }))
-    fireEvent.click(screen.getByRole('switch', { name: /強制局自動設為全員不贊成/ }))
+    const hideRoles = screen.getByRole('switch', { name: /瀏覽時預設隱藏角色/ })
+    expect(hideRoles).toHaveProperty('checked', true)
+    fireEvent.click(hideRoles)
+    fireEvent.click(screen.getByRole('switch', { name: /強制局自動設為全員贊成/ }))
     expect(useSettings.getState().settings).toMatchObject({
       defaultInputMode: 'anomalies',
       viewMode: 'anomaly',
       showRoles: true,
-      forcedAutoReject: false,
+      forcedAutoApprove: false,
     })
   })
 
