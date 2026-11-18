@@ -3,7 +3,7 @@ import { toolById } from '@avalon/registry'
 import { Button, Card } from '@avalon/ui'
 import { IconSparkles } from '@tabler/icons-react'
 import { useState } from 'react'
-import { isStandalone } from './standalone.ts'
+import { isStandalone } from '@avalon/ui'
 
 export const UPGRADE_NOTICE_KEY = storageKey('home', 'upgradeNotice')
 

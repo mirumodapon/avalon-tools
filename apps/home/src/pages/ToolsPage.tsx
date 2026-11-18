@@ -1,7 +1,7 @@
 import { listedTools, type ToolMeta } from '@avalon/registry'
 import { AppShell, cx, IconButton } from '@avalon/ui'
 import { IconChevronRight, IconDeviceMobileDown, IconInfoCircle } from '@tabler/icons-react'
-import { isStandalone } from '../standalone.ts'
+import { isStandalone } from '@avalon/ui'
 import { TOOL_ICONS } from '../toolIcons.ts'
 import { UpgradeCard } from '../UpgradeCard.tsx'
 
