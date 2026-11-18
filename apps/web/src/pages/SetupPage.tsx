@@ -6,7 +6,9 @@ import {
   ladyEnabledByDefault,
   LADY_RECOMMENDED_MIN_PLAYERS,
   makePlayers,
+  nextSeq,
   PLAYER_COUNTS,
+  renderName,
   teamSizes,
   validateAssignment,
   validateRoleConfig,
@@ -52,6 +54,8 @@ export function SetupPage() {
   const add = useGames((s) => s.add)
   const recent = games[0]
   const roster = useSettings((s) => s.settings.roster)
+  const naming = useSettings((s) => s.settings.naming)
+  const [startedAt] = useState(() => new Date())
   const updateSettings = useSettings((s) => s.update)
 
   const [count, setCount] = useState<PlayerCount>(5)
@@ -69,6 +73,8 @@ export function SetupPage() {
 
   const sizes = teamSizes(count)
   const factions = factionCounts(count)
+  const seq = nextSeq(games, startedAt)
+  const autoName = renderName(naming, { startedAt, seq, players: count, winner: null })
   const players = makePlayers(names)
   const defaultHolder = defaultLadyHolder(players, players[leader]!.id)
   const ladyInitial =
@@ -135,10 +141,10 @@ export function SetupPage() {
     if (!canStart) return
     const game = createGame({
       id: newId(),
-      now: new Date().toISOString(),
+      now: startedAt.toISOString(),
       players,
       firstLeaderId: players[leader]!.id,
-      name: { custom: customName },
+      name: { custom: customName, auto: autoName, seq },
       roleConfig,
       roleAssignment: assignment,
       lady: ladyOn ? { initialHolderId: ladyInitial } : null,
@@ -156,7 +162,8 @@ export function SetupPage() {
             label="遊戲名稱（可留空）"
             value={customName}
             onChange={setCustomName}
-            placeholder="留空將依命名規則自動命名"
+            placeholder={autoName}
+            hint={customName.trim() ? undefined : `留空時自動命名為「${autoName}」`}
             maxLength={60}
           />
         </Card>
