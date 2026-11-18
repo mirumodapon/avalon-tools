@@ -166,4 +166,4 @@ pnpm --filter @avalon/record add <pkg>   # catalogMode: strict 會自動寫入 c
 
 ## 部署
 
-`.github/workflows/deploy.yml` 在推送到 `main` 時執行檢查、`pnpm build`，並把 `dist/` 部署到 GitHub Pages（Settings → Pages 的 Source 需設為 GitHub Actions）。網站部署在網域根目錄。其他平台（Netlify、Vercel、nginx）的設定見 [docs/deploy.md](docs/deploy.md)。
+`.github/workflows/deploy.yml` 在推送到 `main` 時執行檢查、建置所有工具、E2E 測試，並把 `dist/` 部署到 GitHub Pages（Settings → Pages 的 Source 需設為 GitHub Actions）。網站必須部署在網域根目錄（自訂網域），否則工作流程會失敗。其他平台（Netlify、Vercel、nginx）的設定見 [docs/deploy.md](docs/deploy.md)。
