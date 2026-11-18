@@ -39,9 +39,9 @@ export function ProgressOverview({ game }: { game: Game }) {
               <li className="relative" aria-label={label} title={label}>
                 <span
                   className={cx(
-                    'flex size-11 items-center justify-center rounded-full border-2 text-base font-bold',
-                    outcome === 'success' && 'border-success bg-success text-base',
-                    outcome === 'fail' && 'border-fail bg-fail text-base',
+                    'flex size-11 items-center justify-center rounded-full border-2 font-bold',
+                    outcome === 'success' && 'border-success bg-success text-on-fill',
+                    outcome === 'fail' && 'border-fail bg-fail text-on-fill',
                     !outcome &&
                       (current ? 'border-accent text-accent-fg' : 'border-surface2 text-subtext0'),
                   )}
@@ -58,7 +58,7 @@ export function ProgressOverview({ game }: { game: Game }) {
                 {twoFails && (
                   <span
                     aria-hidden
-                    className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-base bg-forced px-1 text-[10px] font-bold text-base"
+                    className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-base bg-forced px-1 text-[10px] font-bold text-on-fill"
                   >
                     ×2
                   </span>
@@ -118,8 +118,10 @@ export function ProgressOverview({ game }: { game: Game }) {
                   className={cx(
                     'flex size-6 items-center justify-center rounded-full text-xs font-bold',
                     forced ? 'border-2 border-forced' : 'border border-surface2',
-                    done && (forced ? 'bg-forced text-base' : 'bg-overlay0 text-base'),
-                    now && !done && (forced ? 'bg-forced text-base' : 'bg-accent text-on-accent'),
+                    done && (forced ? 'bg-forced text-on-fill' : 'bg-overlay0 text-on-fill'),
+                    now &&
+                      !done &&
+                      (forced ? 'bg-forced text-on-fill' : 'bg-accent text-on-accent'),
                     !done && !now && (forced ? 'text-forced-fg' : 'text-subtext0'),
                   )}
                 >

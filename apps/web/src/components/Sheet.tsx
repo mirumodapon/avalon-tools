@@ -99,7 +99,7 @@ export function ConfirmSheet({
             type="button"
             className={
               danger
-                ? 'min-h-11 flex-1 rounded-xl bg-fail font-semibold text-base'
+                ? 'min-h-11 flex-1 rounded-xl bg-fail font-semibold text-on-fill'
                 : 'min-h-11 flex-1 rounded-xl bg-accent font-semibold text-on-accent'
             }
             onClick={() => {

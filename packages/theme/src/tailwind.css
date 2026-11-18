@@ -38,6 +38,9 @@
   --color-accent: var(--ctp-accent);
   --color-accent-fg: var(--ctp-accent-fg);
   --color-on-accent: var(--ctp-on-accent);
+  /* Text on saturated fills (success/fail/forced dots, danger buttons).
+     Not named "base": text-base is Tailwind's font-size utility. */
+  --color-on-fill: var(--ctp-base);
 
   /* Game semantics: raw color for fills/borders, -fg for text on base. */
   --color-success: var(--ctp-green);

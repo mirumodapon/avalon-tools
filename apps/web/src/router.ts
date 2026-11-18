@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 
 export type Route =
   | { name: 'home' }
-  | { name: 'new' }
+  | { name: 'new'; from?: string }
   | { name: 'play'; id: string }
   | { name: 'summary'; id: string }
   | { name: 'game'; id: string }
@@ -15,6 +15,8 @@ export function parseRoute(hash: string): Route {
   const [head, id] = parts
   if (parts.length === 0) return { name: 'home' }
   if (head === 'new' && parts.length === 1) return { name: 'new' }
+  if (head === 'new' && id && parts.length === 2)
+    return { name: 'new', from: decodeURIComponent(id) }
   if (head === 'settings' && parts.length === 1) return { name: 'settings' }
   if (id && parts.length === 2 && (head === 'play' || head === 'summary' || head === 'game')) {
     return { name: head, id: decodeURIComponent(id) }
@@ -28,7 +30,7 @@ export function routePath(route: Route): string {
     case 'notFound':
       return '#/'
     case 'new':
-      return '#/new'
+      return route.from ? `#/new/${encodeURIComponent(route.from)}` : '#/new'
     case 'settings':
       return '#/settings'
     default:
