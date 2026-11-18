@@ -4,6 +4,10 @@ import {
   onStorageError,
   readStore,
   storageKey,
+  globalKey,
+  appDatabaseName,
+  keysWithPrefix,
+  onStoreChange,
   writeStore,
   type StorageError,
   type StoreSpec,
@@ -15,7 +19,7 @@ interface V2 {
 }
 
 const spec: StoreSpec<V2> = {
-  name: 'test',
+  key: 'avalon:demo:test',
   version: 2,
   migrations: {
     1: (d) => ({ count: (d as { n: number }).n, label: 'migrated' }),
@@ -31,8 +35,10 @@ const spec: StoreSpec<V2> = {
 describe('storage', () => {
   beforeEach(() => localStorage.clear())
 
-  it('namespaces keys', () => {
-    expect(storageKey('x')).toBe('avalon-recorder:x')
+  it('namespaces keys by scope', () => {
+    expect(storageKey('record', 'x')).toBe('avalon:record:x')
+    expect(globalKey('theme')).toBe('avalon:global:theme')
+    expect(appDatabaseName('record')).toBe('avalon-record')
   })
 
   it('returns fallback when empty', () => {
@@ -41,7 +47,7 @@ describe('storage', () => {
 
   it('writes and reads an envelope', () => {
     writeStore(spec, { count: 3, label: 'a' })
-    expect(JSON.parse(localStorage.getItem('avalon-recorder:test')!)).toEqual({
+    expect(JSON.parse(localStorage.getItem('avalon:demo:test')!)).toEqual({
       version: 2,
       data: { count: 3, label: 'a' },
     })
@@ -49,15 +55,15 @@ describe('storage', () => {
   })
 
   it('migrates old versions and rewrites them', () => {
-    localStorage.setItem('avalon-recorder:test', JSON.stringify({ version: 1, data: { n: 7 } }))
+    localStorage.setItem('avalon:demo:test', JSON.stringify({ version: 1, data: { n: 7 } }))
     expect(readStore(spec)).toEqual({ count: 7, label: 'migrated' })
-    expect(JSON.parse(localStorage.getItem('avalon-recorder:test')!).version).toBe(2)
+    expect(JSON.parse(localStorage.getItem('avalon:demo:test')!).version).toBe(2)
   })
 
   it('reports corrupt data and falls back', () => {
     const listener = vi.fn<(e: StorageError) => void>()
     const off = onStorageError(listener)
-    localStorage.setItem('avalon-recorder:test', '{nope')
+    localStorage.setItem('avalon:demo:test', '{nope')
     expect(readStore(spec).label).toBe('default')
     expect(listener).toHaveBeenCalledWith(expect.objectContaining({ kind: 'corrupt' }))
     off()
@@ -75,11 +81,24 @@ describe('storage', () => {
     off()
   })
 
-  it('clears only the namespace', () => {
+  it('clears only one scope', () => {
     localStorage.setItem('other', '1')
+    localStorage.setItem('avalon:global:theme', '{}')
+    localStorage.setItem('avalon:other:x', '1')
     writeStore(spec, { count: 1, label: 'x' })
-    clearNamespace()
+    clearNamespace('demo')
+    expect(localStorage.getItem('avalon:demo:test')).toBeNull()
+    expect(keysWithPrefix('avalon:').toSorted()).toEqual(['avalon:global:theme', 'avalon:other:x'])
     expect(localStorage.getItem('other')).toBe('1')
-    expect(localStorage.length).toBe(1)
+  })
+
+  it('notifies about changes made by other tabs or apps', () => {
+    const seen: string[] = []
+    const off = onStoreChange('avalon:global:theme', () => seen.push('theme'))
+    window.dispatchEvent(new StorageEvent('storage', { key: 'avalon:global:theme' }))
+    window.dispatchEvent(new StorageEvent('storage', { key: 'avalon:record:x' }))
+    off()
+    window.dispatchEvent(new StorageEvent('storage', { key: 'avalon:global:theme' }))
+    expect(seen).toEqual(['theme'])
   })
 })
