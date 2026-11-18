@@ -1,20 +1,26 @@
 import { deriveState, canUndo, GameRuleError, type GameAction } from '@avalon/core'
 import { IconArrowBackUp, IconChecklist } from '@tabler/icons-react'
 import { useState } from 'react'
+import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
-import { BottomBar, Button, IconButton } from '../components/ui.tsx'
+import { ProgressOverview } from '../components/ProgressOverview.tsx'
+import { BottomBar, Button, IconButton, Segmented } from '../components/ui.tsx'
+import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { AssassinationForm } from '../play/AssassinationForm.tsx'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { ProposalForm } from '../play/ProposalForm.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
 import { navigate } from '../router.ts'
+import { useSettings } from '../settings/store.ts'
 import { NotFoundPage } from './NotFoundPage.tsx'
 
 export function PlayPage({ id }: { id: string }) {
   const game = useGame(id)
   const dispatchGame = useGames((s) => s.dispatch)
   const [error, setError] = useState<string | null>(null)
+  const [tab, setTab] = useState<'record' | 'history'>('record')
+  const viewMode = useSettings((st) => st.settings.viewMode)
 
   if (!game) return <NotFoundPage message="找不到這場遊戲" />
   const s = deriveState(game)
@@ -46,50 +52,74 @@ export function PlayPage({ id }: { id: string }) {
         </IconButton>
       }
       header={
-        <p className="px-4 pb-2 text-sm text-subtext0">
-          第 {s.questIndex + 1} 個任務・第 {s.attempt} 次派票・成功 {s.successes}・失敗 {s.fails}
-        </p>
+        <>
+          <ProgressOverview game={game} />
+          <div className="px-4 pb-2">
+            <Segmented
+              label="頁籤"
+              value={tab}
+              options={[
+                { value: 'record', label: '記錄' },
+                { value: 'history', label: '歷史表格' },
+              ]}
+              onChange={setTab}
+            />
+          </div>
+        </>
       }
     >
-      {error && (
-        <p role="alert" className="mb-3 rounded-xl border border-fail p-3 text-sm text-fail-fg">
-          {error}
-        </p>
-      )}
-      {s.phase === 'proposal' && (
-        <ProposalForm
-          key={stepKey}
-          game={game}
-          state={s}
-          onSubmit={(p) => dispatch({ type: 'propose', ...p })}
-        />
-      )}
-      {s.phase === 'quest' && (
-        <QuestForm
-          key={stepKey}
-          game={game}
-          state={s}
-          onSubmit={(r) => dispatch({ type: 'recordQuest', ...r })}
-        />
-      )}
-      {s.phase === 'assassination' && (
-        <AssassinationForm
-          key={stepKey}
-          game={game}
-          onSubmit={(a) => dispatch({ type: 'assassinate', ...a })}
-        />
-      )}
-      {s.phase === 'finished' && (
-        <div className="flex flex-1 flex-col pt-2">
-          <FinishedPanel game={game} />
-          <div className="flex-1" />
-          <BottomBar>
-            <Button variant="primary" className="w-full" onClick={() => navigate({ name: 'home' })}>
-              <IconChecklist size={20} aria-hidden />
-              完成
-            </Button>
-          </BottomBar>
+      {tab === 'history' ? (
+        <div className="pt-2">
+          <ViewModeToggle className="mb-3" />
+          <HistoryTable game={game} viewMode={viewMode} />
         </div>
+      ) : (
+        <>
+          {error && (
+            <p role="alert" className="mb-3 rounded-xl border border-fail p-3 text-sm text-fail-fg">
+              {error}
+            </p>
+          )}
+          {s.phase === 'proposal' && (
+            <ProposalForm
+              key={stepKey}
+              game={game}
+              state={s}
+              onSubmit={(p) => dispatch({ type: 'propose', ...p })}
+            />
+          )}
+          {s.phase === 'quest' && (
+            <QuestForm
+              key={stepKey}
+              game={game}
+              state={s}
+              onSubmit={(r) => dispatch({ type: 'recordQuest', ...r })}
+            />
+          )}
+          {s.phase === 'assassination' && (
+            <AssassinationForm
+              key={stepKey}
+              game={game}
+              onSubmit={(a) => dispatch({ type: 'assassinate', ...a })}
+            />
+          )}
+          {s.phase === 'finished' && (
+            <div className="flex flex-1 flex-col pt-2">
+              <FinishedPanel game={game} />
+              <div className="flex-1" />
+              <BottomBar>
+                <Button
+                  variant="primary"
+                  className="w-full"
+                  onClick={() => navigate({ name: 'home' })}
+                >
+                  <IconChecklist size={20} aria-hidden />
+                  完成
+                </Button>
+              </BottomBar>
+            </div>
+          )}
+        </>
       )}
     </Page>
   )
