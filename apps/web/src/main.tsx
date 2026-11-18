@@ -6,11 +6,15 @@ import { flushPendingSaves, useGames } from './games/store.ts'
 import './index.css'
 import { requestPersistentStorage } from './storage/persist.ts'
 import { installZoomGuard } from './zoomGuard.ts'
+import { restoreLastScreen, trackSession } from './session/session.ts'
 
 const root = document.getElementById('root')
 if (!root) throw new Error('#root not found')
 
 installZoomGuard()
+// Reopen the installed app on the screen it was closed on.
+restoreLastScreen()
+trackSession()
 void useGames.getState().load()
 void requestPersistentStorage()
 

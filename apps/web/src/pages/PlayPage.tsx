@@ -24,13 +24,14 @@ import { UndoConfirm } from '../play/UndoConfirm.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
+import { usePersistentState } from '../session/usePersistentState.ts'
 import { NotFoundPage } from './NotFoundPage.tsx'
 
 export function PlayPage({ id }: { id: string }) {
   const game = useGame(id)
   const dispatchGame = useGames((s) => s.dispatch)
   const [error, setError] = useState<string | null>(null)
-  const [tab, setTab] = useState<'record' | 'history'>('record')
+  const [tab, setTab] = usePersistentState<'record' | 'history'>('play-tab', id, 'record')
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [undoOpen, setUndoOpen] = useState(false)
   const title = useDisplayName(game)

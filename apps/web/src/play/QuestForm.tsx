@@ -1,8 +1,8 @@
 import { playerName, questSucceeded, type Game, type GameState } from '@avalon/core'
 import { IconCircleCheckFilled, IconCircleXFilled, IconSend } from '@tabler/icons-react'
-import { useState } from 'react'
 import { ForcedBadge, TeamMark } from '../components/marks.tsx'
 import { BottomBar, Button, Card, cx, SectionTitle } from '../components/ui.tsx'
+import { usePersistentState } from '../session/usePersistentState.ts'
 
 export function QuestForm({
   game,
@@ -13,7 +13,11 @@ export function QuestForm({
   state: GameState
   onSubmit: (input: { failCount: number }) => void
 }) {
-  const [failCount, setFailCount] = useState<number | null>(null)
+  const [failCount, setFailCount] = usePersistentState<number | null>(
+    'quest-fails',
+    `${game.id}:q${state.questIndex}`,
+    null,
+  )
   const proposal = game.rounds[state.questIndex]?.proposals.at(-1)
   const success =
     failCount !== null && questSucceeded(game.players.length, state.questIndex, failCount)

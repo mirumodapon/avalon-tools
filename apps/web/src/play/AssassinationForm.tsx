@@ -1,7 +1,7 @@
 import type { Game, PlayerId } from '@avalon/core'
 import { IconSword, IconTarget } from '@tabler/icons-react'
-import { useState } from 'react'
 import { BottomBar, Button, Card, cx, SectionTitle, Segmented } from '../components/ui.tsx'
+import { usePersistentState } from '../session/usePersistentState.ts'
 import { SeatGrid, SeatNo } from './ProposalForm.tsx'
 
 export function AssassinationForm({
@@ -11,8 +11,12 @@ export function AssassinationForm({
   game: Game
   onSubmit: (input: { targetId: PlayerId | null; manualHit: boolean | null }) => void
 }) {
-  const [targetId, setTargetId] = useState<PlayerId | null>(game.assassination?.targetId ?? null)
-  const [hit, setHit] = useState<'hit' | 'miss' | null>(null)
+  const [targetId, setTargetId] = usePersistentState<PlayerId | null>(
+    'assassin-target',
+    game.id,
+    game.assassination?.targetId ?? null,
+  )
+  const [hit, setHit] = usePersistentState<'hit' | 'miss' | null>('assassin-hit', game.id, null)
   const merlinId = Object.entries(game.roleAssignment).find(([, r]) => r === 'merlin')?.[0]
   const autoJudged = merlinId !== undefined
   const ready = targetId !== null && (autoJudged || hit !== null)
