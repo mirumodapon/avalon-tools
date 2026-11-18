@@ -1,6 +1,13 @@
 import { ladyTargetOptions, type Game, type LadyDeclaration, type PlayerId } from '@avalon/core'
-import { cx, Segmented } from '../components/ui.tsx'
+import { IconNote } from '@tabler/icons-react'
+import { useState } from 'react'
+import { Button, cx, Segmented } from '../components/ui.tsx'
 import { SeatNo } from '../play/ProposalForm.tsx'
+
+const SHORT_REASON: Record<string, string> = {
+  不能查驗自己: '持有者',
+  曾持有過湖中女神: '持有過',
+}
 
 export const DECLARATION_OPTIONS: { value: LadyDeclaration; label: string }[] = [
   { value: 'good', label: '好人' },
@@ -32,11 +39,12 @@ export function LadyFields({
   onNote: (note: string) => void
 }) {
   const options = ladyTargetOptions(game, index, holderId)
+  const [showNote, setShowNote] = useState(false)
   return (
-    <div className="space-y-4">
+    <div className="space-y-2.5">
       <fieldset>
-        <legend className="mb-2 text-sm font-semibold text-subtext0">查驗對象</legend>
-        <div className="grid grid-cols-2 gap-2">
+        <legend className="mb-1.5 text-sm font-semibold text-subtext0">查驗對象</legend>
+        <div className="grid grid-cols-2 gap-1.5">
           {options.map((o, i) => {
             const p = game.players[i]!
             const selected = targetId === o.playerId
@@ -46,18 +54,20 @@ export function LadyFields({
                 type="button"
                 aria-pressed={selected}
                 disabled={o.disabledReason !== null}
+                title={o.disabledReason ?? undefined}
                 onClick={() => onTarget(o.playerId)}
                 className={cx(
-                  'flex min-h-14 flex-col justify-center rounded-xl border-2 px-3 text-left disabled:opacity-45',
+                  'flex min-h-12 items-center gap-2 rounded-xl border-2 px-2.5 text-left disabled:opacity-45',
                   selected ? 'border-lady bg-lady/15' : 'border-transparent bg-surface0',
                 )}
               >
-                <span className="flex items-center gap-2">
-                  <SeatNo n={i + 1} />
-                  <span className="truncate">{p.name}</span>
-                </span>
+                <SeatNo n={i + 1} />
+                <span className="min-w-0 flex-1 truncate">{p.name}</span>
                 {o.disabledReason && (
-                  <span className="mt-0.5 text-xs text-subtext0">{o.disabledReason}</span>
+                  <span className="shrink-0 text-[11px] text-subtext0">
+                    <span aria-hidden>{SHORT_REASON[o.disabledReason] ?? ''}</span>
+                    <span className="sr-only">{o.disabledReason}</span>
+                  </span>
                 )}
               </button>
             )
@@ -65,7 +75,7 @@ export function LadyFields({
         </div>
       </fieldset>
       <div>
-        <p className="mb-2 text-sm font-semibold text-subtext0">持有者宣告的結果（可能說謊）</p>
+        <p className="mb-1.5 text-sm font-semibold text-subtext0">宣告結果（可能說謊）</p>
         <Segmented
           label="宣告結果"
           value={declared}
@@ -73,15 +83,22 @@ export function LadyFields({
           onChange={onDeclared}
         />
       </div>
-      <label className="block">
-        <span className="mb-1 block text-sm text-subtext0">備註（可選）</span>
-        <input
-          className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3 focus:border-accent focus:outline-none"
-          value={note}
-          maxLength={200}
-          onChange={(e) => onNote(e.target.value)}
-        />
-      </label>
+      {showNote || note ? (
+        <label className="block">
+          <span className="mb-1 block text-sm text-subtext0">備註（可選）</span>
+          <input
+            className="min-h-11 w-full rounded-xl border border-overlay0 bg-base px-3 focus:border-accent focus:outline-none"
+            value={note}
+            maxLength={200}
+            onChange={(e) => onNote(e.target.value)}
+          />
+        </label>
+      ) : (
+        <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={() => setShowNote(true)}>
+          <IconNote size={16} aria-hidden />
+          加備註
+        </Button>
+      )}
     </div>
   )
 }
