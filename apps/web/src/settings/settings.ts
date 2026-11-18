@@ -1,6 +1,7 @@
 import type { InputMode } from '@avalon/core'
 import { DEFAULT_THEME, normalizeTheme, type ThemeSettings } from '@avalon/theme'
 import type { StoreSpec } from '../storage/storage.ts'
+import { normalizeRoster } from './roster.ts'
 
 export interface Settings {
   theme: ThemeSettings
@@ -8,12 +9,15 @@ export interface Settings {
   defaultInputMode: InputMode
   /** Fill the forced (5th) proposal with all-reject votes and skip vote entry. */
   forcedAutoReject: boolean
+  /** Saved player names for quick seat filling. */
+  roster: string[]
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   theme: DEFAULT_THEME,
   defaultInputMode: 'approvals',
   forcedAutoReject: true,
+  roster: [],
 }
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -32,6 +36,7 @@ export function normalizeSettings(value: unknown): Settings {
     theme: normalizeTheme(v.theme),
     defaultInputMode: pick(v.defaultInputMode, ['approvals', 'anomalies'], d.defaultInputMode),
     forcedAutoReject: bool(v.forcedAutoReject, d.forcedAutoReject),
+    roster: normalizeRoster(v.roster),
   }
 }
 
