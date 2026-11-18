@@ -1,5 +1,5 @@
 import type { Game, ViewMode } from '@avalon/core'
-import { IconClipboard, IconDownload, IconShare } from '@tabler/icons-react'
+import { IconClipboard, IconDownload, IconLoader2, IconShare } from '@tabler/icons-react'
 import { useRef, useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Sheet } from '../components/Sheet.tsx'
@@ -19,6 +19,8 @@ import { canShare, copyImage, copyText, downloadBlob, shareFile } from './share.
 
 const FORMATS: ExportFormat[] = ['json', 'csv', 'markdown', 'text', 'png']
 
+type Action = 'download' | 'copy' | 'share'
+
 export function ExportSheet({
   game,
   open,
@@ -34,6 +36,8 @@ export function ExportSheet({
   const [viewMode, setViewMode] = useState<ViewMode>(settings.viewMode)
   const [includeRoles, setIncludeRoles] = useState(settings.showRoles)
   const [status, setStatus] = useState<string | null>(null)
+  /** Action in progress; buttons are disabled and show a spinner meanwhile. */
+  const [busy, setBusy] = useState<Action | null>(null)
   const pngRef = useRef<HTMLDivElement>(null)
 
   const opts = { name, viewMode, includeRoles }
@@ -51,8 +55,10 @@ export function ExportSheet({
     return b
   }
 
-  async function run(action: 'download' | 'copy' | 'share') {
+  async function run(action: Action) {
+    if (busy) return
     setStatus(null)
+    setBusy(action)
     try {
       if (action === 'copy') {
         const ok = text !== null ? await copyText(text) : await copyImage(await blob())
@@ -69,8 +75,12 @@ export function ExportSheet({
       }
     } catch (e) {
       setStatus(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(null)
     }
   }
+
+  const spinner = <IconLoader2 size={20} className="animate-spin" aria-hidden />
 
   return (
     <Sheet
@@ -79,16 +89,32 @@ export function ExportSheet({
       onClose={onClose}
       footer={
         <div className="flex gap-2">
-          <Button variant="primary" className="flex-1" onClick={() => void run('download')}>
-            <IconDownload size={20} aria-hidden />
-            下載
+          <Button
+            variant="primary"
+            className="flex-1"
+            disabled={busy !== null}
+            aria-busy={busy === 'download'}
+            onClick={() => void run('download')}
+          >
+            {busy === 'download' ? spinner : <IconDownload size={20} aria-hidden />}
+            {busy === 'download' ? '產生中…' : '下載'}
           </Button>
-          <Button onClick={() => void run('copy')} aria-label="複製到剪貼簿">
-            <IconClipboard size={20} aria-hidden />
+          <Button
+            disabled={busy !== null}
+            aria-busy={busy === 'copy'}
+            onClick={() => void run('copy')}
+            aria-label="複製到剪貼簿"
+          >
+            {busy === 'copy' ? spinner : <IconClipboard size={20} aria-hidden />}
           </Button>
           {canShare() && (
-            <Button onClick={() => void run('share')} aria-label="分享">
-              <IconShare size={20} aria-hidden />
+            <Button
+              disabled={busy !== null}
+              aria-busy={busy === 'share'}
+              onClick={() => void run('share')}
+              aria-label="分享"
+            >
+              {busy === 'share' ? spinner : <IconShare size={20} aria-hidden />}
             </Button>
           )}
         </div>
