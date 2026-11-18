@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { App } from './App.tsx'
 import { parseRoute } from './router.ts'
 import { TOOL_ICONS } from './toolIcons.ts'
-import { tools } from '@avalon/registry'
+import { listedTools, tools } from '@avalon/registry'
 
 function at(path: string) {
   act(() => {
@@ -18,11 +18,17 @@ describe('home', () => {
   it('lists every tool from the registry; coming-soon tools are not links', () => {
     render(<App />)
     const list = screen.getByRole('list', { name: '工具' })
-    const record = within(list).getByRole('link', { name: /遊戲紀錄/ })
-    expect(record.getAttribute('href')).toBe('/record/')
-    expect(within(list).queryByRole('link', { name: /夜晚旁白/ })).toBeNull()
-    expect(within(list).getByText('夜晚旁白').closest('[aria-disabled="true"]')).toBeTruthy()
-    expect(within(list).getAllByText('即將推出').length).toBeGreaterThan(0)
+    // Built tools are links to their path; coming-soon ones are disabled cards.
+    const seen = listedTools().map((tool) => {
+      const card = within(list).getByText(tool.name).closest('a, [aria-disabled="true"]')
+      return [tool.id, card?.getAttribute('href') ?? card?.getAttribute('aria-disabled')]
+    })
+    const expected = listedTools().map((tool) => [
+      tool.id,
+      tool.status === 'coming-soon' ? 'true' : tool.path,
+    ])
+    expect(seen).toEqual(expected)
+    expect(within(list).getAllByRole('listitem')).toHaveLength(listedTools().length)
     expect(within(list).queryByText('阿瓦隆工具集')).toBeNull()
   })
 
