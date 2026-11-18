@@ -1,5 +1,5 @@
 import { deriveState, canUndo, GameRuleError, type GameAction } from '@avalon/core'
-import { IconArrowBackUp, IconChecklist } from '@tabler/icons-react'
+import { IconArrowBackUp, IconChecklist, IconMasksTheater } from '@tabler/icons-react'
 import { useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
@@ -11,6 +11,8 @@ import { AssassinationForm } from '../play/AssassinationForm.tsx'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
 import { ProposalForm } from '../play/ProposalForm.tsx'
 import { QuestForm } from '../play/QuestForm.tsx'
+import { RolesSheet } from '../roles/RolesSheet.tsx'
+import { ShowRolesButton } from '../roles/ShowRolesToggle.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
 import { NotFoundPage } from './NotFoundPage.tsx'
@@ -20,6 +22,9 @@ export function PlayPage({ id }: { id: string }) {
   const dispatchGame = useGames((s) => s.dispatch)
   const [error, setError] = useState<string | null>(null)
   const [tab, setTab] = useState<'record' | 'history'>('record')
+  const [rolesOpen, setRolesOpen] = useState(false)
+  // In-progress games always start with roles hidden, regardless of the global setting.
+  const [showRoles, setShowRoles] = useState(false)
   const viewMode = useSettings((st) => st.settings.viewMode)
 
   if (!game) return <NotFoundPage message="找不到這場遊戲" />
@@ -43,13 +48,18 @@ export function PlayPage({ id }: { id: string }) {
       title={game.name.custom ?? '進行中'}
       back={{ name: 'home' }}
       actions={
-        <IconButton
-          label="復原上一步"
-          disabled={!canUndo(game)}
-          onClick={() => dispatch({ type: 'undo' })}
-        >
-          <IconArrowBackUp size={22} />
-        </IconButton>
+        <>
+          <IconButton label="角色" onClick={() => setRolesOpen(true)}>
+            <IconMasksTheater size={22} />
+          </IconButton>
+          <IconButton
+            label="復原上一步"
+            disabled={!canUndo(game)}
+            onClick={() => dispatch({ type: 'undo' })}
+          >
+            <IconArrowBackUp size={22} />
+          </IconButton>
+        </>
       }
       header={
         <>
@@ -70,8 +80,11 @@ export function PlayPage({ id }: { id: string }) {
     >
       {tab === 'history' ? (
         <div className="pt-2">
-          <ViewModeToggle className="mb-3" />
-          <HistoryTable game={game} viewMode={viewMode} />
+          <div className="mb-3 flex gap-2">
+            <ViewModeToggle className="flex-1" />
+            <ShowRolesButton checked={showRoles} onChange={setShowRoles} />
+          </div>
+          <HistoryTable game={game} viewMode={viewMode} showRoles={showRoles} />
         </div>
       ) : (
         <>
@@ -121,6 +134,12 @@ export function PlayPage({ id }: { id: string }) {
           )}
         </>
       )}
+      <RolesSheet
+        game={game}
+        open={rolesOpen}
+        onClose={() => setRolesOpen(false)}
+        dispatch={dispatch}
+      />
     </Page>
   )
 }
