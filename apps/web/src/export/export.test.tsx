@@ -9,11 +9,13 @@ import { ImportSheet } from './ImportSheet.tsx'
 
 /** Controllable stand-in for html-to-image so the busy state can be observed. */
 const png = vi.hoisted(() => {
-  const pending: { resolve?: (b: Blob) => void } = {}
+  const pending: { resolve?: (b: Blob) => void; started: number } = { started: 0 }
   return {
+    pending,
     resolve: (b: Blob) => pending.resolve?.(b),
     toBlob: () =>
       new Promise<Blob>((r) => {
+        pending.started++
         pending.resolve = r
       }),
   }
@@ -106,5 +108,32 @@ describe('ExportSheet busy state', () => {
     expect(screen.getByRole('button', { name: '複製到剪貼簿' })).toHaveProperty('disabled', true)
     await act(async () => png.resolve(new Blob(['x'], { type: 'image/png' })))
     expect(await screen.findByRole('button', { name: /^下載$/ })).toHaveProperty('disabled', false)
+  })
+})
+
+describe('ExportSheet on phones', () => {
+  it('pre-renders the PNG and saves it to photos through the share sheet', async () => {
+    const share = vi.fn<(data: ShareData) => Promise<void>>(() => Promise.resolve())
+    Object.assign(navigator, { share, canShare: () => true })
+    window.matchMedia = ((q: string) => ({ matches: q === '(pointer: coarse)' })) as never
+    try {
+      render(<ExportSheet game={game('a')} open onClose={() => {}} />)
+      const rendersBefore = png.pending.started
+      fireEvent.click(screen.getByRole('radio', { name: 'PNG' }))
+      expect(await screen.findByRole('button', { name: /產生中/ })).toHaveProperty('disabled', true)
+      // the PNG starts rendering on the next animation frame
+      await vi.waitFor(() => expect(png.pending.started).toBeGreaterThan(rendersBefore))
+      await act(async () => png.resolve(new Blob(['x'], { type: 'image/png' })))
+      const save = await screen.findByRole('button', { name: /儲存到相簿/ })
+      expect(screen.queryByRole('button', { name: '分享' })).toBeNull()
+      await act(async () => fireEvent.click(save))
+      expect(share).toHaveBeenCalledTimes(1)
+      expect(share.mock.calls[0]![0].files![0]!.type).toBe('image/png')
+      expect(screen.getByText(/儲存影像/)).toBeTruthy()
+    } finally {
+      Reflect.deleteProperty(navigator, 'share')
+      Reflect.deleteProperty(navigator, 'canShare')
+      Reflect.deleteProperty(window, 'matchMedia')
+    }
   })
 })
