@@ -1,4 +1,4 @@
-import { createPwaConfig } from '@avalon/pwa'
+import { avalonPwa } from '@avalon/pwa'
 import { toolById } from '@avalon/registry'
 import { catppuccinThemePlugin } from '@avalon/theme/vite'
 import tailwindcss from '@tailwindcss/vite'
@@ -6,7 +6,6 @@ import react from '@vitejs/plugin-react'
 import { execSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
-import { VitePWA } from 'vite-plugin-pwa'
 
 const RECORD = toolById('record')
 
@@ -58,6 +57,6 @@ export default defineConfig({
     catppuccinThemePlugin({ storageKeys: ['avalon:global:theme', 'avalon-recorder:settings'] }),
     react(),
     tailwindcss(),
-    VitePWA(createPwaConfig(RECORD)),
+    avalonPwa(RECORD),
   ],
 })
