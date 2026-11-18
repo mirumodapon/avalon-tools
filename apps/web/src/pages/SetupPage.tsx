@@ -205,24 +205,18 @@ export function SetupPage({ from }: { from?: string }) {
         </Card>
 
         <Card>
-          <SectionTitle
-            action={
-              <div className="flex gap-1">
-                {recent && (
-                  <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={loadRecent}>
-                    <IconHistory size={16} aria-hidden />
-                    帶入最近玩家
-                  </Button>
-                )}
-                <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={clearSeats}>
-                  <IconEraser size={16} aria-hidden />
-                  清空
-                </Button>
-              </div>
-            }
-          >
-            玩家（依座位順時針）
-          </SectionTitle>
+          <div className="mb-3 flex justify-end gap-1">
+            {recent && (
+              <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={loadRecent}>
+                <IconHistory size={16} aria-hidden />
+                帶入最近玩家
+              </Button>
+            )}
+            <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={clearSeats}>
+              <IconEraser size={16} aria-hidden />
+              清空
+            </Button>
+          </div>
           <div className="mb-3">
             <RosterPicker roster={roster} onDone={applyRoster} />
           </div>
