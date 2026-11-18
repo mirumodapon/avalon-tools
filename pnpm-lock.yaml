@@ -150,6 +150,9 @@ importers:
         specifier: 'catalog:'
         version: 5.1.0(@types/react@19.3.0)(react@19.3.1)
     devDependencies:
+      '@avalon/pwa':
+        specifier: workspace:*
+        version: link:../../packages/pwa
       '@avalon/registry':
         specifier: workspace:*
         version: link:../../packages/registry
@@ -204,6 +207,22 @@ importers:
       '@avalon/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+
+  packages/pwa:
+    dependencies:
+      '@avalon/registry':
+        specifier: workspace:*
+        version: link:../registry
+      '@catppuccin/palette':
+        specifier: 'catalog:'
+        version: 1.8.0
+    devDependencies:
+      '@avalon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      vite-plugin-pwa:
+        specifier: 'catalog:'
+        version: 2.0.0(@vite-pwa/assets-generator@2.0.0(@types/node@26.6.6))(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))(workbox-build@7.4.1)(workbox-window@7.4.1)
 
   packages/record-core:
     dependencies:

@@ -1,0 +1,21 @@
+{
+  "name": "@avalon/pwa",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@avalon/registry": "workspace:*",
+    "@catppuccin/palette": "catalog:"
+  },
+  "devDependencies": {
+    "@avalon/tsconfig": "workspace:*",
+    "vite-plugin-pwa": "catalog:"
+  }
+}
