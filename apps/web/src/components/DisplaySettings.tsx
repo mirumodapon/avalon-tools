@@ -58,6 +58,21 @@ export function DisplaySettingsButton({
             />
             <p className="mt-1 text-xs text-subtext0">簡化：座位號 → 座位號：宣告陣營</p>
           </div>
+          <div>
+            <p className="mb-1 text-sm text-subtext0">湖中女神與任務</p>
+            <Segmented
+              label="湖中女神與任務"
+              value={display.ladyLayout}
+              options={[
+                { value: 'compact', label: '緊密' },
+                { value: 'separate', label: '分離' },
+              ]}
+              onChange={(ladyLayout) => update({ display: { ...display, ladyLayout } })}
+            />
+            <p className="mt-1 text-xs text-subtext0">
+              緊密：每個任務後顯示當次查驗；分離：在任務上方以一列顯示查驗順序
+            </p>
+          </div>
         </div>
       </Sheet>
     </>

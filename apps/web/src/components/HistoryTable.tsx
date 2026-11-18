@@ -6,7 +6,7 @@ import {
   ladyTruth,
   playerFaction,
   playerName,
-  previousHolders,
+  currentLadyHolder,
   teamHasEvil,
   teamSize,
   validateLadyUses,
@@ -22,7 +22,7 @@ import {
   IconCheck,
   IconX,
 } from '@tabler/icons-react'
-import { DeclarationMark, LadyIcon, LadyTruthMark } from '../lady/marks.tsx'
+import { DeclarationMark, LadyIcon, LadyTruthMark, VerdictIcon } from '../lady/marks.tsx'
 import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
 import type { DisplayOptions } from '../settings/settings.ts'
 import { useSettings } from '../settings/store.ts'
@@ -73,8 +73,13 @@ export function HistoryTable({
   const ladyUses = game.lady?.uses ?? []
   const ladyErrors = validateLadyUses(game)
 
+  const separate = display.ladyLayout === 'separate'
+
   return (
     <div className="space-y-2 text-sm">
+      {separate && game.lady && ladyUses.length > 0 && (
+        <LadyChain game={game} showRoles={showRoles} detail={display.ladyResult} />
+      )}
       {quests.map((q) => (
         <div key={q} className="space-y-2">
           <QuestTable
@@ -84,14 +89,16 @@ export function HistoryTable({
             viewMode={viewMode}
             showRoles={showRoles}
             display={display}
-            heldLady={
+            ladyHolderId={
               game.lady
-                ? previousHolders(game, ladyUses.filter((u) => u.afterQuest < q).length)
-                : new Set()
+                ? currentLadyHolder({
+                    lady: { ...game.lady, uses: ladyUses.filter((u) => u.afterQuest < q) },
+                  })
+                : null
             }
           />
           {ladyUses.map((use, li) =>
-            use.afterQuest === q ? (
+            !separate && use.afterQuest === q ? (
               <LadyRow
                 key={li}
                 game={game}
@@ -158,7 +165,7 @@ function QuestTable({
   viewMode,
   showRoles,
   display,
-  heldLady,
+  ladyHolderId,
 }: {
   game: Game
   questIndex: number
@@ -166,8 +173,8 @@ function QuestTable({
   viewMode: ViewMode
   showRoles: boolean
   display: DisplayOptions
-  /** Players who had held the Lady before this quest. */
-  heldLady: Set<string>
+  /** Who held the Lady of the Lake during this quest. */
+  ladyHolderId: string | null
 }) {
   const n = game.players.length
   const resultRow = rows.find((r) => r.quest)
@@ -213,15 +220,21 @@ function QuestTable({
             <th
               key={p.id}
               scope="col"
-              aria-label={`${i + 1} 號 ${p.name}`}
+              aria-label={`${i + 1} 號 ${p.name}${p.id === ladyHolderId ? '，湖中女神持有者' : ''}`}
               className="border-t border-surface0 px-0 py-0.5 font-semibold"
             >
               <span className="flex flex-col items-center leading-tight">
-                {i + 1}
+                <span
+                  className={cx(
+                    'min-w-4 rounded-full px-0.5',
+                    p.id === ladyHolderId && 'bg-lady text-on-fill',
+                  )}
+                >
+                  {i + 1}
+                </span>
                 {showRoles && game.roleAssignment[p.id] && (
                   <RoleIcon role={game.roleAssignment[p.id]!} size={12} />
                 )}
-                {heldLady.has(p.id) && <LadyIcon size={11} label="曾持有湖中女神" />}
               </span>
             </th>
           ))}
@@ -348,11 +361,7 @@ function LadyRow({
             <span className="sr-only">查驗</span>
             <span title={playerName(game, use.targetId)}>{seatOf(game, use.targetId)}</span>
             <span aria-hidden>:</span>
-            {use.declared === 'none' ? (
-              <span className="text-subtext0">—</span>
-            ) : (
-              <FactionMark faction={use.declared} size={16} />
-            )}
+            <VerdictIcon declared={use.declared} size={18} />
             {lied && (
               <span className="inline-flex text-lie-fg" title="說謊">
                 <IconAlertTriangle size={16} aria-hidden />
@@ -379,6 +388,57 @@ function LadyRow({
           <span className="sr-only">{errors.join('、')}</span>
         </span>
       )}
+    </section>
+  )
+}
+
+/** 分離: the whole inspection chain in one line, e.g. `3 → 4 (好) → 6 (壞)`. */
+function LadyChain({
+  game,
+  showRoles,
+  detail,
+}: {
+  game: Game
+  showRoles: boolean
+  detail: DisplayOptions['ladyResult']
+}) {
+  const lady = game.lady!
+  const label = (id: string) =>
+    detail === 'simple' ? (
+      <span title={playerName(game, id)}>{seatOf(game, id)}</span>
+    ) : (
+      <span>{playerName(game, id)}</span>
+    )
+  return (
+    <section
+      aria-label="湖中女神查驗順序"
+      className="flex min-h-11 flex-wrap items-center gap-x-1.5 gap-y-1 rounded-xl border border-lady/60 bg-lady/15 px-2 py-1.5 font-semibold"
+    >
+      <LadyIcon size={18} />
+      {label(lady.initialHolderId)}
+      {lady.uses.map((use, i) => {
+        const lied = showRoles && ladyLied(game, use)
+        const truth = showRoles && detail === 'detailed' ? ladyTruth(game, use) : null
+        return (
+          <span key={i} className="inline-flex items-center gap-1">
+            <IconArrowRight size={14} aria-hidden />
+            <span className="sr-only">查驗</span>
+            {label(use.targetId)}
+            <span className="inline-flex items-center">
+              <span aria-hidden>(</span>
+              <VerdictIcon declared={use.declared} size={16} />
+              <span aria-hidden>)</span>
+            </span>
+            {truth && <LadyTruthMark truth={truth} lied={lied} />}
+            {!truth && lied && (
+              <span className="inline-flex text-lie-fg" title="說謊">
+                <IconAlertTriangle size={16} aria-hidden />
+                <span className="sr-only">說謊</span>
+              </span>
+            )}
+          </span>
+        )
+      })}
     </section>
   )
 }

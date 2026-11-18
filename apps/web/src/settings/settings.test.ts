@@ -15,3 +15,10 @@ describe('settings', () => {
     expect(`${STORAGE_NAMESPACE}:${SETTINGS_STORE.name}`).toBe('avalon-recorder:settings')
   })
 })
+
+describe('display defaults', () => {
+  it('shows lady uses inline (compact) by default', () => {
+    expect(DEFAULT_SETTINGS.display.ladyLayout).toBe('compact')
+    expect(normalizeSettings({}).display.ladyLayout).toBe('compact')
+  })
+})
