@@ -20,7 +20,6 @@ import {
 import {
   IconArrowDown,
   IconArrowUp,
-  IconCheck,
   IconCrown,
   IconEraser,
   IconEye,
@@ -47,7 +46,8 @@ import { RoleConfigEditor } from '../roles/RoleConfigEditor.tsx'
 import { navigate } from '../router.ts'
 import { mergeNames } from '../settings/roster.ts'
 import { useSettings } from '../settings/store.ts'
-import { emptySeats, nextEmptySeat, resizeSeats, tapRosterName } from '../setup/seats.ts'
+import { RosterPicker } from '../setup/RosterPicker.tsx'
+import { emptySeats, nextEmptySeat, resizeSeats } from '../setup/seats.ts'
 
 /**
  * New game setup. With `from`, players and role config are copied from that game
@@ -125,10 +125,17 @@ export function SetupPage({ from }: { from?: string }) {
     else if (active === j) setActive(i)
   }
 
-  function tapName(name: string) {
-    const r = tapRosterName(names, active, name)
-    setNames(r.names)
-    setActive(r.active)
+  /** Seats the picked roster names in order and sizes the game to match. */
+  function applyRoster(picked: string[]) {
+    const n = picked.length as PlayerCount
+    setCount(n)
+    setNames(picked)
+    setActive(-1)
+    setLeader(0)
+    if (roleConfig) setRoleConfig(defaultRoleConfig(n))
+    setAssignment({})
+    setLadyOn(ladyEnabledByDefault(n))
+    setLadyHolder(null)
   }
 
   function clearSeats() {
@@ -216,6 +223,9 @@ export function SetupPage({ from }: { from?: string }) {
           >
             玩家（依座位順時針）
           </SectionTitle>
+          <div className="mb-3">
+            <RosterPicker roster={roster} onDone={applyRoster} />
+          </div>
           <ol className="space-y-2">
             {names.map((name, i) => (
               <li key={i} className="flex items-center gap-1">
@@ -270,41 +280,9 @@ export function SetupPage({ from }: { from?: string }) {
             ))}
           </datalist>
 
-          {roster.length > 0 && (
-            <div className="mt-4">
-              <p className="mb-2 text-sm text-subtext0">
-                {active >= 0
-                  ? `點名字填入第 ${active + 1} 位（再點一次移除）`
-                  : '點名字移除；點選座位後可再填入'}
-              </p>
-              <ul className="flex flex-wrap gap-2" aria-label="玩家名冊">
-                {roster.map((n) => {
-                  const seated = names.some((x) => x.trim() === n)
-                  return (
-                    <li key={n}>
-                      <button
-                        type="button"
-                        aria-pressed={seated}
-                        onClick={() => tapName(n)}
-                        className={cx(
-                          'inline-flex min-h-11 items-center gap-1 rounded-full border px-4',
-                          seated
-                            ? 'border-accent bg-accent/15 text-accent-fg'
-                            : 'border-overlay0 bg-base',
-                        )}
-                      >
-                        {seated && <IconCheck size={16} aria-hidden />}
-                        {n}
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            </div>
-          )}
           {roster.length === 0 && (
             <p className="mt-3 text-sm text-subtext0">
-              提示：在設定頁建立玩家名冊，開局時就能直接點選名字。
+              提示：在設定頁建立玩家名冊，開局時就能依序點選玩家。
             </p>
           )}
 

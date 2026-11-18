@@ -17,23 +17,3 @@ export function nextEmptySeat(names: readonly string[], from = 0): number {
   }
   return -1
 }
-
-/**
- * Taps a roster name: removes it if already seated, otherwise puts it in the
- * active seat (or the first empty seat) and advances to the next empty seat.
- */
-export function tapRosterName(
-  names: readonly string[],
-  active: number,
-  name: string,
-): { names: string[]; active: number } {
-  const seated = names.findIndex((n) => n.trim() === name)
-  if (seated >= 0) {
-    const next = names.map((n, i) => (i === seated ? '' : n))
-    return { names: next, active: seated }
-  }
-  const target = active >= 0 && active < names.length ? active : nextEmptySeat(names)
-  if (target < 0) return { names: [...names], active }
-  const next = names.map((n, i) => (i === target ? name : n))
-  return { names: next, active: nextEmptySeat(next, target + 1) }
-}
