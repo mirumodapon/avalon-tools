@@ -1,11 +1,7 @@
-import { ACCENT_NAMES, FLAVOR_LABELS, FLAVOR_NAMES, type FlavorPreference } from '@avalon/theme'
-import { IconCheck, IconDeviceDesktop } from '@tabler/icons-react'
+import { ACCENT_NAMES, THEME_MODE_LABELS, THEME_MODES } from '@avalon/theme'
+import { IconCheck } from '@tabler/icons-react'
 import { useSettings } from '../settings/store.ts'
-
-const FLAVOR_OPTIONS: { value: FlavorPreference; label: string }[] = [
-  { value: 'system', label: '跟隨系統' },
-  ...FLAVOR_NAMES.map((f) => ({ value: f, label: FLAVOR_LABELS[f] })),
-]
+import { Segmented } from './ui.tsx'
 
 export function ThemePicker() {
   const theme = useSettings((s) => s.settings.theme)
@@ -13,36 +9,15 @@ export function ThemePicker() {
 
   return (
     <div className="space-y-4">
-      <fieldset>
-        <legend className="mb-2 text-sm text-subtext0">風味</legend>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {FLAVOR_OPTIONS.map((o) => (
-            <label
-              key={o.value}
-              data-flavor={o.value === 'system' ? undefined : o.value}
-              className="flex min-h-11 cursor-pointer items-center gap-2 rounded-lg border border-overlay0 bg-base px-3 text-text has-checked:border-accent has-checked:ring-2 has-checked:ring-accent"
-            >
-              <input
-                type="radio"
-                name="flavor"
-                className="sr-only"
-                checked={theme.flavor === o.value}
-                onChange={() => updateTheme({ flavor: o.value })}
-              />
-              {o.value === 'system' && <IconDeviceDesktop size={18} aria-hidden />}
-              {o.value !== 'system' && (
-                <span className="flex gap-0.5" aria-hidden>
-                  <span className="size-3 rounded-full bg-red" />
-                  <span className="size-3 rounded-full bg-green" />
-                  <span className="size-3 rounded-full bg-blue" />
-                </span>
-              )}
-              {o.label}
-            </label>
-          ))}
-        </div>
-        <p className="mt-2 text-xs text-subtext0">跟隨系統：淺色使用 Latte，深色使用 Macchiato</p>
-      </fieldset>
+      <div>
+        <Segmented
+          label="主題"
+          value={theme.mode}
+          options={THEME_MODES.map((m) => ({ value: m, label: THEME_MODE_LABELS[m] }))}
+          onChange={(mode) => updateTheme({ mode })}
+        />
+        <p className="mt-2 text-xs text-subtext0">淺色為 Catppuccin Latte，深色為 Macchiato</p>
+      </div>
 
       <fieldset>
         <legend className="mb-2 text-sm text-subtext0">強調色</legend>
