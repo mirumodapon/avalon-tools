@@ -1,3 +1,4 @@
+import { UpdatePrompt } from './components/UpdatePrompt.tsx'
 import { useGames } from './games/store.ts'
 import { GameDetailPage } from './pages/GameDetailPage.tsx'
 import { HomePage } from './pages/HomePage.tsx'
@@ -37,6 +38,7 @@ export function App() {
       ) : (
         <p className="py-20 text-center text-subtext0">載入中…</p>
       )}
+      <UpdatePrompt />
     </>
   )
 }
