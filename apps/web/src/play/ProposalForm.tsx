@@ -12,7 +12,8 @@ import {
 import { IconArrowLeft, IconArrowRight, IconSend } from '@tabler/icons-react'
 import { useState, type ReactNode } from 'react'
 import { AnomalyMark, CrownMark, ForcedBadge, TeamMark, VoteMark } from '../components/marks.tsx'
-import { BottomBar, Button, Card, cx, Segmented, SectionTitle } from '../components/ui.tsx'
+import { BottomBar, Button, Card, cx, Segmented } from '../components/ui.tsx'
+import { Sheet } from '../components/Sheet.tsx'
 import { useSettings } from '../settings/store.ts'
 import {
   draftVotes,
@@ -71,66 +72,28 @@ export function ProposalForm({
 
   return (
     <div className="flex flex-1 flex-col">
-      <Card className="mb-3">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex min-w-0 items-center gap-2">
-            <CrownMark size={22} />
-            <span className="truncate font-semibold">{leaderName}</span>
-            <span className="text-sm text-subtext0">擔任隊長</span>
-          </div>
-          <Button
-            variant="ghost"
-            className="min-h-9 px-2 text-sm"
-            onClick={() => setPickingLeader((v) => !v)}
-          >
-            {pickingLeader ? '完成' : '更換'}
-          </Button>
-        </div>
-        {pickingLeader && (
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            {game.players.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                aria-pressed={p.id === leaderId}
-                onClick={() => {
-                  setLeaderId(p.id)
-                  setPickingLeader(false)
-                }}
-                className={cx(
-                  'min-h-11 truncate rounded-xl px-2 text-sm',
-                  p.id === leaderId ? 'bg-accent text-on-accent' : 'bg-surface0',
-                )}
-              >
-                {p.name}
-              </button>
-            ))}
-            <p className="col-span-3 text-xs text-subtext0">
-              下一位將是 {game.players.find((p) => p.id === nextSeat(game, leaderId))?.name}
-            </p>
-          </div>
-        )}
-      </Card>
-
       {step === 'team' ? (
         <section aria-label="選擇隊員">
-          <SectionTitle
-            action={
-              <span
-                className={cx(
-                  'text-sm font-semibold',
-                  teamFull ? 'text-success-fg' : 'text-subtext0',
-                )}
-              >
-                {draft.team.length} / {state.teamSize}
-              </span>
-            }
-          >
-            <span className="flex items-center gap-2">
+          <div className="mb-2 flex items-center gap-2">
+            <h2 className="flex items-center gap-1.5 text-sm font-semibold text-subtext0">
               選擇隊員
-              {state.forced && <ForcedBadge />}
-            </span>
-          </SectionTitle>
+              <span className={teamFull ? 'text-success-fg' : ''}>
+                {draft.team.length}/{state.teamSize}
+              </span>
+            </h2>
+            {state.forced && <ForcedBadge />}
+            <span className="flex-1" />
+            <Button
+              variant="ghost"
+              className="min-h-9 max-w-[45%] px-2 text-sm"
+              aria-label={`隊長：${leaderName}，更換隊長`}
+              onClick={() => setPickingLeader(true)}
+            >
+              <CrownMark size={16} />
+              <span className="truncate">{leaderName}</span>
+              <span className="shrink-0 text-subtext0">更換</span>
+            </Button>
+          </div>
           <SeatGrid>
             {game.players.map((p, i) => {
               const inTeam = draft.team.includes(p.id)
@@ -143,7 +106,7 @@ export function ProposalForm({
                   disabled={disabled}
                   onClick={() => setDraft((d) => toggleTeam(d, p.id))}
                   className={cx(
-                    'flex min-h-14 items-center gap-2 rounded-xl border-2 px-3 text-left transition-colors',
+                    'flex min-h-12 items-center gap-2 rounded-xl border-2 px-2.5 text-left transition-colors',
                     inTeam ? 'border-accent bg-accent/15' : 'border-transparent bg-surface0',
                     disabled && 'opacity-40',
                   )}
@@ -159,10 +122,8 @@ export function ProposalForm({
         </section>
       ) : (
         <section aria-label="記錄投票">
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold text-subtext0">記錄投票</h2>
-            {state.forced && <ForcedBadge />}
-          </div>
+          <h2 className="sr-only">記錄投票</h2>
+          {state.forced && <ForcedBadge className="mb-2" />}
           {autoApprove ? (
             <Card className="text-sm text-subtext1">
               強制局：已自動記為全員贊成，隊伍出任務。可在設定中關閉此行為，改為逐一記錄。
@@ -176,7 +137,7 @@ export function ProposalForm({
                 onChange={(m) => setDraft((d) => switchMode(d, m, ids))}
                 className="mb-2"
               />
-              <p className="mb-2 text-xs text-subtext0">
+              <p className="sr-only">
                 {draft.mode === 'approvals'
                   ? '點選投贊成票的玩家，其餘視為反對。'
                   : '預設隊內贊成、隊外反對；只點選偏離預設的玩家（場外白／場內黑）。'}
@@ -195,7 +156,7 @@ export function ProposalForm({
                       aria-label={`${p.name}，${inTeam ? '隊員' : '非隊員'}，${vote === 'approve' ? '贊成' : '反對'}`}
                       onClick={() => setDraft((d) => toggleFlag(d, p.id))}
                       className={cx(
-                        'flex min-h-14 items-center gap-2 rounded-xl border-2 px-3 text-left',
+                        'flex min-h-12 items-center gap-2 rounded-xl border-2 px-2.5 text-left',
                         vote === 'approve'
                           ? 'border-approve bg-approve/15'
                           : 'border-transparent bg-surface0',
@@ -228,7 +189,7 @@ export function ProposalForm({
                   )
                 })}
               </SeatGrid>
-              <div className="mt-2 flex gap-2">
+              <div className="mt-1.5 flex gap-2">
                 <Button
                   variant="ghost"
                   className="min-h-9 flex-1 text-sm"
@@ -252,7 +213,7 @@ export function ProposalForm({
       <div className="flex-1" />
       <BottomBar>
         {step === 'vote' && (
-          <p className="mb-2 flex items-center justify-center gap-2 text-sm" aria-live="polite">
+          <p className="mb-1.5 flex items-center justify-center gap-2 text-sm" aria-live="polite">
             <span>
               贊成 <strong>{approvals}</strong> / {ids.length}
             </span>
@@ -283,12 +244,40 @@ export function ProposalForm({
           </div>
         )}
       </BottomBar>
+
+      <Sheet title="更換隊長" open={pickingLeader} onClose={() => setPickingLeader(false)}>
+        <div className="grid grid-cols-2 gap-2">
+          {game.players.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-pressed={p.id === leaderId}
+              onClick={() => {
+                setLeaderId(p.id)
+                setPickingLeader(false)
+              }}
+              className={cx(
+                'flex min-h-12 items-center gap-2 rounded-xl border-2 px-2.5 text-left',
+                p.id === leaderId ? 'border-crown bg-crown/15' : 'border-transparent bg-surface0',
+              )}
+            >
+              <SeatNo n={i + 1} />
+              <span className="min-w-0 flex-1 truncate">{p.name}</span>
+              {p.id === leaderId && <CrownMark />}
+            </button>
+          ))}
+        </div>
+        <p className="mt-3 text-xs text-subtext0">
+          之後的隊長從 {game.players.find((p) => p.id === nextSeat(game, leaderId))?.name}{' '}
+          開始依序輪替
+        </p>
+      </Sheet>
     </div>
   )
 }
 
 export function SeatGrid({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-2 gap-2">{children}</div>
+  return <div className="grid grid-cols-2 gap-1.5">{children}</div>
 }
 
 export function SeatNo({ n }: { n: number }) {

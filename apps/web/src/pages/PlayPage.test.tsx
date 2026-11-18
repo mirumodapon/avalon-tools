@@ -19,7 +19,7 @@ function setup(n = 5) {
 function pickTeam(...names: string[]) {
   const region = screen.getByRole('region', { name: '選擇隊員' })
   for (const n of names)
-    fireEvent.click(within(region).getByRole('button', { name: new RegExp(n) }))
+    fireEvent.click(within(region).getByRole('button', { name: new RegExp(`^\\d+\\s*${n}`) }))
   fireEvent.click(screen.getByRole('button', { name: /下一步/ }))
 }
 
