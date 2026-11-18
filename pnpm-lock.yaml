@@ -215,6 +215,19 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
 
+  packages/registry:
+    dependencies:
+      '@catppuccin/palette':
+        specifier: 'catalog:'
+        version: 1.8.0
+    devDependencies:
+      '@avalon/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@tabler/icons-react':
+        specifier: 'catalog:'
+        version: 3.52.0(react@19.3.1)
+
   packages/storage:
     devDependencies:
       '@avalon/tsconfig':
