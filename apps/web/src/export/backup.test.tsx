@@ -24,30 +24,27 @@ afterEach(() => {
 })
 
 describe('export/import placement', () => {
-  it('is not offered on the home page or game detail page', () => {
+  it('offers single-game export only at the bottom of the game page', () => {
     useGames.setState({ games: [{ ...game('a', '週五團'), savedAt: '2026-11-18T11:00:00.000Z' }] })
     const { unmount } = render(<App />)
     expect(screen.queryByRole('button', { name: /匯出|匯入/ })).toBeNull()
     unmount()
     go('#/game/a')
     render(<App />)
-    expect(screen.queryByRole('button', { name: /匯出|匯入/ })).toBeNull()
+    const buttons = screen.getAllByRole('button')
+    expect(buttons.at(-1)?.textContent).toBe('匯出這場')
+    fireEvent.click(screen.getByRole('button', { name: '匯出這場' }))
+    expect(
+      within(screen.getByRole('dialog', { name: '匯出' })).getByText(/檔名：週五團\.json/),
+    ).toBeTruthy()
   })
 
-  it('is available in settings, including single-game export', () => {
+  it('keeps only export-all and import in settings', () => {
     useGames.setState({ games: [game('a', '週五團'), game('b', '週六團')] })
     go('#/settings')
     render(<App />)
     expect(screen.getByRole('button', { name: /全部匯出/ })).toBeTruthy()
     expect(screen.getByRole('button', { name: /^匯入$/ })).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: /匯出單場/ }))
-    fireEvent.click(
-      within(screen.getByRole('dialog', { name: /匯出單場/ })).getByRole('button', {
-        name: '週六團',
-      }),
-    )
-    fireEvent.click(screen.getByRole('button', { name: /匯出這場/ }))
-    const dialog = screen.getByRole('dialog', { name: '匯出' })
-    expect(within(dialog).getByText(/檔名：週六團\.json/)).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /匯出單場|匯出這場/ })).toBeNull()
   })
 })
