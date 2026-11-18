@@ -313,12 +313,10 @@ function QuestTable({
                   'border-t border-surface0 text-center text-xs font-semibold tabular-nums',
                   row.approved ? 'text-success-fg' : 'text-subtext0',
                 )}
-                title={`${row.approvals} 票${p.forced ? '・強制' : row.approved ? '・通過' : '・否決'}`}
+                title={`${row.approvals} 票${row.approved ? '・通過' : '・否決'}`}
               >
                 {row.approvals}
-                <span className="sr-only">
-                  票，{p.forced ? '強制' : row.approved ? '通過' : '否決'}
-                </span>
+                <span className="sr-only">票，{row.approved ? '通過' : '否決'}</span>
               </td>
             </tr>
           )

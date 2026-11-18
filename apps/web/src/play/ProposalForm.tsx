@@ -61,7 +61,7 @@ export function ProposalForm({
   const teamFull = draft.team.length === state.teamSize
   const votes = autoApprove ? forcedApproveVotes(ids) : draftVotes(draft, ids)
   const approvals = countApprovals(votes)
-  const passes = state.forced || isMajority(approvals, ids.length)
+  const passes = isMajority(approvals, ids.length)
 
   function submit() {
     onSubmit({ team: draft.team, votes, inputMode: draft.mode, leaderId })
@@ -165,7 +165,7 @@ export function ProposalForm({
           </div>
           {autoApprove ? (
             <Card className="text-sm text-subtext1">
-              強制局：已自動記為全員贊成，隊伍直接出任務。可在設定中關閉此行為。
+              強制局：已自動記為全員贊成，隊伍出任務。可在設定中關閉此行為，改為逐一記錄。
             </Card>
           ) : (
             <>
@@ -257,7 +257,7 @@ export function ProposalForm({
               贊成 <strong>{approvals}</strong> / {ids.length}
             </span>
             <span className={cx('font-semibold', passes ? 'text-success-fg' : 'text-fail-fg')}>
-              {state.forced ? '強制出任務' : passes ? '→ 通過' : '→ 否決'}
+              {passes ? '→ 通過' : state.forced ? '→ 否決，壞人勝利' : '→ 否決'}
             </span>
           </p>
         )}

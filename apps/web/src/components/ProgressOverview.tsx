@@ -138,7 +138,7 @@ export function ProgressOverview({ game }: { game: Game }) {
       {inProgress && s.forced && s.phase === 'proposal' && (
         <p className="flex items-center gap-1 rounded-lg bg-forced/15 px-2 py-1 text-sm font-semibold text-forced-fg">
           <IconAlertTriangle size={16} aria-hidden />
-          強制局：這次派票的隊伍將直接出任務
+          強制局：這次派票沒有通過，壞人直接勝利
         </p>
       )}
     </div>
