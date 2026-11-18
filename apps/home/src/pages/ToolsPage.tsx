@@ -1,5 +1,5 @@
 import { listedTools, type ToolMeta } from '@avalon/registry'
-import { AppShell, Card, cx, IconButton } from '@avalon/ui'
+import { AppShell, cx, IconButton } from '@avalon/ui'
 import { IconChevronRight, IconDeviceMobileDown, IconInfoCircle } from '@tabler/icons-react'
 import { isStandalone } from '../standalone.ts'
 import { TOOL_ICONS } from '../toolIcons.ts'
@@ -73,12 +73,11 @@ export function ToolsPage() {
           ))}
         </ul>
         {!isStandalone() && (
-          <Card className="flex gap-3 text-sm text-subtext1">
-            <IconDeviceMobileDown size={22} className="shrink-0 text-accent-fg" aria-hidden />
-            <p>
-              每個工具都可以單獨安裝成 App：打開工具後，從瀏覽器選單選擇「加入主畫面」或「安裝」。
-            </p>
-          </Card>
+          // A footnote, not a card: it must not look like another tool.
+          <p className="flex gap-2 px-1 pt-2 text-xs text-subtext0">
+            <IconDeviceMobileDown size={16} className="mt-px shrink-0" aria-hidden />
+            每個工具都可以單獨安裝成 App：打開工具後，從瀏覽器選單選擇「加入主畫面」或「安裝」。
+          </p>
         )}
       </div>
     </AppShell>
