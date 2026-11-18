@@ -15,4 +15,5 @@ export const TOOL_ICONS: Record<string, Icon> = {
   IconCards,
   IconClipboardList,
   IconMoonStars,
+  // new:app icons
 }
