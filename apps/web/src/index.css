@@ -4,7 +4,14 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
-    /* Disable double-tap-to-zoom (taps register immediately); pinch zoom still works. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  /* touch-action is per element: apply it everywhere so no double tap starts a zoom.
+     Pinch is blocked separately (see zoomGuard.ts). */
+  *,
+  *::before,
+  *::after {
     touch-action: manipulation;
   }
   /* iOS zooms into focused fields smaller than 16px; keep them at 16px on touch screens. */

@@ -4,10 +4,12 @@ import { App } from './App.tsx'
 import { flushPendingSaves, useGames } from './games/store.ts'
 import './index.css'
 import { requestPersistentStorage } from './storage/persist.ts'
+import { installZoomGuard } from './zoomGuard.ts'
 
 const root = document.getElementById('root')
 if (!root) throw new Error('#root not found')
 
+installZoomGuard()
 void useGames.getState().load()
 void requestPersistentStorage()
 
