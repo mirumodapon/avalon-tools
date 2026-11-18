@@ -1,8 +1,21 @@
-# 阿瓦隆紀錄 Avalon Recorder
+# 阿瓦隆工具集
 
-在實體《阿瓦隆（The Resistance: Avalon）》桌遊進行時，用手機依序記錄每一輪的組隊、投票、任務結果與湖中女神，隨時呈現進度；遊戲結束後可保存、瀏覽、匯出與匯入紀錄。手機優先、可安裝為 PWA、離線可用。
+《阿瓦隆（The Resistance: Avalon）》桌遊的輔助工具。首頁（`/`）列出各個工具，每個工具都是可以單獨安裝、離線使用的 PWA，手機優先。
 
-## 功能
+| 工具                 | 路徑         | 狀態                                         |
+| -------------------- | ------------ | -------------------------------------------- |
+| 阿瓦隆工具集（首頁） | `/`          | 工具列表、資訊頁（版本、空間用量、更新紀錄） |
+| 遊戲紀錄             | `/record/`   | 穩定                                         |
+| 夜晚旁白             | `/narrator/` | 即將推出                                     |
+| 角色發牌             | `/deal/`     | 即將推出                                     |
+
+從 1.x（阿瓦隆紀錄）升級請見 [docs/upgrade-2.0.md](docs/upgrade-2.0.md)，更新內容見 [CHANGELOG.md](CHANGELOG.md)。
+
+## 遊戲紀錄
+
+在實體遊戲進行時，用手機依序記錄每一輪的組隊、投票、任務結果與湖中女神，隨時呈現進度；遊戲結束後可保存、瀏覽、匯出與匯入紀錄。
+
+### 功能
 
 - **開局設定**：5–10 人、座位順序、第一位隊長、從玩家名冊依座位順序點選帶入、遊戲名稱（可留空自動命名）、角色配置與指派（可選）、湖中女神（7 人以上預設開啟）。
 - **派票記錄**：
@@ -22,72 +35,17 @@
 - **匯入**：單場或多場 JSON，zod 驗證、清楚的錯誤訊息；ID 重複時可選覆蓋或另存；單一 transaction，失敗整批回滾。
 - **主題**：Catppuccin，系統／淺色（Latte）／深色（Macchiato）與 14 種強調色，載入前套用避免閃爍。
 
-## PWA 行為
+### App 行為
 
 - **每次開啟都檢查更新**：開啟 app（或從背景回來超過 5 分鐘）時顯示「檢查更新中…」，有新版本就顯示「APP 更新中…」並立即套用、重新載入；離線或網路太慢時最多等 6 秒就直接進入。
 - **重新開啟回到原畫面**：以安裝的 app 開啟時，回到關閉前的畫面與捲動位置，並保留記錄到一半的內容（選到一半的隊員、投票、失敗票數、湖中女神查驗）。分享連結或指定頁面的網址不會被覆蓋。
 
-## 版本
+### 資料與儲存
 
-版本號在 `apps/web/package.json`，設定頁最下方顯示 `<version>-<git rev>`（建置時注入）。
+- **遊戲**：IndexedDB `avalon-record`（Dexie），一場一筆，索引 `createdAt`、`date`、`winner`。UI 只透過 `GameRepository` 存取；每次動作後 debounce 寫入，頁面隱藏時立即寫入。啟動時申請 `navigator.storage.persist()`。
+- **設定**（預設模式、命名規則、名冊、顯示選項）：localStorage `avalon:record:<欄位>`，每個設定一個 key，格式 `{ version, data }`，可 migration。主題在 `avalon:global:theme`，所有工具共用。
 
-## 開發
-
-需要 Node 22+ 與 pnpm 10。
-
-```sh
-pnpm install
-pnpm dev            # 開發伺服器（apps/web）
-pnpm build          # 型別檢查並建置所有套件
-pnpm lint           # oxlint
-pnpm format         # oxfmt（format:check 只檢查）
-pnpm typecheck
-pnpm test           # vitest（core、theme、web）
-```
-
-### 依賴版本（pnpm catalog）
-
-所有外部套件的版本集中在 `pnpm-workspace.yaml` 的 `catalog:`，各 `package.json` 一律寫 `"catalog:"`（內部套件為 `workspace:*`）。新增或升級套件：
-
-```sh
-pnpm --filter @avalon/web add <pkg>   # catalogMode: strict 會自動寫入 catalog
-```
-
-`pnpm lint` 會一併執行 `scripts/check-catalog.ts`，若有 `package.json` 直接寫版本號就會失敗。
-
-其他指令：
-
-```sh
-pnpm --filter @avalon/theme generate   # 由 @catppuccin/palette 重新產生 flavors.generated.css
-pnpm --filter @avalon/web icons        # 重新產生 PWA 圖示（Tabler crown + Catppuccin）
-```
-
-## 部署（GitHub Pages）
-
-`.github/workflows/deploy.yml` 在推送到 `main`（或手動執行）時，執行 lint、format:check、typecheck、test，再建置並部署 `apps/web/dist`。
-
-1. 在 GitHub 專案的 **Settings → Pages → Build and deployment** 將 Source 設為 **GitHub Actions**。
-2. 推送到 `main`。
-
-base path 由 `actions/configure-pages` 自動提供：專案站台為 `/<repo>/`，自訂網域或使用者站台為 `/`。本機可用 `BASE_PATH=/repo/ pnpm build` 模擬。
-
-## 專案結構
-
-```
-apps/web/            Vite + React 19 PWA（UI、IndexedDB repository、匯出 UI）
-packages/core/       純 TS：規則、型別、reducer、投票轉換、角色、湖中女神、命名範本、schema、匯出格式
-packages/theme/      Catppuccin 色票 → CSS 變數與 Tailwind 語意 token、防閃爍腳本
-packages/tsconfig/   共用 tsconfig
-```
-
-`packages/core` 不依賴 React 或 icon 套件；角色與 icon 的對應在 `apps/web/src/roles/roleIcons.tsx`。
-
-## 資料與儲存
-
-- **遊戲**：IndexedDB（Dexie），一場一筆，索引 `createdAt`、`date`、`winner`。UI 只透過 `GameRepository` 存取；每次動作後 debounce 寫入，頁面隱藏時立即寫入。啟動時申請 `navigator.storage.persist()`。
-- **設定**（主題、強調色、預設模式、命名規則、名冊、顯示選項）：localStorage `avalon-recorder:settings`，格式 `{ version, data }`，可 migration。
-
-### 遊戲 JSON（`schemaVersion: 1`）
+#### 遊戲 JSON（`schemaVersion: 1`）
 
 ```jsonc
 {
@@ -129,9 +87,9 @@ packages/tsconfig/   共用 tsconfig
 
 勝方、目前階段、隊長等皆由 `deriveState(game)` 推導，不存入資料。
 
-分享連結使用另一種精簡格式（`packages/core/src/share.ts`）：玩家以座位索引表示，每次派票壓成一個整數（隊長、隊員與贊成者的位元遮罩、輸入方式），再以 deflate-raw 壓縮並 base64url 編碼，前綴 `z`（壓縮）或 `j`（未壓縮，較短時使用）。資料版本升級時在 `packages/core/src/schema.ts` 的 `MIGRATIONS` 加上步驟；IndexedDB 索引變更則提升 Dexie 的 schema version。
+分享連結使用另一種精簡格式（`packages/record-core/src/share.ts`）：玩家以座位索引表示，每次派票壓成一個整數（隊長、隊員與贊成者的位元遮罩、輸入方式），再以 deflate-raw 壓縮並 base64url 編碼，前綴 `z`（壓縮）或 `j`（未壓縮，較短時使用）。資料版本升級時在 `packages/record-core/src/schema.ts` 的 `MIGRATIONS` 加上步驟；IndexedDB 索引變更則提升 Dexie 的 schema version。
 
-## 命名範本
+### 命名範本
 
 在設定頁編輯，有即時預覽。未自訂名稱的遊戲會即時套用目前範本；自訂名稱不受影響。
 
@@ -144,3 +102,68 @@ packages/tsconfig/   共用 tsconfig
 | `{winner}`  | 勝方（好人／壞人；未結束時為空）                                 |
 
 預設範本為 `{date} 第{seq}場`，例如 `2026-11-18 第3場`。匯出檔名使用遊戲名稱並移除不合法字元，例如 `2026-11-18_第3場.json`。
+
+## 架構
+
+```
+apps/home/               阿瓦隆工具集首頁（/）
+apps/record/             遊戲紀錄（/record/）
+packages/avalon-rules/   純 TS：阿瓦隆規則與角色（不依賴 React／DOM）
+packages/record-core/    純 TS：遊戲紀錄的型別、reducer、schema、匯出與分享格式
+packages/registry/       工具清單（名稱、路徑、圖示、顏色、狀態、版本）
+packages/storage/        localStorage 命名空間與 IndexedDB 名稱
+packages/theme/          Catppuccin 色票 → CSS token、防閃爍腳本
+packages/ui/             共用元件（AppShell、Sheet、主題選擇、更新、空間用量）
+packages/pwa/            createPwaConfig、service worker 快取清理、圖示產生
+packages/tsconfig/       共用 tsconfig
+scripts/                 build-all、dev、preview、new-app、檢查
+```
+
+- **各 app 互不 import**（`scripts/check-boundaries.ts` 在 `pnpm lint` 檢查）；共用的東西放 packages。
+- **工具清單只有一份**：`packages/registry/src/tools.ts`。首頁的卡片、manifest、service worker 的 scope 與 denylist、建置與 dev proxy 都由它產生。
+- **儲存命名空間**：`avalon:global:*` 是所有工具共用（目前只有主題），`avalon:<appId>:*` 與 IndexedDB `avalon-<appId>` 屬於各工具，彼此不讀寫對方的資料。主題變更透過 `storage` 事件同步到其他已開啟的 App。
+- **每個工具一個 PWA**：manifest `id`／`scope`／`start_url` 都是工具路徑，Workbox `cacheId` 為 `avalon-<id>`；首頁的 service worker 不處理巢狀工具的導覽。
+
+## 開發
+
+需要 Node 24+ 與 pnpm 10。
+
+```sh
+pnpm install
+pnpm dev                 # 所有 app 的 dev server，同源 proxy 在 http://localhost:5173/
+pnpm dev --filter record # 只啟動指定的 app（可重複）
+pnpm build               # 建置所有 app 並組合到 dist/
+pnpm preview             # 以 GitHub Pages 的規則提供 dist/
+pnpm lint                # oxlint、catalog 與 app 邊界檢查
+pnpm format              # oxfmt（format:check 只檢查）
+pnpm typecheck
+pnpm test                # vitest
+pnpm e2e                 # Playwright（先 pnpm build；第一次需 pnpm exec playwright install chromium）
+pnpm icons [id...]       # 由 registry 的圖示與顏色產生各 app 的 PWA 圖示
+```
+
+### 新增工具
+
+```sh
+pnpm new:app <id> --name 名稱 --description 說明 --icon IconName --accent blue
+```
+
+會建立 `apps/<id>`（路徑 `/<id>/`、狀態 beta、版本 0.1.0）、加入 registry 與首頁圖示、安裝依賴並產生圖示。registry 中已是「即將推出」的工具（如 `narrator`）會直接改為 beta。之後 `pnpm dev` 即可在 `/<id>/` 開發。
+
+### 依賴版本（pnpm catalog）
+
+所有外部套件的版本集中在 `pnpm-workspace.yaml` 的 `catalog:`，各 `package.json` 一律寫 `"catalog:"`（內部套件為 `workspace:*`）。新增或升級套件：
+
+```sh
+pnpm --filter @avalon/record add <pkg>   # catalogMode: strict 會自動寫入 catalog
+```
+
+`pnpm lint` 會一併執行 `scripts/check-catalog.ts`，若有 `package.json` 直接寫版本號就會失敗。
+
+### 版本
+
+各 app 的版本在自己的 `package.json`，並需與 registry 的 `version` 一致（有測試檢查）。建置時注入 `<version>-<git rev>`；首頁資訊頁列出所有工具的版本。
+
+## 部署
+
+`.github/workflows/deploy.yml` 在推送到 `main` 時執行檢查、`pnpm build`，並把 `dist/` 部署到 GitHub Pages（Settings → Pages 的 Source 需設為 GitHub Actions）。網站部署在網域根目錄。其他平台（Netlify、Vercel、nginx）的設定見 [docs/deploy.md](docs/deploy.md)。
