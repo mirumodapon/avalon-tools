@@ -23,12 +23,14 @@ import type {
   Votes,
 } from './types.ts'
 import { SCHEMA_VERSION } from './types.ts'
+import { currentLadyHolder, isLadyQuest, ladyTargetOptions } from './lady.ts'
+import type { LadyDeclaration, LadyUse } from './types.ts'
 
 export class GameRuleError extends Error {
   override name = 'GameRuleError'
 }
 
-export type Phase = 'proposal' | 'quest' | 'assassination' | 'finished'
+export type Phase = 'proposal' | 'quest' | 'lady' | 'assassination' | 'finished'
 export type QuestOutcome = 'success' | 'fail'
 export type WinReason = 'quests-failed' | 'assassination-hit' | 'assassination-missed'
 
@@ -48,6 +50,8 @@ export interface GameState {
   fails: number
   winner: Faction | null
   winReason: WinReason | null
+  /** Current Lady of the Lake holder, or null when not in play. */
+  ladyHolderId: PlayerId | null
 }
 
 export function makePlayers(names: readonly string[]): Player[] {
@@ -67,6 +71,8 @@ export interface CreateGameInput {
   note?: string
   roleConfig?: RoleConfig | null
   roleAssignment?: RoleAssignment
+  /** Enables Lady of the Lake with this initial holder. */
+  lady?: { initialHolderId: PlayerId } | null
 }
 
 export function createGame(input: CreateGameInput): Game {
@@ -96,6 +102,7 @@ export function createGame(input: CreateGameInput): Game {
     roleAssignment: input.roleAssignment ?? {},
     rounds: [],
     assassination: null,
+    lady: input.lady ? { initialHolderId: input.lady.initialHolderId, uses: [] } : null,
   }
 }
 
@@ -161,7 +168,14 @@ export function deriveState(game: Game): GameState {
   const lastIndex = Math.max(0, game.rounds.length - 1)
   const lastRound = game.rounds[lastIndex]
 
-  const base = { outcomes, successes, fails, winner: null, winReason: null } as const
+  const base = {
+    outcomes,
+    successes,
+    fails,
+    winner: null,
+    winReason: null,
+    ladyHolderId: currentLadyHolder(game),
+  } as const
 
   if (fails >= WINNING_QUESTS) {
     return {
@@ -212,6 +226,23 @@ export function deriveState(game: Game): GameState {
     }
   }
 
+  // Lady of the Lake after quests 2–4, before the next quest's proposals.
+  if (lastRound?.result && game.lady && isLadyQuest(lastIndex)) {
+    const used = game.lady.uses.some((u) => u.afterQuest === lastIndex)
+    if (!used) {
+      return {
+        ...base,
+        phase: 'lady',
+        questIndex: lastIndex,
+        attempt: lastRound.proposals.length,
+        leaderId: nextLeader,
+        teamSize: teamSize(n, lastIndex),
+        failsRequired: failsRequired(n, lastIndex),
+        forced: false,
+      }
+    }
+  }
+
   const questIndex = !lastRound ? 0 : lastRound.result ? lastIndex + 1 : lastIndex
   const attempt = !lastRound || lastRound.result ? 1 : lastRound.proposals.length + 1
   return {
@@ -251,6 +282,10 @@ export type GameAction =
   | { type: 'setRoleAssignment'; roleAssignment: RoleAssignment }
   | { type: 'setAutoName'; auto: string }
   | { type: 'markSaved' }
+  | { type: 'useLady'; targetId: PlayerId; declared: LadyDeclaration; note?: string }
+  | { type: 'skipLady'; note?: string }
+  | { type: 'editLady'; index: number; patch: Partial<Omit<LadyUse, 'afterQuest'>> }
+  | { type: 'setLady'; lady: { initialHolderId: PlayerId } | null }
 
 export function validateTeam(
   game: Game,
@@ -344,6 +379,49 @@ function apply(game: Game, action: GameAction): Game {
       return { ...game, roleAssignment: pruneAssignment(game, action.roleAssignment) }
     case 'setAutoName':
       return { ...game, name: { ...game.name, auto: action.auto } }
+    case 'useLady':
+    case 'skipLady': {
+      const s = deriveState(game)
+      if (s.phase !== 'lady' || !game.lady) throw new GameRuleError('目前不是湖中女神階段')
+      const holderId = s.ladyHolderId!
+      if (action.type === 'useLady') {
+        if (!game.players.some((p) => p.id === action.targetId)) {
+          throw new GameRuleError('查驗對象不在玩家名單中')
+        }
+        const option = ladyTargetOptionsFor(game, holderId).find(
+          (o) => o.playerId === action.targetId,
+        )
+        if (option?.disabledReason) throw new GameRuleError(option.disabledReason)
+      }
+      const use: LadyUse = {
+        afterQuest: s.questIndex,
+        holderId,
+        targetId: action.type === 'useLady' ? action.targetId : null,
+        declared: action.type === 'useLady' ? action.declared : 'none',
+        skipped: action.type === 'skipLady',
+        note: action.note?.trim() ?? '',
+      }
+      return { ...game, lady: { ...game.lady, uses: [...game.lady.uses, use] } }
+    }
+    case 'editLady': {
+      if (!game.lady?.uses[action.index]) throw new GameRuleError('找不到這次湖中女神紀錄')
+      const uses = game.lady.uses.map((u, i) => {
+        if (i !== action.index) return u
+        const next = { ...u, ...action.patch }
+        if (next.skipped) return { ...next, targetId: null, declared: 'none' as const }
+        return next
+      })
+      return { ...game, lady: { ...game.lady, uses } }
+    }
+    case 'setLady':
+      if (!action.lady) return { ...game, lady: null }
+      if (!game.players.some((p) => p.id === action.lady!.initialHolderId)) {
+        throw new GameRuleError('初始持有者不在玩家名單中')
+      }
+      return {
+        ...game,
+        lady: { initialHolderId: action.lady.initialHolderId, uses: game.lady?.uses ?? [] },
+      }
     case 'markSaved':
       return game
   }
@@ -372,6 +450,13 @@ export function undoLast(game: Game): Game {
   if (game.assassination) return { ...game, assassination: null }
   const last = game.rounds.at(-1)
   if (!last) return game
+  const lastIndex = game.rounds.length - 1
+  if (last.result && game.lady?.uses.some((u) => u.afterQuest === lastIndex)) {
+    return {
+      ...game,
+      lady: { ...game.lady, uses: game.lady.uses.filter((u) => u.afterQuest !== lastIndex) },
+    }
+  }
   if (last.result)
     return { ...game, rounds: [...game.rounds.slice(0, -1), { ...last, result: null }] }
   const proposals = last.proposals.slice(0, -1)
@@ -385,4 +470,8 @@ export function undoLast(game: Game): Game {
 
 export function canUndo(game: Game): boolean {
   return game.assassination !== null || game.rounds.length > 0
+}
+
+function ladyTargetOptionsFor(game: Game, holderId: PlayerId) {
+  return ladyTargetOptions(game, game.lady?.uses.length ?? 0, holderId)
 }

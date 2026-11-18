@@ -1,13 +1,24 @@
 import {
   cellAnomaly,
   historyRows,
+  ladyLied,
+  ladyTruth,
   playerFaction,
+  playerName,
+  previousHolders,
+  validateLadyUses,
   teamHasEvil,
   type Game,
   type ViewMode,
 } from '@avalon/core'
-import { IconCircleCheckFilled, IconCircleXFilled } from '@tabler/icons-react'
+import {
+  IconAlertCircle,
+  IconCircleCheckFilled,
+  IconCircleXFilled,
+  IconPencil,
+} from '@tabler/icons-react'
 import { Fragment } from 'react'
+import { DeclarationMark, LadyIcon, LadyTruthMark } from '../lady/marks.tsx'
 import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
 import { AnomalyMark, CrownMark, ForcedBadge, VoteMark } from './marks.tsx'
 import { cx } from './ui.tsx'
@@ -20,13 +31,20 @@ export function HistoryTable({
   game,
   viewMode,
   showRoles = false,
+  onEditLady,
 }: {
   game: Game
   viewMode: ViewMode
   /** When false, no role or faction information is rendered at all. */
   showRoles?: boolean
+  /** Enables editing recorded Lady of the Lake uses. */
+  onEditLady?: (index: number) => void
 }) {
   const rows = historyRows(game)
+  const ladyUses = game.lady?.uses ?? []
+  const ladyErrors = validateLadyUses(game)
+  const heldLady = game.lady ? previousHolders(game, ladyUses.length) : new Set<string>()
+  const columns = game.players.length + 2
   if (rows.length === 0) {
     return <p className="py-8 text-center text-subtext0">還沒有任何派票紀錄</p>
   }
@@ -55,6 +73,7 @@ export function HistoryTable({
                 <span className="mx-auto flex max-h-24 flex-col items-center gap-0.5">
                   <span className="truncate text-sm [writing-mode:vertical-rl]">{p.name}</span>
                   <span className="text-[10px] text-subtext0">{i + 1}</span>
+                  {heldLady.has(p.id) && <LadyIcon size={12} label="曾持有湖中女神" />}
                   {showRoles && game.roleAssignment[p.id] && (
                     <RoleIcon role={game.roleAssignment[p.id]!} size={16} />
                   )}
@@ -161,6 +180,61 @@ export function HistoryTable({
                     )}
                   </td>
                 </tr>
+                {row.quest &&
+                  ladyUses.map((use, li) =>
+                    use.afterQuest === row.questIndex ? (
+                      <tr key={`lady-${li}`}>
+                        <td
+                          colSpan={columns}
+                          className="border-t border-surface0 bg-lady/10 px-2 py-1.5"
+                        >
+                          <div className="flex items-center gap-2">
+                            <LadyIcon size={16} />
+                            <span className="min-w-0 flex-1">
+                              {use.skipped ? (
+                                <span className="text-subtext0">
+                                  已跳過（{playerName(game, use.holderId)} 持有）
+                                </span>
+                              ) : (
+                                <span className="flex flex-wrap items-center gap-x-2">
+                                  <span>
+                                    {playerName(game, use.holderId)} →{' '}
+                                    {use.targetId ? playerName(game, use.targetId) : '？'}：
+                                  </span>
+                                  <DeclarationMark declared={use.declared} />
+                                  {showRoles && ladyTruth(game, use) && (
+                                    <LadyTruthMark
+                                      truth={ladyTruth(game, use)!}
+                                      lied={ladyLied(game, use)}
+                                    />
+                                  )}
+                                </span>
+                              )}
+                              {use.note && (
+                                <span className="block text-xs text-subtext0">{use.note}</span>
+                              )}
+                            </span>
+                            {ladyErrors[li]?.length ? (
+                              <span className="text-fail-fg" title={ladyErrors[li]!.join('、')}>
+                                <IconAlertCircle size={18} aria-hidden />
+                                <span className="sr-only">{ladyErrors[li]!.join('、')}</span>
+                              </span>
+                            ) : null}
+                            {onEditLady && (
+                              <button
+                                type="button"
+                                aria-label={`編輯第 ${li + 1} 次湖中女神`}
+                                onClick={() => onEditLady(li)}
+                                className="inline-flex size-9 items-center justify-center rounded-lg text-subtext1 hover:bg-surface0"
+                              >
+                                <IconPencil size={16} />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ) : null,
+                  )}
               </Fragment>
             )
           })}

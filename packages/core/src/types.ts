@@ -62,6 +62,26 @@ export interface Assassination {
   manualHit: boolean | null
 }
 
+/** What the Lady of the Lake holder publicly declared; may be a lie. */
+export type LadyDeclaration = 'good' | 'evil' | 'none'
+
+export interface LadyUse {
+  /** 0-based quest index after which the Lady was used (1, 2 or 3). */
+  afterQuest: number
+  holderId: PlayerId
+  /** Null when skipped. */
+  targetId: PlayerId | null
+  declared: LadyDeclaration
+  /** Forgotten at the table; the Lady stays with the holder. */
+  skipped: boolean
+  note: string
+}
+
+export interface LadyOfTheLake {
+  initialHolderId: PlayerId
+  uses: LadyUse[]
+}
+
 export interface GameName {
   /** Name typed by the user; takes precedence when non-empty. */
   custom: string | null
@@ -89,4 +109,6 @@ export interface Game {
   roleAssignment: RoleAssignment
   rounds: Round[]
   assassination: Assassination | null
+  /** Lady of the Lake expansion; null when not in play. */
+  lady: LadyOfTheLake | null
 }
