@@ -1,10 +1,16 @@
 import { deriveState, canUndo, GameRuleError, type GameAction } from '@avalon/core'
-import { IconArrowBackUp, IconChecklist, IconSettings } from '@tabler/icons-react'
+import {
+  IconArrowBackUp,
+  IconChecklist,
+  IconPencil,
+  IconSettings,
+  IconTable,
+} from '@tabler/icons-react'
 import { useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
 import { ProgressOverview } from '../components/ProgressOverview.tsx'
-import { BottomBar, Button, IconButton, Segmented } from '../components/ui.tsx'
+import { BottomBar, Button, IconButton } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
 import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { useGame, useGames } from '../games/store.ts'
@@ -60,6 +66,14 @@ export function PlayPage({ id }: { id: string }) {
       back={{ name: 'home' }}
       actions={
         <>
+          <IconButton
+            label={tab === 'history' ? '回到記錄' : '歷史表格'}
+            aria-pressed={tab === 'history'}
+            onClick={() => setTab(tab === 'history' ? 'record' : 'history')}
+            className={tab === 'history' ? 'bg-accent/20 text-accent-fg!' : ''}
+          >
+            {tab === 'history' ? <IconPencil size={22} /> : <IconTable size={22} />}
+          </IconButton>
           <IconButton label="遊戲設定" onClick={() => setSettingsOpen(true)}>
             <IconSettings size={22} />
           </IconButton>
@@ -72,22 +86,7 @@ export function PlayPage({ id }: { id: string }) {
           </IconButton>
         </>
       }
-      header={
-        <>
-          <ProgressOverview game={game} />
-          <div className="px-4 pb-2">
-            <Segmented
-              label="頁籤"
-              value={tab}
-              options={[
-                { value: 'record', label: '記錄' },
-                { value: 'history', label: '歷史表格' },
-              ]}
-              onChange={setTab}
-            />
-          </div>
-        </>
-      }
+      header={<ProgressOverview game={game} />}
     >
       {tab === 'history' ? (
         <div className="pt-2">

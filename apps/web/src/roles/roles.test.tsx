@@ -83,7 +83,7 @@ describe('PlayPage roles', () => {
   it('keeps roles hidden until explicitly revealed', () => {
     useGames.setState({ games: [playedGame()] })
     render(<PlayPage id="g" />)
-    fireEvent.click(screen.getByRole('radio', { name: '歷史表格' }))
+    fireEvent.click(screen.getByRole('button', { name: '歷史表格' }))
     const tables = screen
       .getAllByRole('table')
       .map((t) => t.textContent)
