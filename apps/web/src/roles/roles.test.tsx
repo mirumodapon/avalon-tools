@@ -71,11 +71,11 @@ describe('HistoryTable roles', () => {
     expect(container.innerHTML).not.toMatch(/evil|good/)
   })
 
-  it('shows roles, the evil-team marker and exposed evil members when shown', () => {
+  it('shows roles and the evil-team marker when shown, without flagging failed-quest evil', () => {
     const { container } = render(<HistoryTable game={playedGame()} viewMode="full" showRoles />)
     expect(container.textContent).toContain('梅林')
     expect(container.textContent).toContain('隊伍含壞人')
-    expect(container.textContent).toContain('2號，隊員，失敗任務中的壞人')
+    expect(container.textContent).not.toContain('失敗任務中的壞人')
   })
 })
 

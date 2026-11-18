@@ -94,7 +94,6 @@ export function HistoryTable({
             const newQuest = idx > 0 && rows[idx - 1]!.questIndex !== row.questIndex
             const border = newQuest ? 'border-t-2 border-surface2' : 'border-t border-surface0'
             const evilTeam = showRoles && teamHasEvil(game, p.team)
-            const failed = row.quest?.outcome === 'fail'
             return (
               <Fragment key={p.id}>
                 <tr>
@@ -116,7 +115,6 @@ export function HistoryTable({
                     const vote = p.votes[pl.id]!
                     const anomaly = cellAnomaly(p, pl.id)
                     const faction = showRoles ? playerFaction(game, pl.id) : null
-                    const exposed = showRoles && failed && inTeam && faction === 'evil'
                     return (
                       <td
                         key={pl.id}
@@ -124,14 +122,12 @@ export function HistoryTable({
                           'relative h-10 min-w-8 px-0.5 text-center',
                           border,
                           inTeam && 'bg-accent/15',
-                          exposed && 'ring-2 ring-evil ring-inset',
                         )}
                       >
                         <span className="sr-only">
                           {pl.name}
                           {leader && '，隊長'}
                           {inTeam && '，隊員'}
-                          {exposed && '，失敗任務中的壞人'}
                         </span>
                         {leader && (
                           <span className="absolute top-0 left-1/2 -translate-x-1/2 leading-none">
@@ -274,18 +270,9 @@ function Legend({ viewMode, showRoles }: { viewMode: ViewMode; showRoles: boolea
         </>
       )}
       {showRoles && (
-        <>
-          <li className="flex items-center gap-1">
-            <span className="inline-block h-3 w-1 bg-evil" aria-hidden /> 隊伍含壞人
-          </li>
-          <li className="flex items-center gap-1">
-            <span
-              className="inline-block size-3 rounded-sm ring-2 ring-evil ring-inset"
-              aria-hidden
-            />
-            失敗任務中的壞人
-          </li>
-        </>
+        <li className="flex items-center gap-1">
+          <span className="inline-block h-3 w-1 bg-evil" aria-hidden /> 隊伍含壞人
+        </li>
       )}
     </ul>
   )
