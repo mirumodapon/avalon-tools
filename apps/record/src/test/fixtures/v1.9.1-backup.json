@@ -1,0 +1,269 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "0b6f6a52-5a9e-4c1e-9d0e-2f3a4b5c6d7e",
+    "createdAt": "2026-10-31T11:00:00.000Z",
+    "updatedAt": "2026-11-18T23:03:09.724Z",
+    "savedAt": "2026-11-18T23:03:09.724Z",
+    "name": {
+      "custom": "萬聖節團",
+      "auto": "2026-10-31 第1場",
+      "seq": 1
+    },
+    "note": "第一次加入派西維爾",
+    "players": [
+      {
+        "id": "p1",
+        "name": "阿明"
+      },
+      {
+        "id": "p2",
+        "name": "小華"
+      },
+      {
+        "id": "p3",
+        "name": "小美"
+      },
+      {
+        "id": "p4",
+        "name": "大雄"
+      },
+      {
+        "id": "p5",
+        "name": "靜香"
+      },
+      {
+        "id": "p6",
+        "name": "胖虎"
+      },
+      {
+        "id": "p7",
+        "name": "小夫"
+      }
+    ],
+    "firstLeaderId": "p1",
+    "roleConfig": {
+      "merlin": 1,
+      "percival": 1,
+      "loyal": 2,
+      "morgana": 1,
+      "assassin": 1,
+      "oberon": 1
+    },
+    "roleAssignment": {
+      "p1": "merlin",
+      "p2": "percival",
+      "p5": "assassin",
+      "p6": "morgana",
+      "p7": "oberon"
+    },
+    "rounds": [
+      {
+        "proposals": [
+          {
+            "id": "q1-p1",
+            "leaderId": "p1",
+            "team": ["p1", "p2"],
+            "votes": {
+              "p1": "approve",
+              "p2": "approve",
+              "p3": "approve",
+              "p4": "approve",
+              "p5": "approve",
+              "p6": "approve",
+              "p7": "approve"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          }
+        ],
+        "result": {
+          "failCount": 0
+        }
+      },
+      {
+        "proposals": [
+          {
+            "id": "q2-p1",
+            "leaderId": "p2",
+            "team": ["p2", "p5", "p6"],
+            "votes": {
+              "p1": "reject",
+              "p2": "reject",
+              "p3": "reject",
+              "p4": "reject",
+              "p5": "approve",
+              "p6": "approve",
+              "p7": "reject"
+            },
+            "inputMode": "anomalies",
+            "forced": false
+          },
+          {
+            "id": "q2-p2",
+            "leaderId": "p3",
+            "team": ["p3", "p5", "p6"],
+            "votes": {
+              "p1": "reject",
+              "p2": "reject",
+              "p3": "approve",
+              "p4": "reject",
+              "p5": "approve",
+              "p6": "approve",
+              "p7": "approve"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          }
+        ],
+        "result": {
+          "failCount": 1
+        }
+      },
+      {
+        "proposals": [
+          {
+            "id": "q3-p1",
+            "leaderId": "p4",
+            "team": ["p1", "p2", "p3"],
+            "votes": {
+              "p1": "approve",
+              "p2": "approve",
+              "p3": "approve",
+              "p4": "approve",
+              "p5": "reject",
+              "p6": "reject",
+              "p7": "reject"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          }
+        ],
+        "result": {
+          "failCount": 0
+        }
+      },
+      {
+        "proposals": [
+          {
+            "id": "q4-p1",
+            "leaderId": "p5",
+            "team": ["p1", "p2", "p3", "p4"],
+            "votes": {
+              "p1": "approve",
+              "p2": "approve",
+              "p3": "approve",
+              "p4": "approve",
+              "p5": "reject",
+              "p6": "reject",
+              "p7": "approve"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          }
+        ],
+        "result": {
+          "failCount": 0
+        }
+      }
+    ],
+    "assassination": {
+      "targetId": "p2",
+      "manualHit": null
+    },
+    "lady": {
+      "initialHolderId": "p7",
+      "uses": [
+        {
+          "afterQuest": 1,
+          "holderId": "p7",
+          "targetId": "p3",
+          "declared": "good",
+          "note": "看起來可信"
+        },
+        {
+          "afterQuest": 2,
+          "holderId": "p3",
+          "targetId": "p4",
+          "declared": "good",
+          "note": ""
+        }
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "c7d1e2f3-0a1b-4c2d-8e3f-405162738495",
+    "createdAt": "2026-11-01T13:30:00.000Z",
+    "updatedAt": "2026-11-18T23:03:09.724Z",
+    "savedAt": null,
+    "name": {
+      "custom": null,
+      "auto": "2026-11-01 第1場",
+      "seq": 1
+    },
+    "note": "",
+    "players": [
+      {
+        "id": "p1",
+        "name": "A"
+      },
+      {
+        "id": "p2",
+        "name": "B"
+      },
+      {
+        "id": "p3",
+        "name": "C"
+      },
+      {
+        "id": "p4",
+        "name": "D"
+      },
+      {
+        "id": "p5",
+        "name": "E"
+      }
+    ],
+    "firstLeaderId": "p1",
+    "roleConfig": null,
+    "roleAssignment": {},
+    "rounds": [
+      {
+        "proposals": [
+          {
+            "id": "q1-p1",
+            "leaderId": "p1",
+            "team": ["p1", "p2"],
+            "votes": {
+              "p1": "reject",
+              "p2": "reject",
+              "p3": "reject",
+              "p4": "reject",
+              "p5": "reject"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          },
+          {
+            "id": "q1-p2",
+            "leaderId": "p2",
+            "team": ["p2", "p3"],
+            "votes": {
+              "p1": "reject",
+              "p2": "approve",
+              "p3": "approve",
+              "p4": "reject",
+              "p5": "reject"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          }
+        ],
+        "result": null
+      }
+    ],
+    "assassination": null,
+    "lady": null
+  }
+]
