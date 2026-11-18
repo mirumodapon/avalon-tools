@@ -1,6 +1,14 @@
-import { cellAnomaly, historyRows, type Game, type ViewMode } from '@avalon/core'
+import {
+  cellAnomaly,
+  historyRows,
+  playerFaction,
+  teamHasEvil,
+  type Game,
+  type ViewMode,
+} from '@avalon/core'
 import { IconCircleCheckFilled, IconCircleXFilled } from '@tabler/icons-react'
 import { Fragment } from 'react'
+import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
 import { AnomalyMark, CrownMark, ForcedBadge, VoteMark } from './marks.tsx'
 import { cx } from './ui.tsx'
 
@@ -8,7 +16,16 @@ import { cx } from './ui.tsx'
  * Paper-style record sheet: one row per proposal, one column per player.
  * The view mode only changes presentation; data is always full votes.
  */
-export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMode }) {
+export function HistoryTable({
+  game,
+  viewMode,
+  showRoles = false,
+}: {
+  game: Game
+  viewMode: ViewMode
+  /** When false, no role or faction information is rendered at all. */
+  showRoles?: boolean
+}) {
   const rows = historyRows(game)
   if (rows.length === 0) {
     return <p className="py-8 text-center text-subtext0">還沒有任何派票紀錄</p>
@@ -38,6 +55,9 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
                 <span className="mx-auto flex max-h-24 flex-col items-center gap-0.5">
                   <span className="truncate text-sm [writing-mode:vertical-rl]">{p.name}</span>
                   <span className="text-[10px] text-subtext0">{i + 1}</span>
+                  {showRoles && game.roleAssignment[p.id] && (
+                    <RoleIcon role={game.roleAssignment[p.id]!} size={16} />
+                  )}
                 </span>
               </th>
             ))}
@@ -54,6 +74,8 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
             const p = row.proposal
             const newQuest = idx > 0 && rows[idx - 1]!.questIndex !== row.questIndex
             const border = newQuest ? 'border-t-2 border-surface2' : 'border-t border-surface0'
+            const evilTeam = showRoles && teamHasEvil(game, p.team)
+            const failed = row.quest?.outcome === 'fail'
             return (
               <Fragment key={p.id}>
                 <tr>
@@ -62,8 +84,10 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
                     className={cx(
                       'sticky left-0 z-10 bg-base px-1 py-1 text-left font-semibold whitespace-nowrap',
                       border,
+                      evilTeam && 'shadow-[inset_3px_0_0_var(--color-evil)]',
                     )}
                   >
+                    {evilTeam && <span className="sr-only">隊伍含壞人，</span>}
                     {row.questIndex + 1}-{row.attempt}
                     {p.forced && <ForcedBadge className="ml-1 !px-1 !py-0 [&>svg]:size-3" />}
                   </th>
@@ -72,6 +96,8 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
                     const leader = p.leaderId === pl.id
                     const vote = p.votes[pl.id]!
                     const anomaly = cellAnomaly(p, pl.id)
+                    const faction = showRoles ? playerFaction(game, pl.id) : null
+                    const exposed = showRoles && failed && inTeam && faction === 'evil'
                     return (
                       <td
                         key={pl.id}
@@ -79,12 +105,14 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
                           'relative h-10 min-w-8 px-0.5 text-center',
                           border,
                           inTeam && 'bg-accent/15',
+                          exposed && 'ring-2 ring-evil ring-inset',
                         )}
                       >
                         <span className="sr-only">
                           {pl.name}
                           {leader && '，隊長'}
                           {inTeam && '，隊員'}
+                          {exposed && '，失敗任務中的壞人'}
                         </span>
                         {leader && (
                           <span className="absolute top-0 left-1/2 -translate-x-1/2 leading-none">
@@ -97,7 +125,10 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
                               <VoteMark vote={vote} size={16} />
                             </span>
                           ) : anomaly ? (
-                            <AnomalyMark kind={anomaly} size={16} />
+                            <span className="inline-flex items-center">
+                              <AnomalyMark kind={anomaly} size={16} />
+                              {faction && <FactionMark faction={faction} size={11} />}
+                            </span>
                           ) : (
                             <span className="text-overlay0" aria-hidden>
                               ·
@@ -135,12 +166,12 @@ export function HistoryTable({ game, viewMode }: { game: Game; viewMode: ViewMod
           })}
         </tbody>
       </table>
-      <Legend viewMode={viewMode} />
+      <Legend viewMode={viewMode} showRoles={showRoles} />
     </div>
   )
 }
 
-function Legend({ viewMode }: { viewMode: ViewMode }) {
+function Legend({ viewMode, showRoles }: { viewMode: ViewMode; showRoles: boolean }) {
   return (
     <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-subtext0">
       <li className="flex items-center gap-1">
@@ -165,6 +196,20 @@ function Legend({ viewMode }: { viewMode: ViewMode }) {
           </li>
           <li>
             <AnomalyMark kind="inside-reject" showLabel size={14} />
+          </li>
+        </>
+      )}
+      {showRoles && (
+        <>
+          <li className="flex items-center gap-1">
+            <span className="inline-block h-3 w-1 bg-evil" aria-hidden /> 隊伍含壞人
+          </li>
+          <li className="flex items-center gap-1">
+            <span
+              className="inline-block size-3 rounded-sm ring-2 ring-evil ring-inset"
+              aria-hidden
+            />
+            失敗任務中的壞人
           </li>
         </>
       )}

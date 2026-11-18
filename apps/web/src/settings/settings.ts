@@ -13,6 +13,8 @@ export interface Settings {
   roster: string[]
   /** How votes are displayed; the toggle on every history view updates this. */
   viewMode: ViewMode
+  /** Show roles/factions when browsing history (in-progress games always start hidden). */
+  showRoles: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -21,6 +23,7 @@ export const DEFAULT_SETTINGS: Settings = {
   forcedAutoReject: true,
   roster: [],
   viewMode: 'full',
+  showRoles: false,
 }
 
 function pick<T>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -41,6 +44,7 @@ export function normalizeSettings(value: unknown): Settings {
     forcedAutoReject: bool(v.forcedAutoReject, d.forcedAutoReject),
     roster: normalizeRoster(v.roster),
     viewMode: pick(v.viewMode, ['full', 'anomaly'], d.viewMode),
+    showRoles: bool(v.showRoles, d.showRoles),
   }
 }
 
