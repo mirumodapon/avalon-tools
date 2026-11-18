@@ -13,7 +13,7 @@ export const TOOLS = [
     path: '/',
     icon: 'IconBuildingCastle',
     accent: 'mauve',
-    status: 'coming-soon',
+    status: 'stable',
     version: '0.0.0',
   },
   {
