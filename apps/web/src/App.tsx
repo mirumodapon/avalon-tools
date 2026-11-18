@@ -1,4 +1,4 @@
-import { IconCrown } from '@tabler/icons-react';
+import { IconCrown } from '@tabler/icons-react'
 
 export function App() {
   return (
@@ -7,5 +7,5 @@ export function App() {
         <IconCrown aria-hidden /> 阿瓦隆紀錄
       </h1>
     </main>
-  );
+  )
 }
