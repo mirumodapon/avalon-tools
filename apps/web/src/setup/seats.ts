@@ -17,3 +17,16 @@ export function nextEmptySeat(names: readonly string[], from = 0): number {
   }
   return -1
 }
+
+/**
+ * Seats roster picks in order from seat 1. Seats after the picks keep their
+ * previous names unless that name was just picked (avoids duplicates).
+ */
+export function seatPicked(
+  prev: readonly string[],
+  picked: readonly string[],
+  count: number,
+): string[] {
+  const rest = prev.slice(picked.length).map((n) => (picked.includes(n.trim()) ? '' : n))
+  return Array.from({ length: count }, (_, i) => picked[i] ?? rest[i - picked.length] ?? '')
+}

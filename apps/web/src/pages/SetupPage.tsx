@@ -47,7 +47,8 @@ import { navigate } from '../router.ts'
 import { mergeNames } from '../settings/roster.ts'
 import { useSettings } from '../settings/store.ts'
 import { RosterPicker } from '../setup/RosterPicker.tsx'
-import { emptySeats, nextEmptySeat, resizeSeats } from '../setup/seats.ts'
+import { emptySeats, nextEmptySeat, resizeSeats, seatPicked } from '../setup/seats.ts'
+import { SeatNo } from '../play/ProposalForm.tsx'
 
 /**
  * New game setup. With `from`, players and role config are copied from that game
@@ -127,15 +128,18 @@ export function SetupPage({ from }: { from?: string }) {
 
   /** Seats the picked roster names in order and sizes the game to match. */
   function applyRoster(picked: string[]) {
-    const n = picked.length as PlayerCount
-    setCount(n)
-    setNames(picked)
-    setActive(-1)
-    setLeader(0)
-    if (roleConfig) setRoleConfig(defaultRoleConfig(n))
+    // Fewer picks than seats is fine; only grow the table when more were picked.
+    const n = Math.max(count, picked.length) as PlayerCount
+    const next = seatPicked(names, picked, n)
+    if (n !== count) {
+      setCount(n)
+      if (roleConfig) setRoleConfig(defaultRoleConfig(n))
+      setLadyOn(ladyEnabledByDefault(n))
+      setLadyHolder(null)
+    }
+    setNames(next)
+    setActive(nextEmptySeat(next, picked.length))
     setAssignment({})
-    setLadyOn(ladyEnabledByDefault(n))
-    setLadyHolder(null)
   }
 
   function clearSeats() {
@@ -205,32 +209,32 @@ export function SetupPage({ from }: { from?: string }) {
         </Card>
 
         <Card>
-          <div className="mb-3 flex justify-end gap-1">
+          <div className="mb-3 flex items-center gap-2">
+            <RosterPicker roster={roster} onDone={applyRoster} className="flex-1" />
             {recent && (
-              <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={loadRecent}>
-                <IconHistory size={16} aria-hidden />
-                帶入最近玩家
-              </Button>
+              <IconButton label="帶入最近一場的玩家" onClick={loadRecent} className="bg-surface0">
+                <IconHistory size={20} />
+              </IconButton>
             )}
-            <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={clearSeats}>
-              <IconEraser size={16} aria-hidden />
-              清空
-            </Button>
+            <IconButton label="清空所有座位" onClick={clearSeats} className="bg-surface0">
+              <IconEraser size={20} />
+            </IconButton>
           </div>
-          <div className="mb-3">
-            <RosterPicker roster={roster} onDone={applyRoster} />
-          </div>
-          <ol className="space-y-2">
+          {roster.length === 0 && (
+            <p className="mb-3 text-xs text-subtext0">在設定頁建立玩家名冊後，就能依序點選帶入。</p>
+          )}
+
+          <ol className="divide-y divide-surface0">
             {names.map((name, i) => (
-              <li key={i} className="flex items-center gap-1">
-                <span className="w-6 shrink-0 text-center text-sm text-subtext0">{i + 1}</span>
+              <li key={i} className="flex items-center gap-1 py-1.5">
+                <SeatNo n={i + 1} />
                 <input
                   aria-label={`第 ${i + 1} 位玩家名稱`}
                   list="roster-names"
                   onFocus={() => setActive(i)}
                   className={cx(
-                    'min-h-11 min-w-0 flex-1 rounded-xl border bg-base px-3 focus:border-accent focus:outline-none',
-                    active === i ? 'border-accent ring-1 ring-accent' : 'border-overlay0',
+                    'ml-1 min-h-11 min-w-0 flex-1 rounded-xl border bg-base px-3 focus:border-accent focus:outline-none',
+                    active === i ? 'border-accent' : 'border-overlay0',
                   )}
                   value={name}
                   placeholder={`${i + 1}號`}
@@ -243,7 +247,7 @@ export function SetupPage({ from }: { from?: string }) {
                   label={leader === i ? '第一位隊長' : '設為第一位隊長'}
                   aria-pressed={leader === i}
                   onClick={() => setLeader(i)}
-                  className={cx(leader === i ? 'text-crown-fg' : 'text-overlay0')}
+                  className={cx('w-10', leader === i ? 'text-crown-fg!' : 'text-overlay0!')}
                 >
                   <IconCrown size={22} />
                 </IconButton>
@@ -251,7 +255,7 @@ export function SetupPage({ from }: { from?: string }) {
                   label="往上移"
                   disabled={i === 0}
                   onClick={() => move(i, -1)}
-                  className="w-8"
+                  className="w-9"
                 >
                   <IconArrowUp size={18} />
                 </IconButton>
@@ -259,7 +263,7 @@ export function SetupPage({ from }: { from?: string }) {
                   label="往下移"
                   disabled={i === names.length - 1}
                   onClick={() => move(i, 1)}
-                  className="w-8"
+                  className="w-9"
                 >
                   <IconArrowDown size={18} />
                 </IconButton>
@@ -274,19 +278,16 @@ export function SetupPage({ from }: { from?: string }) {
             ))}
           </datalist>
 
-          {roster.length === 0 && (
-            <p className="mt-3 text-sm text-subtext0">
-              提示：在設定頁建立玩家名冊，開局時就能依序點選玩家。
+          <div className="mt-2 space-y-1 border-t border-surface0 pt-2 text-sm">
+            <p className="flex items-center gap-1 text-subtext0">
+              <IconCrown size={16} className="text-crown-fg" aria-hidden />
+              第一位隊長：
+              <span className="font-semibold text-text">
+                {names[leader]?.trim() || `${leader + 1}號`}
+              </span>
             </p>
-          )}
-
-          {duplicate && (
-            <p className="mt-2 text-sm text-fail-fg">玩家名稱重複，記錄時可能難以分辨</p>
-          )}
-          <p className="mt-2 flex items-center gap-1 text-sm text-subtext0">
-            <IconCrown size={16} className="text-crown-fg" aria-hidden />
-            第一位隊長：{names[leader]?.trim() || `${leader + 1}號`}
-          </p>
+            {duplicate && <p className="text-fail-fg">玩家名稱重複，記錄時可能難以分辨</p>}
+          </div>
         </Card>
 
         <Card>
@@ -354,7 +355,10 @@ export function SetupPage({ from }: { from?: string }) {
                 onClick={() => setShowAssign(true)}
               >
                 <IconEye size={18} aria-hidden />
-                現在指派角色（也可在遊戲中或結算時再填）
+                <span className="flex flex-col items-start leading-tight">
+                  <span>現在指派角色</span>
+                  <span className="text-xs text-subtext0">也可在遊戲中或結算時再填</span>
+                </span>
               </Button>
             )}
           </div>
