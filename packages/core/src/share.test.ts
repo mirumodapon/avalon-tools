@@ -52,7 +52,7 @@ function fullGame(): Game {
     })
   }
   for (let i = 0; i < 4; i++) play(['p1', 'p2', 'p3'], ['p1'])
-  play(['p1', 'p2', 'p3'], [], 'anomalies') // forced
+  play(['p1', 'p2', 'p3'], ids, 'anomalies') // forced (5th) proposal, approved
   g = gameReducer(g, { type: 'recordQuest', failCount: 0 })
   play(['p4', 'p5', 'p6', 'p7'], ids.slice(0, 7), 'anomalies')
   g = gameReducer(g, { type: 'recordQuest', failCount: 1 })

@@ -118,4 +118,21 @@ describe('PlayPage', () => {
     pickTeam('1號', '2號')
     expect(screen.getByRole<HTMLInputElement>('radio', { name: /派跳/ }).checked).toBe(true)
   })
+
+  it('gives evil the win when the 5th proposal is voted down', () => {
+    useSettings.setState({
+      settings: { ...useSettings.getState().settings, forcedAutoApprove: false },
+    })
+    const current = setup()
+    for (let i = 0; i < 4; i++) {
+      pickTeam('1號', '2號')
+      fireEvent.click(screen.getByRole('button', { name: /送出派票/ }))
+    }
+    pickTeam('1號', '2號')
+    expect(screen.getByText('→ 否決，壞人勝利')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: /送出派票/ }))
+    expect(deriveState(current())).toMatchObject({ winner: 'evil', winReason: 'forced-rejected' })
+    expect(screen.getByText('壞人勝利')).toBeTruthy()
+    expect(screen.getByText(/強制局未通過/)).toBeTruthy()
+  })
 })

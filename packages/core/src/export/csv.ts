@@ -40,7 +40,7 @@ export function gameToCsv(game: Game, opts: ExportOptions): string {
       p.forced ? '是' : '',
       row.approvals,
       ...game.players.map((pl) => voteCell(row, pl.id, opts.viewMode, 'text')),
-      p.forced ? '強制' : row.approved ? '通過' : '否決',
+      row.approved ? '通過' : '否決',
       row.quest ? (row.quest.outcome === 'success' ? '成功' : '失敗') : '',
       row.quest ? row.quest.failCount : '',
       '',

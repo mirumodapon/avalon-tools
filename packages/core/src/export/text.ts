@@ -59,7 +59,7 @@ export function gameToText(game: Game, opts: ExportOptions): string {
     lines.push('', `任務${q + 1}・${teamSize(n, q)}人${twoFails}`)
     for (const row of rows.filter((r) => r.questIndex === q)) {
       const p = row.proposal
-      const verdict = p.forced ? '⚠️強制出任務' : row.approved ? '通過' : '否決'
+      const verdict = `${p.forced ? '⚠️強制局' : ''}${row.approved ? '通過' : '否決'}`
       lines.push(
         `${row.attempt}. 👑${playerName(game, p.leaderId)}｜隊員：${names(game, p.team)}｜${verdict}`,
         `   ${voteLine(game, row, opts)}`,

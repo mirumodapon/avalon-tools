@@ -32,7 +32,11 @@ export class GameRuleError extends Error {
 
 export type Phase = 'proposal' | 'quest' | 'lady' | 'assassination' | 'finished'
 export type QuestOutcome = 'success' | 'fail'
-export type WinReason = 'quests-failed' | 'assassination-hit' | 'assassination-missed'
+export type WinReason =
+  | 'quests-failed'
+  | 'forced-rejected'
+  | 'assassination-hit'
+  | 'assassination-missed'
 
 export interface GameState {
   phase: Phase
@@ -43,7 +47,7 @@ export interface GameState {
   leaderId: PlayerId
   teamSize: number
   failsRequired: number
-  /** The proposal being recorded is the forced 5th one. */
+  /** The proposal being recorded is the 5th (last) one: if it fails, evil wins. */
   forced: boolean
   outcomes: (QuestOutcome | null)[]
   successes: number
@@ -126,7 +130,7 @@ export function allProposals(game: Pick<Game, 'rounds'>): Proposal[] {
 }
 
 export function isProposalApproved(game: Pick<Game, 'players'>, proposal: Proposal): boolean {
-  return proposal.forced || isMajority(countApprovals(proposal.votes), game.players.length)
+  return isMajority(countApprovals(proposal.votes), game.players.length)
 }
 
 export function questOutcome(
@@ -189,6 +193,28 @@ export function deriveState(game: Game): GameState {
       forced: false,
       winner: 'evil',
       winReason: 'quests-failed',
+    }
+  }
+
+  // The 5th proposal of a quest was voted down: evil wins immediately.
+  const lastOfRound = lastRound?.proposals.at(-1)
+  if (
+    lastRound &&
+    !lastRound.result &&
+    lastOfRound?.forced &&
+    !isProposalApproved(game, lastOfRound)
+  ) {
+    return {
+      ...base,
+      phase: 'finished',
+      questIndex: lastIndex,
+      attempt: lastRound.proposals.length,
+      leaderId: lastOfRound.leaderId,
+      teamSize: teamSize(n, lastIndex),
+      failsRequired: failsRequired(n, lastIndex),
+      forced: false,
+      winner: 'evil',
+      winReason: 'forced-rejected',
     }
   }
 

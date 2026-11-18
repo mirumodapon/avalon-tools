@@ -59,7 +59,6 @@ export function resultText(row: HistoryRow): string {
   if (row.quest) {
     return `任務${row.quest.outcome === 'success' ? '成功' : '失敗'}（${row.quest.failCount} 張失敗）`
   }
-  if (row.proposal.forced) return '強制出任務'
   return row.approved ? '通過' : '否決'
 }
 
@@ -85,9 +84,11 @@ export function winnerText(game: Game): string {
   const reason =
     s.winReason === 'quests-failed'
       ? '3 個任務失敗'
-      : s.winReason === 'assassination-hit'
-        ? '刺客刺中梅林'
-        : '刺客沒有刺中梅林'
+      : s.winReason === 'forced-rejected'
+        ? '強制局未通過'
+        : s.winReason === 'assassination-hit'
+          ? '刺客刺中梅林'
+          : '刺客沒有刺中梅林'
   return `${WINNER_LABEL[s.winner]}勝利（${reason}）`
 }
 

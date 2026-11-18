@@ -5,6 +5,7 @@ import { Card, cx } from '../components/ui.tsx'
 
 const REASON: Record<string, string> = {
   'quests-failed': '3 個任務失敗',
+  'forced-rejected': '強制局未通過',
   'assassination-hit': '刺客刺中梅林',
   'assassination-missed': '刺客沒有刺中梅林',
 }
