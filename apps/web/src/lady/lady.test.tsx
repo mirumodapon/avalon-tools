@@ -55,6 +55,13 @@ describe('Lady of the Lake UI', () => {
     expect(deriveState(g).phase).toBe('proposal')
   })
 
+  it('has no note field', () => {
+    useGames.setState({ games: [atLady()] })
+    render(<PlayPage id="g" />)
+    expect(screen.queryByRole('button', { name: /備註/ })).toBeNull()
+    expect(screen.queryByRole('textbox')).toBeNull()
+  })
+
   it('cannot be skipped', () => {
     useGames.setState({ games: [atLady()] })
     render(<PlayPage id="g" />)

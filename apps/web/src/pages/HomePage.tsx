@@ -7,6 +7,7 @@ import {
   IconPlayerPlay,
   IconPlus,
   IconSearch,
+  IconShare2,
   IconSun,
   IconTrash,
   IconUsers,
@@ -29,6 +30,7 @@ import { useGames } from '../games/store.ts'
 import { useNamer } from '../naming/useDisplayName.ts'
 import { navigate } from '../router.ts'
 import { ScanButton } from '../share/QrScanner.tsx'
+import { ShareSheet } from '../share/ShareButton.tsx'
 
 const WINNER_OPTIONS: { value: WinnerFilter; label: string }[] = [
   { value: 'all', label: '全部勝方' },
@@ -56,6 +58,7 @@ export function HomePage() {
   const [filter, setFilter] = useState<GameFilter>(EMPTY_FILTER)
   const [menuFor, setMenuFor] = useState<Game | null>(null)
   const [deleting, setDeleting] = useState<Game | null>(null)
+  const [sharing, setSharing] = useState<Game | null>(null)
 
   const inProgress = games.filter(isInProgress)
   const shown = filterGames(games, filter, nameOf)
@@ -200,6 +203,16 @@ export function HomePage() {
             <Button
               className="w-full justify-start"
               onClick={() => {
+                setSharing(menuFor)
+                setMenuFor(null)
+              }}
+            >
+              <IconShare2 size={20} aria-hidden />
+              分享
+            </Button>
+            <Button
+              className="w-full justify-start"
+              onClick={() => {
                 const id = menuFor.id
                 setMenuFor(null)
                 navigate({ name: 'new', from: id })
@@ -221,6 +234,7 @@ export function HomePage() {
           </div>
         )}
       </Sheet>
+      {sharing && <ShareSheet game={sharing} open onClose={() => setSharing(null)} />}
       <ConfirmSheet
         open={deleting !== null}
         title="刪除遊戲？"
