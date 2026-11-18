@@ -13,7 +13,9 @@ import {
   type Game,
   type HistoryRow,
   type LadyUse,
+  type RoleId,
   type ViewMode,
+  ROLE_IDS,
 } from '@avalon/core'
 import {
   IconAlertCircle,
@@ -113,7 +115,7 @@ export function HistoryTable({
         </div>
       ))}
 
-      <Legend viewMode={viewMode} showRoles={showRoles} />
+      <Legend game={game} viewMode={viewMode} showRoles={showRoles} />
     </div>
   )
 }
@@ -443,42 +445,104 @@ function LadyChain({
   )
 }
 
-function Legend({ viewMode, showRoles }: { viewMode: ViewMode; showRoles: boolean }) {
+/** Roles in this game, from the assignment and the role config, in standard order. */
+function rolesInGame(game: Game): RoleId[] {
+  const present = new Set<RoleId>(Object.values(game.roleAssignment).filter(Boolean) as RoleId[])
+  for (const [id, n] of Object.entries(game.roleConfig ?? {})) if (n) present.add(id as RoleId)
+  return ROLE_IDS.filter((id) => present.has(id))
+}
+
+function Legend({
+  game,
+  viewMode,
+  showRoles,
+}: {
+  game: Game
+  viewMode: ViewMode
+  showRoles: boolean
+}) {
+  const roles = showRoles ? rolesInGame(game) : []
+  const item = 'flex items-center gap-1'
   return (
-    <ul className="flex flex-wrap gap-x-3 gap-y-1 pt-1 text-xs text-subtext0">
-      <li className="flex items-center gap-1">
-        <CrownMark size={12} /> 隊長
-      </li>
-      <li className="flex items-center gap-1">
-        <span className="inline-block size-3 rounded-sm bg-accent/30" aria-hidden /> 隊員
-      </li>
-      {viewMode === 'full' ? (
-        <>
-          <li>
-            <VoteMark vote="approve" showLabel size={12} />
-          </li>
-          <li>
-            <VoteMark vote="reject" showLabel size={12} />
-          </li>
-        </>
-      ) : (
-        <>
-          <li>
-            <AnomalyMark kind="outside-approve" showLabel size={12} />
-          </li>
-          <li>
-            <AnomalyMark kind="inside-reject" showLabel size={12} />
-          </li>
-        </>
-      )}
-      <li className="flex items-center gap-1">
-        <IconAlertTriangle size={12} className="text-forced-fg" aria-hidden /> 強制局
-      </li>
-      {showRoles && (
-        <li className="flex items-center gap-1">
-          <span className="inline-block h-3 w-1 bg-evil" aria-hidden /> 隊伍含壞人
+    <div className="space-y-1.5 pt-1 text-xs text-subtext0">
+      <ul className="flex flex-wrap gap-x-3 gap-y-1">
+        <li className={item}>
+          <CrownMark size={12} /> 隊長
         </li>
+        <li className={item}>
+          <span className="inline-block size-3 rounded-sm bg-accent/30" aria-hidden /> 隊員
+        </li>
+        {viewMode === 'full' ? (
+          <>
+            <li>
+              <VoteMark vote="approve" showLabel size={12} />
+            </li>
+            <li>
+              <VoteMark vote="reject" showLabel size={12} />
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <AnomalyMark kind="outside-approve" showLabel size={12} />
+            </li>
+            <li>
+              <AnomalyMark kind="inside-reject" showLabel size={12} />
+            </li>
+          </>
+        )}
+        <li className={item}>
+          <IconAlertTriangle size={12} className="text-forced-fg" aria-hidden /> 強制局
+        </li>
+      </ul>
+      {game.lady && (
+        <ul className="flex flex-wrap gap-x-3 gap-y-1" aria-label="湖中女神圖例">
+          <li className={item}>
+            <span
+              className="rounded-full bg-lady px-1 text-[10px] font-semibold text-on-fill"
+              aria-hidden
+            >
+              N
+            </span>
+            當局持有者
+          </li>
+          <li className={item}>
+            <VerdictIcon declared="good" size={12} />
+            <span aria-hidden>宣告好人</span>
+          </li>
+          <li className={item}>
+            <VerdictIcon declared="evil" size={12} />
+            <span aria-hidden>宣告壞人</span>
+          </li>
+          {showRoles && (
+            <li className={item}>
+              <IconAlertTriangle size={12} className="text-lie-fg" aria-hidden /> 說謊
+            </li>
+          )}
+        </ul>
       )}
-    </ul>
+      {showRoles && (
+        <ul className="flex flex-wrap gap-x-3 gap-y-1" aria-label="角色圖例">
+          {roles.map((r) => (
+            <li key={r}>
+              <RoleIcon role={r} size={12} showName />
+            </li>
+          ))}
+          {viewMode === 'anomaly' && (
+            <>
+              <li>
+                <FactionMark faction="good" size={12} showLabel />
+              </li>
+              <li>
+                <FactionMark faction="evil" size={12} showLabel />
+              </li>
+            </>
+          )}
+          <li className={item}>
+            <span className="inline-block h-3 w-1 bg-evil" aria-hidden /> 隊伍含壞人
+          </li>
+        </ul>
+      )}
+    </div>
   )
 }
