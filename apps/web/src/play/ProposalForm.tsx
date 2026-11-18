@@ -18,6 +18,7 @@ import {
   draftVotes,
   emptyDraft,
   forcedRejectVotes,
+  initialInputMode,
   setAll,
   switchMode,
   toggleFlag,
@@ -49,7 +50,9 @@ export function ProposalForm({
 }) {
   const settings = useSettings((s) => s.settings)
   const ids = playerIds(game)
-  const [draft, setDraft] = useState(() => emptyDraft(settings.defaultInputMode))
+  const [draft, setDraft] = useState(() =>
+    emptyDraft(initialInputMode(game, settings.defaultInputMode)),
+  )
   const [step, setStep] = useState<Step>('team')
   const [leaderId, setLeaderId] = useState(state.leaderId)
   const [pickingLeader, setPickingLeader] = useState(false)

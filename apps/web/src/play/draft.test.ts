@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { draftVotes, emptyDraft, setAll, switchMode, toggleFlag, toggleTeam } from './draft.ts'
+import {
+  draftVotes,
+  emptyDraft,
+  initialInputMode,
+  setAll,
+  switchMode,
+  toggleFlag,
+  toggleTeam,
+} from './draft.ts'
 
 const ids = ['p1', 'p2', 'p3', 'p4', 'p5']
 
@@ -70,5 +78,29 @@ describe('proposal draft', () => {
         Array(5).fill('reject'),
       )
     }
+  })
+})
+
+const proposal = (inputMode: 'approvals' | 'anomalies') => ({
+  id: 'x',
+  leaderId: 'p1',
+  team: [],
+  votes: {},
+  inputMode,
+  forced: false,
+})
+
+describe('initialInputMode', () => {
+  it('follows the last proposal of the game', () => {
+    const game = {
+      rounds: [
+        { proposals: [proposal('approvals')], result: { failCount: 0 } },
+        { proposals: [proposal('approvals'), proposal('anomalies')], result: null },
+      ],
+    }
+    expect(initialInputMode(game, 'approvals')).toBe('anomalies')
+  })
+  it('falls back to the remembered mode for a new game', () => {
+    expect(initialInputMode({ rounds: [] }, 'anomalies')).toBe('anomalies')
   })
 })

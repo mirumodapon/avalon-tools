@@ -108,4 +108,14 @@ describe('PlayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: '復原上一步' }))
     expect(current().rounds).toHaveLength(0)
   })
+
+  it('starts the next proposal in the mode last used and remembers it', () => {
+    setup()
+    pickTeam('1號', '2號')
+    fireEvent.click(screen.getByRole('radio', { name: /派跳/ }))
+    fireEvent.click(screen.getByRole('button', { name: /送出派票/ }))
+    expect(useSettings.getState().settings.defaultInputMode).toBe('anomalies')
+    pickTeam('1號', '2號')
+    expect(screen.getByRole<HTMLInputElement>('radio', { name: /派跳/ }).checked).toBe(true)
+  })
 })
