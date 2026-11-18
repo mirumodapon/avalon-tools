@@ -1,1 +1,16 @@
 @import 'tailwindcss';
+@import '@avalon/theme/tailwind.css';
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply min-h-dvh bg-base text-text antialiased;
+    font-family:
+      system-ui, -apple-system, 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
