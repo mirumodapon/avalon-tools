@@ -1,0 +1,61 @@
+import {
+  createGame,
+  defaultPlayerNames,
+  gameReducer,
+  makePlayers,
+  votesFromAnomalies,
+  votesFromApprovals,
+  type Game,
+} from '@avalon/core'
+import { render, screen, within } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import { HistoryTable } from './HistoryTable.tsx'
+
+const ids = ['p1', 'p2', 'p3', 'p4', 'p5']
+
+/** Same votes (p2 場內黑, p4 場外白), entered either way. */
+function game(mode: 'approvals' | 'anomalies'): Game {
+  const g = createGame({ id: 'g', now: 'n', players: makePlayers(defaultPlayerNames(5)) })
+  const team = ['p1', 'p2']
+  const votes =
+    mode === 'approvals'
+      ? votesFromApprovals(ids, ['p1', 'p4'])
+      : votesFromAnomalies(ids, team, { outsideApprove: ['p4'], insideReject: ['p2'] })
+  return gameReducer(g, { type: 'propose', team, votes, inputMode: mode })
+}
+
+function cells() {
+  const row = screen.getAllByRole('row')[1]!
+  return within(row).getAllByRole('cell')
+}
+
+describe('HistoryTable', () => {
+  for (const mode of ['approvals', 'anomalies'] as const) {
+    it(`shows full votes for a game entered in ${mode} mode`, () => {
+      render(<HistoryTable game={game(mode)} viewMode="full" />)
+      const c = cells().map((td) => td.textContent)
+      expect(c.slice(0, 5)).toEqual([
+        expect.stringContaining('贊成'),
+        expect.stringContaining('反對'),
+        expect.stringContaining('反對'),
+        expect.stringContaining('贊成'),
+        expect.stringContaining('反對'),
+      ])
+      expect(c[5]).toContain('否決')
+    })
+
+    it(`shows only anomalies for a game entered in ${mode} mode`, () => {
+      render(<HistoryTable game={game(mode)} viewMode="anomaly" />)
+      const c = cells().map((td) => td.textContent ?? '')
+      expect(c[0]).not.toMatch(/場|贊成|反對/)
+      expect(c[1]).toContain('場內黑')
+      expect(c[2]).not.toMatch(/場/)
+      expect(c[3]).toContain('場外白')
+    })
+  }
+
+  it('marks the leader and team members for screen readers', () => {
+    render(<HistoryTable game={game('approvals')} viewMode="full" />)
+    expect(cells()[0]!.textContent).toContain('1號，隊長，隊員')
+  })
+})
