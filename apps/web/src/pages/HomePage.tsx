@@ -28,6 +28,7 @@ import {
 import { useGames } from '../games/store.ts'
 import { useNamer } from '../naming/useDisplayName.ts'
 import { navigate } from '../router.ts'
+import { ScanButton } from '../share/QrScanner.tsx'
 
 const WINNER_OPTIONS: { value: WinnerFilter; label: string }[] = [
   { value: 'all', label: '全部勝方' },
@@ -62,7 +63,15 @@ export function HomePage() {
     filter !== EMPTY_FILTER && JSON.stringify(filter) !== JSON.stringify(EMPTY_FILTER)
 
   return (
-    <Page title="阿瓦隆紀錄" actions={<SettingsLink />}>
+    <Page
+      title="阿瓦隆紀錄"
+      actions={
+        <>
+          <ScanButton />
+          <SettingsLink />
+        </>
+      }
+    >
       <div className="flex-1 space-y-4 pt-2">
         {!ready && <p className="py-10 text-center text-subtext0">載入中…</p>}
 
