@@ -14,10 +14,10 @@
     "generate": "node scripts/generate.ts"
   },
   "dependencies": {
-    "@catppuccin/palette": "^1.8.0"
+    "@catppuccin/palette": "catalog:"
   },
   "devDependencies": {
     "@avalon/tsconfig": "workspace:*",
-    "vite": "^8.3.8"
+    "vite": "catalog:"
   }
 }

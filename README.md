@@ -40,6 +40,16 @@ pnpm typecheck
 pnpm test           # vitest（core、theme、web）
 ```
 
+### 依賴版本（pnpm catalog）
+
+所有外部套件的版本集中在 `pnpm-workspace.yaml` 的 `catalog:`，各 `package.json` 一律寫 `"catalog:"`（內部套件為 `workspace:*`）。新增或升級套件：
+
+```sh
+pnpm --filter @avalon/web add <pkg>   # catalogMode: strict 會自動寫入 catalog
+```
+
+`pnpm lint` 會一併執行 `scripts/check-catalog.ts`，若有 `package.json` 直接寫版本號就會失敗。
+
 其他指令：
 
 ```sh
