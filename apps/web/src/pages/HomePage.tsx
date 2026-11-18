@@ -23,7 +23,6 @@ import {
   type GameFilter,
   type WinnerFilter,
 } from '../games/filter.ts'
-import { BackupActions } from '../export/BackupActions.tsx'
 import { useGames } from '../games/store.ts'
 import { useNamer } from '../naming/useDisplayName.ts'
 import { navigate } from '../router.ts'
@@ -171,12 +170,6 @@ export function HomePage() {
             <p>還沒有任何遊戲紀錄</p>
             <p className="text-sm">按下方「開新局」開始記錄</p>
           </EmptyState>
-        )}
-
-        {ready && (
-          <section aria-label="備份" className="pt-2">
-            <BackupActions />
-          </section>
         )}
       </div>
 
