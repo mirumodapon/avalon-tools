@@ -31,17 +31,23 @@ export function PlayPage({ id }: { id: string }) {
   // In-progress games always start with roles hidden, regardless of the global setting.
   const [showRoles, setShowRoles] = useState(false)
   const viewMode = useSettings((st) => st.settings.viewMode)
+  const updateSettings = useSettings((st) => st.update)
 
   if (!game) return <NotFoundPage message="找不到這場遊戲" />
   const s = deriveState(game)
 
-  function dispatch(action: GameAction) {
+  /** Applies an action; returns false (and shows the error) when the rules reject it. */
+  function dispatch(action: GameAction): boolean {
     try {
       dispatchGame(id, action)
       setError(null)
+      return true
     } catch (e) {
-      if (e instanceof GameRuleError) setError(e.message)
-      else throw e
+      if (e instanceof GameRuleError) {
+        setError(e.message)
+        return false
+      }
+      throw e
     }
   }
 
@@ -108,7 +114,10 @@ export function PlayPage({ id }: { id: string }) {
               key={stepKey}
               game={game}
               state={s}
-              onSubmit={(p) => dispatch({ type: 'propose', ...p })}
+              onSubmit={(p) => {
+                if (dispatch({ type: 'propose', ...p }))
+                  updateSettings({ defaultInputMode: p.inputMode })
+              }}
             />
           )}
           {s.phase === 'quest' && (

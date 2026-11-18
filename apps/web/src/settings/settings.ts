@@ -5,7 +5,7 @@ import { normalizeRoster } from './roster.ts'
 
 export interface Settings {
   theme: ThemeSettings
-  /** Input mode preselected on every new proposal. */
+  /** Input mode for a game's first proposal; follows the mode last used to record. */
   defaultInputMode: InputMode
   /** Fill the forced (5th) proposal with all-reject votes and skip vote entry. */
   forcedAutoReject: boolean

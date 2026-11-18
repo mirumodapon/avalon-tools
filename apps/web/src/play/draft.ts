@@ -1,7 +1,9 @@
 import {
+  allProposals,
   convertFlags,
   uniformVotes,
   votesFromFlags,
+  type Game,
   type InputMode,
   type PlayerId,
   type Votes,
@@ -17,6 +19,11 @@ export interface ProposalDraft {
   flags: PlayerId[]
   /** Whether any vote has been entered; an untouched draft takes each mode's defaults. */
   touched: boolean
+}
+
+/** Follows the recorder's habit: the mode of the game's last proposal, else `fallback`. */
+export function initialInputMode(game: Pick<Game, 'rounds'>, fallback: InputMode): InputMode {
+  return allProposals(game).at(-1)?.inputMode ?? fallback
 }
 
 export function emptyDraft(mode: InputMode): ProposalDraft {
