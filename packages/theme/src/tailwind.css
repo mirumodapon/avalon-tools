@@ -60,6 +60,10 @@
   --color-crown-fg: var(--ctp-yellow-fg);
   --color-forced: var(--ctp-peach);
   --color-forced-fg: var(--ctp-peach-fg);
+  --color-lady: var(--ctp-teal);
+  --color-lady-fg: var(--ctp-teal-fg);
+  --color-lie: var(--ctp-peach);
+  --color-lie-fg: var(--ctp-peach-fg);
 
   --color-transparent: transparent;
   --color-current: currentColor;
