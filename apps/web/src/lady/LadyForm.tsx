@@ -18,7 +18,7 @@ export function LadyForm({
 }: {
   game: Game
   state: GameState
-  onUse: (input: { targetId: PlayerId; declared: LadyDeclaration; note: string }) => void
+  onUse: (input: { targetId: PlayerId; declared: LadyDeclaration }) => void
 }) {
   const holderId = state.ladyHolderId!
   // Survives closing the app mid-entry; tied to this game's next Lady use.
@@ -29,7 +29,6 @@ export function LadyForm({
     draftKey,
     'none',
   )
-  const [note, setNote] = usePersistentState('lady-note', draftKey, '')
   const useNumber = (game.lady?.uses.length ?? 0) + 1
 
   return (
@@ -50,10 +49,8 @@ export function LadyForm({
         holderId={holderId}
         targetId={targetId}
         declared={declared}
-        note={note}
         onTarget={setTargetId}
         onDeclared={setDeclared}
-        onNote={setNote}
       />
       <div className="flex-1" />
       <BottomBar>
@@ -61,7 +58,7 @@ export function LadyForm({
           variant="primary"
           className="w-full"
           disabled={!targetId}
-          onClick={() => targetId && onUse({ targetId, declared, note: note.trim() })}
+          onClick={() => targetId && onUse({ targetId, declared })}
         >
           <IconSend size={20} aria-hidden />
           {targetId ? '送出查驗' : '選擇查驗對象'}
