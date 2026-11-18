@@ -19,7 +19,7 @@ import {
   ladyTruth,
   validateLadyUses,
 } from './lady.ts'
-import type { Game } from './types.ts'
+import type { Game, LadyUse } from './types.ts'
 import { uniformVotes } from './votes.ts'
 
 function newGame(n = 7): Game {
@@ -132,18 +132,26 @@ function threeUses(): Game {
   return g
 }
 
-describe('editing and validation', () => {
+/** Replaces fields of one recorded use (simulates imported or hand-edited data). */
+function patchUse(g: Game, index: number, patch: Partial<LadyUse>): Game {
+  return {
+    ...g,
+    lady: { ...g.lady!, uses: g.lady!.uses.map((u, i) => (i === index ? { ...u, ...patch } : u)) },
+  }
+}
+
+describe('validation', () => {
   it('is valid as recorded', () => {
     expect(validateLadyUses(threeUses())).toEqual([[], []])
   })
 
   it('flags later uses when an earlier target changes', () => {
-    const g = run(threeUses(), { type: 'editLady', index: 0, patch: { targetId: 'p4' } })
+    const g = patchUse(threeUses(), 0, { targetId: 'p4' })
     expect(validateLadyUses(g)).toEqual([[], ['持有者與前一次查驗結果不一致']])
   })
 
   it('flags a target that already held the Lady', () => {
-    const g = run(threeUses(), { type: 'editLady', index: 1, patch: { targetId: 'p7' } })
+    const g = patchUse(threeUses(), 1, { targetId: 'p7' })
     expect(validateLadyUses(g)[1]).toEqual(['曾持有過湖中女神'])
   })
 
@@ -161,9 +169,10 @@ describe('editing and validation', () => {
     ).toThrow(GameRuleError)
   })
 
-  it('can change the initial holder and revalidates', () => {
-    const g = run(threeUses(), { type: 'setLady', lady: { initialHolderId: 'p6' } })
-    expect(validateLadyUses(g)[0]).toContain('持有者與前一次查驗結果不一致')
+  it('flags uses that do not follow the initial holder', () => {
+    const g = threeUses()
+    const moved = { ...g, lady: { ...g.lady!, initialHolderId: 'p6' } }
+    expect(validateLadyUses(moved)[0]).toContain('持有者與前一次查驗結果不一致')
   })
 })
 
@@ -181,9 +190,9 @@ describe('truth and lies', () => {
     expect(ladyHolderStats(g)).toEqual([
       { playerId: 'p7', uses: 1, honest: 0, lied: 1, unknown: 0 },
     ])
-    const honest = run(g, { type: 'editLady', index: 0, patch: { declared: 'evil' } })
+    const honest = patchUse(g, 0, { declared: 'evil' })
     expect(ladyLied(honest, honest.lady!.uses[0]!)).toBe(false)
-    const silent = run(g, { type: 'editLady', index: 0, patch: { declared: 'none' } })
+    const silent = patchUse(g, 0, { declared: 'none' })
     expect(ladyLied(silent, silent.lady!.uses[0]!)).toBe(false)
   })
 
