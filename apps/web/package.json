@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "icons": "node scripts/icon.ts && pwa-assets-generator"
   },
   "dependencies": {
     "@avalon/core": "workspace:*",
@@ -21,14 +22,18 @@
   },
   "devDependencies": {
     "@avalon/tsconfig": "workspace:*",
+    "@catppuccin/palette": "^1.8.0",
     "@tailwindcss/vite": "^4.3.5",
     "@testing-library/react": "^16.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vite-pwa/assets-generator": "^2.0.0",
     "@vitejs/plugin-react": "^6.3.0",
     "fake-indexeddb": "^6.2.8",
     "jsdom": "^31.0.1",
     "tailwindcss": "^4.3.5",
-    "vite": "^8.3.8"
+    "vite": "^8.3.8",
+    "vite-plugin-pwa": "^2.0.0",
+    "workbox-window": "^7.4.1"
   }
 }
