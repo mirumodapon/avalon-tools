@@ -14,6 +14,7 @@ import { INPUT_MODE_OPTIONS } from '../play/ProposalForm.tsx'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings/store.ts'
 import { clearNamespace } from '../storage/storage.ts'
+import { APP_VERSION } from '../version.ts'
 
 export function SettingsPage() {
   const settings = useSettings((s) => s.settings)
@@ -98,6 +99,8 @@ export function SettingsPage() {
             清除所有資料
           </Button>
         </Card>
+
+        <p className="pb-2 text-center text-xs text-subtext0">版本 {APP_VERSION}</p>
       </div>
 
       <ConfirmSheet

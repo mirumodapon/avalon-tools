@@ -62,3 +62,10 @@ describe('SettingsPage', () => {
     expect(useSettings.getState().settings.roster).toEqual([])
   })
 })
+
+describe('version', () => {
+  it('shows the build version at the bottom of settings', () => {
+    render(<SettingsPage />)
+    expect(screen.getByText('版本 0.0.0-test')).toBeTruthy()
+  })
+})
