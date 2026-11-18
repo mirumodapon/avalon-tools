@@ -136,7 +136,7 @@ pnpm build               # 建置所有 app 並組合到 dist/
 pnpm preview             # 以 GitHub Pages 的規則提供 dist/
 pnpm lint                # oxlint、catalog、app 邊界與版本檢查
 pnpm format              # oxfmt（format:check 只檢查）
-pnpm typecheck
+pnpm typecheck           # scripts/ 與所有 app、套件
 pnpm test                # vitest
 pnpm icons [id...]       # 由 registry 的圖示與顏色產生各 app 的 PWA 圖示
 ```
