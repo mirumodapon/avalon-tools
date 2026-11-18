@@ -29,7 +29,7 @@ describe('export/import placement', () => {
     const { unmount } = render(<App />)
     expect(screen.queryByRole('button', { name: /匯出|^匯入$/ })).toBeNull()
     // the QR scanner is the one import entry point on the home page
-    expect(screen.getByRole('button', { name: '掃描 QR code 匯入' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: '掃描 QR' })).toBeTruthy()
     unmount()
     go('#/game/a')
     render(<App />)

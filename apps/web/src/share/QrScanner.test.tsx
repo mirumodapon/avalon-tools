@@ -59,7 +59,7 @@ afterEach(() => {
 
 async function openScanner() {
   render(<App />)
-  fireEvent.click(screen.getByRole('button', { name: '掃描 QR code 匯入' }))
+  fireEvent.click(screen.getByRole('button', { name: '掃描 QR' }))
   await screen.findByText('將分享的 QR code 對準方框')
 }
 
@@ -93,7 +93,7 @@ describe('QR scanner', () => {
       },
     })
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: '掃描 QR code 匯入' }))
+    fireEvent.click(screen.getByRole('button', { name: '掃描 QR' }))
     expect((await screen.findByRole('alert')).textContent).toContain('無法使用相機')
   })
 })
