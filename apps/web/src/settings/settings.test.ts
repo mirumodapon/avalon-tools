@@ -16,6 +16,16 @@ describe('settings', () => {
   })
 })
 
+describe('forced proposal setting', () => {
+  it('defaults to auto-approve and keeps the old auto-reject switch choice', () => {
+    expect(DEFAULT_SETTINGS.forcedAutoApprove).toBe(true)
+    expect(normalizeSettings({ forcedAutoReject: false }).forcedAutoApprove).toBe(false)
+    expect(
+      normalizeSettings({ forcedAutoApprove: false, forcedAutoReject: true }).forcedAutoApprove,
+    ).toBe(false)
+  })
+})
+
 describe('display defaults', () => {
   it('shows lady uses inline (compact) by default', () => {
     expect(DEFAULT_SETTINGS.display.ladyLayout).toBe('compact')

@@ -17,7 +17,7 @@ import { useSettings } from '../settings/store.ts'
 import {
   draftVotes,
   emptyDraft,
-  forcedRejectVotes,
+  forcedApproveVotes,
   initialInputMode,
   setAll,
   switchMode,
@@ -57,9 +57,9 @@ export function ProposalForm({
   const [leaderId, setLeaderId] = useState(state.leaderId)
   const [pickingLeader, setPickingLeader] = useState(false)
 
-  const autoReject = state.forced && settings.forcedAutoReject
+  const autoApprove = state.forced && settings.forcedAutoApprove
   const teamFull = draft.team.length === state.teamSize
-  const votes = autoReject ? forcedRejectVotes(ids) : draftVotes(draft, ids)
+  const votes = autoApprove ? forcedApproveVotes(ids) : draftVotes(draft, ids)
   const approvals = countApprovals(votes)
   const passes = state.forced || isMajority(approvals, ids.length)
 
@@ -163,9 +163,9 @@ export function ProposalForm({
             <h2 className="text-sm font-semibold text-subtext0">記錄投票</h2>
             {state.forced && <ForcedBadge />}
           </div>
-          {autoReject ? (
+          {autoApprove ? (
             <Card className="text-sm text-subtext1">
-              強制局：已自動記為全員不贊成，隊伍直接出任務。可在設定中關閉此行為。
+              強制局：已自動記為全員贊成，隊伍直接出任務。可在設定中關閉此行為。
             </Card>
           ) : (
             <>

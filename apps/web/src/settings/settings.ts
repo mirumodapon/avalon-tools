@@ -18,8 +18,8 @@ export interface Settings {
   theme: ThemeSettings
   /** Input mode for a game's first proposal; follows the mode last used to record. */
   defaultInputMode: InputMode
-  /** Fill the forced (5th) proposal with all-reject votes and skip vote entry. */
-  forcedAutoReject: boolean
+  /** Fill the forced (5th) proposal with all-approve votes and skip vote entry. */
+  forcedAutoApprove: boolean
   /** Saved player names for quick seat filling. */
   roster: string[]
   /** Template for games without a custom name. */
@@ -34,7 +34,7 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   theme: DEFAULT_THEME,
   defaultInputMode: 'approvals',
-  forcedAutoReject: true,
+  forcedAutoApprove: true,
   roster: [],
   naming: DEFAULT_NAMING,
   viewMode: 'full',
@@ -79,7 +79,8 @@ export function normalizeSettings(value: unknown): Settings {
   return {
     theme: normalizeTheme(v.theme),
     defaultInputMode: pick(v.defaultInputMode, ['approvals', 'anomalies'], d.defaultInputMode),
-    forcedAutoReject: bool(v.forcedAutoReject, d.forcedAutoReject),
+    // `forcedAutoReject` is the old name of this switch; keep the user's on/off choice.
+    forcedAutoApprove: bool(v.forcedAutoApprove, bool(v.forcedAutoReject, d.forcedAutoApprove)),
     roster: normalizeRoster(v.roster),
     naming: normalizeNaming(v.naming),
     viewMode: pick(v.viewMode, ['full', 'anomaly'], d.viewMode),
