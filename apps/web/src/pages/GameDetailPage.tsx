@@ -15,6 +15,7 @@ import { Button, Card, IconButton, SectionTitle } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
 import { GlobalDisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { ExportSheet } from '../export/ExportSheet.tsx'
+import { ShareButton } from '../share/ShareButton.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { FinishedPanel } from '../play/FinishedPanel.tsx'
@@ -51,9 +52,7 @@ export function GameDetailPage({ id }: { id: string }) {
       back={{ name: 'home' }}
       actions={
         <>
-          <IconButton label="匯出" onClick={() => setExportOpen(true)}>
-            <IconFileExport size={22} />
-          </IconButton>
+          <ShareButton game={game} />
           <IconButton label="編輯名稱、備註與角色" onClick={() => setEditOpen(true)}>
             <IconPencil size={22} />
           </IconButton>

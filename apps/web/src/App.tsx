@@ -1,5 +1,7 @@
 import { UpdatePrompt } from './components/UpdatePrompt.tsx'
 import { useGames } from './games/store.ts'
+import { SharedGamePage } from './share/SharedGamePage.tsx'
+import { useShareParam } from './share/useShareParam.ts'
 import { GameDetailPage } from './pages/GameDetailPage.tsx'
 import { HomePage } from './pages/HomePage.tsx'
 import { NotFoundPage } from './pages/NotFoundPage.tsx'
@@ -16,6 +18,7 @@ export function App() {
   const ready = useGames((s) => s.ready)
   const storageError = useGames((s) => s.storageError)
   const dismissError = useGames((s) => s.dismissError)
+  const shared = useShareParam()
   return (
     <>
       {storageError && (
@@ -33,7 +36,9 @@ export function App() {
           </button>
         </div>
       )}
-      {ready || route.name === 'settings' ? (
+      {shared !== null && ready ? (
+        <SharedGamePage key={shared} param={shared} />
+      ) : ready || route.name === 'settings' ? (
         <Routes route={route} />
       ) : (
         <p className="py-20 text-center text-subtext0">載入中…</p>
