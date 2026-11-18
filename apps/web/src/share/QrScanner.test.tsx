@@ -96,4 +96,39 @@ describe('QR scanner', () => {
     fireEvent.click(screen.getByRole('button', { name: '掃描 QR' }))
     expect((await screen.findByRole('alert')).textContent).toContain('無法使用相機')
   })
+
+  it('releases the camera when closed before it finished opening', async () => {
+    const stopped = { count: 0 }
+    const pending: { open?: (stream: unknown) => void } = {}
+    Object.assign(navigator, {
+      mediaDevices: {
+        getUserMedia: () =>
+          new Promise((resolve) => {
+            pending.open = resolve
+          }),
+      },
+    })
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: '掃描 QR' }))
+    expect(screen.getByText('開啟相機中…')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: '關閉掃描' }))
+    expect(screen.queryByRole('dialog', { name: '掃描 QR code' })).toBeNull()
+    // the camera finishes opening after the scanner was closed
+    await act(async () => {
+      pending.open?.({ getTracks: () => [{ stop: () => stopped.count++ }] })
+    })
+    expect(stopped.count).toBe(1)
+  })
+
+  it('releases the camera when closed while scanning', async () => {
+    const stopped = { count: 0 }
+    Object.assign(navigator, {
+      mediaDevices: {
+        getUserMedia: () => Promise.resolve({ getTracks: () => [{ stop: () => stopped.count++ }] }),
+      },
+    })
+    await openScanner()
+    fireEvent.click(screen.getByRole('button', { name: '關閉掃描' }))
+    expect(stopped.count).toBe(1)
+  })
 })

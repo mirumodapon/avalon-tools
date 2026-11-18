@@ -47,6 +47,10 @@ async function frameDetector(): Promise<Detector> {
 
 const SCAN_INTERVAL_MS = 250
 
+function stopStream(stream: MediaStream | null) {
+  for (const track of stream?.getTracks() ?? []) track.stop()
+}
+
 /** Full-screen camera scanner for share-link QR codes. */
 function ScannerOverlay({ onClose }: { onClose: () => void }) {
   const video = useRef<HTMLVideoElement>(null)
@@ -64,8 +68,9 @@ function ScannerOverlay({ onClose }: { onClose: () => void }) {
     let alive = true
 
     async function start() {
+      let opened: MediaStream
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
+        opened = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: 'environment' },
           audio: false,
         })
@@ -73,8 +78,14 @@ function ScannerOverlay({ onClose }: { onClose: () => void }) {
         if (alive) setStatus('no-camera')
         return
       }
+      // Closed (or restarted) while the camera was still opening: the cleanup below
+      // already ran without a stream, so release this one right away.
       const el = video.current
-      if (!alive || !el) return
+      if (!alive || !el) {
+        stopStream(opened)
+        return
+      }
+      stream = opened
       el.srcObject = stream
       try {
         await el.play()
@@ -107,10 +118,12 @@ function ScannerOverlay({ onClose }: { onClose: () => void }) {
     }
 
     void start()
+    const el = video.current
     return () => {
       alive = false
       clearTimeout(timer)
-      for (const t of stream?.getTracks() ?? []) t.stop()
+      stopStream(stream)
+      if (el) el.srcObject = null
     }
     // `attempt` restarts the camera when the user taps 重新掃描.
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
