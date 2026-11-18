@@ -1,6 +1,5 @@
 import {
   createGame,
-  defaultPlayerNames,
   factionCounts,
   makePlayers,
   PLAYER_COUNTS,
@@ -10,10 +9,11 @@ import {
 import {
   IconArrowDown,
   IconArrowUp,
+  IconCheck,
   IconCrown,
+  IconEraser,
   IconHistory,
   IconPlayerPlay,
-  IconRefresh,
 } from '@tabler/icons-react'
 import { useMemo, useState } from 'react'
 import { Page, SettingsLink } from '../components/Layout.tsx'
@@ -29,18 +29,21 @@ import {
 } from '../components/ui.tsx'
 import { newId, useGames } from '../games/store.ts'
 import { navigate } from '../router.ts'
-
-function resize(names: string[], count: number): string[] {
-  return defaultPlayerNames(count).map((d, i) => names[i] ?? d)
-}
+import { mergeNames } from '../settings/roster.ts'
+import { useSettings } from '../settings/store.ts'
+import { emptySeats, nextEmptySeat, resizeSeats, tapRosterName } from '../setup/seats.ts'
 
 export function SetupPage() {
   const games = useGames((s) => s.games)
   const add = useGames((s) => s.add)
   const recent = games[0]
+  const roster = useSettings((s) => s.settings.roster)
+  const updateSettings = useSettings((s) => s.update)
 
   const [count, setCount] = useState<PlayerCount>(5)
-  const [names, setNames] = useState<string[]>(() => defaultPlayerNames(5))
+  const [names, setNames] = useState<string[]>(() => emptySeats(5))
+  /** Seat that the next tapped roster name goes into. */
+  const [active, setActive] = useState(0)
   const [leader, setLeader] = useState(0)
   const [customName, setCustomName] = useState('')
 
@@ -54,7 +57,9 @@ export function SetupPage() {
 
   function changeCount(n: PlayerCount) {
     setCount(n)
-    setNames((prev) => resize(prev, n))
+    const next = resizeSeats(names, n)
+    setNames(next)
+    setActive(nextEmptySeat(next))
     setLeader((l) => (l < n ? l : 0))
   }
 
@@ -68,12 +73,26 @@ export function SetupPage() {
     })
     if (leader === i) setLeader(j)
     else if (leader === j) setLeader(i)
+    if (active === i) setActive(j)
+    else if (active === j) setActive(i)
+  }
+
+  function tapName(name: string) {
+    const r = tapRosterName(names, active, name)
+    setNames(r.names)
+    setActive(r.active)
+  }
+
+  function clearSeats() {
+    setNames(emptySeats(count))
+    setActive(0)
   }
 
   function loadRecent() {
     if (!recent) return
     setCount(recent.players.length as PlayerCount)
     setNames(recent.players.map((p) => p.name))
+    setActive(-1)
     setLeader(0)
   }
 
@@ -87,6 +106,7 @@ export function SetupPage() {
       name: { custom: customName },
     })
     add(game)
+    updateSettings({ roster: mergeNames(roster, names) })
     navigate({ name: 'play', id: game.id }, { replace: true })
   }
 
@@ -127,13 +147,9 @@ export function SetupPage() {
                     帶入最近玩家
                   </Button>
                 )}
-                <Button
-                  variant="ghost"
-                  className="min-h-9 px-2 text-sm"
-                  onClick={() => setNames(defaultPlayerNames(count))}
-                >
-                  <IconRefresh size={16} aria-hidden />
-                  預設
+                <Button variant="ghost" className="min-h-9 px-2 text-sm" onClick={clearSeats}>
+                  <IconEraser size={16} aria-hidden />
+                  清空
                 </Button>
               </div>
             }
@@ -146,7 +162,12 @@ export function SetupPage() {
                 <span className="w-6 shrink-0 text-center text-sm text-subtext0">{i + 1}</span>
                 <input
                   aria-label={`第 ${i + 1} 位玩家名稱`}
-                  className="min-h-11 min-w-0 flex-1 rounded-xl border border-overlay0 bg-base px-3 focus:border-accent focus:outline-none"
+                  list="roster-names"
+                  onFocus={() => setActive(i)}
+                  className={cx(
+                    'min-h-11 min-w-0 flex-1 rounded-xl border bg-base px-3 focus:border-accent focus:outline-none',
+                    active === i ? 'border-accent ring-1 ring-accent' : 'border-overlay0',
+                  )}
                   value={name}
                   placeholder={`${i + 1}號`}
                   maxLength={20}
@@ -181,6 +202,52 @@ export function SetupPage() {
               </li>
             ))}
           </ol>
+          <datalist id="roster-names">
+            {roster.map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </datalist>
+
+          {roster.length > 0 && (
+            <div className="mt-4">
+              <p className="mb-2 text-sm text-subtext0">
+                {active >= 0
+                  ? `點名字填入第 ${active + 1} 位（再點一次移除）`
+                  : '點名字移除；點選座位後可再填入'}
+              </p>
+              <ul className="flex flex-wrap gap-2" aria-label="玩家名冊">
+                {roster.map((n) => {
+                  const seated = names.some((x) => x.trim() === n)
+                  return (
+                    <li key={n}>
+                      <button
+                        type="button"
+                        aria-pressed={seated}
+                        onClick={() => tapName(n)}
+                        className={cx(
+                          'inline-flex min-h-11 items-center gap-1 rounded-full border px-4',
+                          seated
+                            ? 'border-accent bg-accent/15 text-accent-fg'
+                            : 'border-overlay0 bg-base',
+                        )}
+                      >
+                        {seated && <IconCheck size={16} aria-hidden />}
+                        {n}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
+          {roster.length === 0 && (
+            <p className="mt-3 text-sm text-subtext0">
+              提示：在設定頁建立玩家名冊，開局時就能直接點選名字。
+            </p>
+          )}
+
           {duplicate && (
             <p className="mt-2 text-sm text-fail-fg">玩家名稱重複，記錄時可能難以分辨</p>
           )}
