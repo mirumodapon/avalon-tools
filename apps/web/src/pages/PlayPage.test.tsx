@@ -106,6 +106,17 @@ describe('PlayPage', () => {
     pickTeam('1號', '2號')
     fireEvent.click(screen.getByRole('button', { name: /送出派票/ }))
     fireEvent.click(screen.getByRole('button', { name: '復原上一步' }))
+    const dialog = screen.getByRole('dialog', { name: '恢復上一步？' })
+    expect(dialog.textContent).toContain('將刪除「任務 1 第 1 次派票」的紀錄。')
+    // cancelling keeps the record
+    fireEvent.click(within(dialog).getByRole('button', { name: '取消' }))
+    expect(current().rounds).toHaveLength(1)
+    fireEvent.click(screen.getByRole('button', { name: '復原上一步' }))
+    fireEvent.click(
+      within(screen.getByRole('dialog', { name: '恢復上一步？' })).getByRole('button', {
+        name: '恢復',
+      }),
+    )
     expect(current().rounds).toHaveLength(0)
   })
 
