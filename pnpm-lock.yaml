@@ -274,6 +274,9 @@ importers:
       '@catppuccin/palette':
         specifier: 'catalog:'
         version: 1.8.0
+      vite-plugin-pwa:
+        specifier: 'catalog:'
+        version: 2.0.0(@vite-pwa/assets-generator@2.0.0(@types/node@26.6.6))(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))(workbox-build@7.4.1)(workbox-window@7.4.1)
     devDependencies:
       '@avalon/tsconfig':
         specifier: workspace:*
@@ -296,9 +299,9 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.3.1(react@19.3.1)
-      vite-plugin-pwa:
+      vite:
         specifier: 'catalog:'
-        version: 2.0.0(@vite-pwa/assets-generator@2.0.0(@types/node@26.6.6))(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))(workbox-build@7.4.1)(workbox-window@7.4.1)
+        version: 8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)
 
   packages/record-core:
     dependencies:
