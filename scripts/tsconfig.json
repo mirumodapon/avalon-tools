@@ -1,0 +1,11 @@
+{
+  "extends": "../packages/tsconfig/base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    // Scripts run with Node's type stripping: only erasable TypeScript syntax.
+    "erasableSyntaxOnly": true
+  },
+  "include": ["**/*.ts"],
+  // The new:app template is type-checked inside the generated app instead.
+  "exclude": ["templates"]
+}
