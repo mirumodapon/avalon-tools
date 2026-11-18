@@ -16,7 +16,6 @@ import { root } from './lib/apps.ts'
 
 const MARKER = '  // new:app inserts here'
 const ICONS_MARKER = '  // new:app icons'
-const VERSION = '0.1.0'
 
 /** A single-quoted TS string literal. */
 const q = (s: string) => `'${s.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`
@@ -77,10 +76,7 @@ let registry = readFileSync(toolsFile, 'utf8')
 if (existing) {
   const start = registry.indexOf(`    id: '${id}',`)
   const end = registry.indexOf('  },', start)
-  const entry = registry
-    .slice(start, end)
-    .replace(/status: '[^']*'/, "status: 'beta'")
-    .replace(/version: '[^']*'/, `version: '${VERSION}'`)
+  const entry = registry.slice(start, end).replace(/status: '[^']*'/, "status: 'beta'")
   registry = registry.slice(0, start) + entry + registry.slice(end)
 } else {
   if (!registry.includes(MARKER)) fail(`marker "${MARKER.trim()}" not found in tools.ts`)
@@ -95,7 +91,6 @@ if (existing) {
     icon: ${q(meta.icon)},
     accent: ${q(meta.accent)},
     status: 'beta',
-    version: '${VERSION}',
   },
 ${MARKER}`,
   )
@@ -139,7 +134,7 @@ run('pnpm', [
 ])
 
 console.warn(`
-已建立 apps/${id}（/${id}/，beta ${VERSION}）
+已建立 apps/${id}（/${id}/，beta）
   pnpm dev               在 http://localhost:5173/${id}/ 開發
   pnpm build             建置並組合 dist/
   packages/registry/src/tools.ts 可調整名稱、說明、圖示與顏色；改圖示或顏色後執行 pnpm icons ${id}`)

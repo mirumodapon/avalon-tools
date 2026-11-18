@@ -54,7 +54,6 @@ export function validateTools(list: readonly ToolMeta[]): string[] {
     if (t.path !== expected) problems.push(`${t.id}: path must be ${expected} (got ${t.path})`)
     if (!/^Icon[A-Z][A-Za-z0-9]*$/.test(t.icon))
       problems.push(`${t.id}: icon must be a Tabler component name`)
-    if (!/^\d+\.\d+\.\d+$/.test(t.version)) problems.push(`${t.id}: version must be x.y.z`)
     if (!t.name.trim() || !t.shortName.trim())
       problems.push(`${t.id}: name and shortName are required`)
   }

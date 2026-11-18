@@ -32,13 +32,12 @@ describe('home', () => {
     expect(within(list).queryByText('阿瓦隆工具集')).toBeNull()
   })
 
-  it('has no settings, only an info page with versions and the changelog', async () => {
+  it('has no settings, only an info page with the version and the changelog', async () => {
     render(<App />)
     expect(screen.queryByRole('button', { name: /設定/ })).toBeNull()
     act(() => screen.getByRole('button', { name: '資訊' }).click())
     expect(await screen.findByRole('heading', { name: '資訊' })).toBeTruthy()
-    expect(screen.getByText('阿瓦隆工具集')).toBeTruthy()
-    expect(screen.getByText('遊戲紀錄')).toBeTruthy()
+    expect(screen.getByText('0.0.0-test')).toBeTruthy()
     expect(screen.getByRole('heading', { name: '更新紀錄' })).toBeTruthy()
     expect(screen.getByRole('heading', { name: '儲存空間' })).toBeTruthy()
   })
