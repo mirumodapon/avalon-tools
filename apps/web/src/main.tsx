@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App.tsx'
+import { UpdateGate } from './components/UpdateGate.tsx'
 import { flushPendingSaves, useGames } from './games/store.ts'
 import './index.css'
 import { requestPersistentStorage } from './storage/persist.ts'
@@ -21,6 +22,8 @@ window.addEventListener('pagehide', () => void flushPendingSaves())
 
 createRoot(root).render(
   <StrictMode>
-    <App />
+    <UpdateGate>
+      <App />
+    </UpdateGate>
   </StrictMode>,
 )
