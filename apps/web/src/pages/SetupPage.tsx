@@ -1,10 +1,15 @@
 import {
   createGame,
+  defaultRoleConfig,
   factionCounts,
   makePlayers,
   PLAYER_COUNTS,
   teamSizes,
+  validateAssignment,
+  validateRoleConfig,
   type PlayerCount,
+  type RoleAssignment,
+  type RoleConfig,
 } from '@avalon/core'
 import {
   IconArrowDown,
@@ -12,6 +17,7 @@ import {
   IconCheck,
   IconCrown,
   IconEraser,
+  IconEye,
   IconHistory,
   IconPlayerPlay,
 } from '@tabler/icons-react'
@@ -25,9 +31,12 @@ import {
   IconButton,
   SectionTitle,
   Segmented,
+  Switch,
   TextField,
 } from '../components/ui.tsx'
 import { newId, useGames } from '../games/store.ts'
+import { RoleAssignmentEditor } from '../roles/RoleAssignmentEditor.tsx'
+import { RoleConfigEditor } from '../roles/RoleConfigEditor.tsx'
 import { navigate } from '../router.ts'
 import { mergeNames } from '../settings/roster.ts'
 import { useSettings } from '../settings/store.ts'
@@ -46,9 +55,16 @@ export function SetupPage() {
   const [active, setActive] = useState(0)
   const [leader, setLeader] = useState(0)
   const [customName, setCustomName] = useState('')
+  const [roleConfig, setRoleConfig] = useState<RoleConfig | null>(null)
+  const [assignment, setAssignment] = useState<RoleAssignment>({})
+  const [showAssign, setShowAssign] = useState(false)
 
   const sizes = teamSizes(count)
   const factions = factionCounts(count)
+  const players = makePlayers(names)
+  const configCheck = roleConfig ? validateRoleConfig(roleConfig, count) : null
+  const assignmentErrors = validateAssignment(assignment, roleConfig, count)
+  const canStart = (configCheck?.ok ?? true) && assignmentErrors.length === 0
 
   const duplicate = useMemo(() => {
     const trimmed = names.map((n) => n.trim()).filter(Boolean)
@@ -61,6 +77,10 @@ export function SetupPage() {
     setNames(next)
     setActive(nextEmptySeat(next))
     setLeader((l) => (l < n ? l : 0))
+    if (roleConfig) setRoleConfig(defaultRoleConfig(n))
+    setAssignment((a) =>
+      Object.fromEntries(Object.entries(a).filter(([id]) => Number(id.slice(1)) <= n)),
+    )
   }
 
   function move(i: number, delta: number) {
@@ -92,18 +112,22 @@ export function SetupPage() {
     if (!recent) return
     setCount(recent.players.length as PlayerCount)
     setNames(recent.players.map((p) => p.name))
+    setRoleConfig(recent.roleConfig)
+    setAssignment({})
     setActive(-1)
     setLeader(0)
   }
 
   function start() {
-    const players = makePlayers(names)
+    if (!canStart) return
     const game = createGame({
       id: newId(),
       now: new Date().toISOString(),
       players,
       firstLeaderId: players[leader]!.id,
       name: { custom: customName },
+      roleConfig,
+      roleAssignment: assignment,
     })
     add(game)
     updateSettings({ roster: mergeNames(roster, names) })
@@ -256,10 +280,49 @@ export function SetupPage() {
             第一位隊長：{names[leader]?.trim() || `${leader + 1}號`}
           </p>
         </Card>
+
+        <Card>
+          <SectionTitle>角色（可選）</SectionTitle>
+          <Switch
+            label="設定角色配置"
+            description="記錄這場有哪些角色"
+            checked={roleConfig !== null}
+            onChange={(on) => setRoleConfig(on ? defaultRoleConfig(count) : null)}
+          />
+          {roleConfig && (
+            <div className="mt-3">
+              <RoleConfigEditor config={roleConfig} playerCount={count} onChange={setRoleConfig} />
+            </div>
+          )}
+          <div className="mt-3 border-t border-surface0 pt-3">
+            {showAssign ? (
+              <RoleAssignmentEditor
+                players={players}
+                assignment={assignment}
+                config={roleConfig}
+                onChange={setAssignment}
+              />
+            ) : (
+              <Button
+                variant="ghost"
+                className="w-full text-sm"
+                onClick={() => setShowAssign(true)}
+              >
+                <IconEye size={18} aria-hidden />
+                現在指派角色（也可在遊戲中或結算時再填）
+              </Button>
+            )}
+          </div>
+        </Card>
       </div>
 
       <BottomBar>
-        <Button variant="primary" className="w-full" onClick={start}>
+        {!canStart && (
+          <p className="mb-2 text-center text-sm text-fail-fg">
+            角色配置不符合人數，請修正後再開始
+          </p>
+        )}
+        <Button variant="primary" className="w-full" disabled={!canStart} onClick={start}>
           <IconPlayerPlay size={20} aria-hidden />
           開始遊戲
         </Button>
