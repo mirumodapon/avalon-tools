@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -p tsconfig.json",
-    "icons": "node scripts/icon.ts && pwa-assets-generator"
+    "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
     "@avalon/record-core": "workspace:*",
@@ -34,7 +33,6 @@
     "@types/qrcode": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vite-pwa/assets-generator": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "fake-indexeddb": "catalog:",
     "jsdom": "catalog:",
