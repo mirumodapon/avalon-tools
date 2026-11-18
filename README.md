@@ -110,7 +110,7 @@ apps/home/               阿瓦隆工具集首頁（/）
 apps/record/             遊戲紀錄（/record/）
 packages/avalon-rules/   純 TS：阿瓦隆規則與角色（不依賴 React／DOM）
 packages/record-core/    純 TS：遊戲紀錄的型別、reducer、schema、匯出與分享格式
-packages/registry/       工具清單（名稱、路徑、圖示、顏色、狀態、版本）
+packages/registry/       工具清單（名稱、路徑、圖示、顏色、狀態）
 packages/storage/        localStorage 命名空間與 IndexedDB 名稱
 packages/theme/          Catppuccin 色票 → CSS token、防閃爍腳本
 packages/ui/             共用元件（AppShell、Sheet、主題選擇、更新、空間用量）
@@ -134,7 +134,7 @@ pnpm dev                 # 所有 app 的 dev server，同源 proxy 在 http://l
 pnpm dev --filter record # 只啟動指定的 app（可重複）
 pnpm build               # 建置所有 app 並組合到 dist/
 pnpm preview             # 以 GitHub Pages 的規則提供 dist/
-pnpm lint                # oxlint、catalog 與 app 邊界檢查
+pnpm lint                # oxlint、catalog、app 邊界與版本檢查
 pnpm format              # oxfmt（format:check 只檢查）
 pnpm typecheck
 pnpm test                # vitest
@@ -148,7 +148,7 @@ pnpm icons [id...]       # 由 registry 的圖示與顏色產生各 app 的 PWA 
 pnpm new:app <id> --name 名稱 --description 說明 --icon IconName --accent blue
 ```
 
-會建立 `apps/<id>`（路徑 `/<id>/`、狀態 beta、版本 0.1.0）、加入 registry 與首頁圖示、安裝依賴並產生圖示。registry 中已是「即將推出」的工具（如 `narrator`）會直接改為 beta。之後 `pnpm dev` 即可在 `/<id>/` 開發。
+會建立 `apps/<id>`（路徑 `/<id>/`、狀態 beta）、加入 registry 與首頁圖示、安裝依賴並產生圖示。registry 中已是「即將推出」的工具（如 `narrator`）會直接改為 beta。之後 `pnpm dev` 即可在 `/<id>/` 開發。
 
 ### 依賴版本（pnpm catalog）
 
@@ -162,7 +162,7 @@ pnpm --filter @avalon/record add <pkg>   # catalogMode: strict 會自動寫入 c
 
 ### 版本
 
-各 app 的版本在自己的 `package.json`，並需與 registry 的 `version` 一致（有測試檢查）。建置時注入 `<version>-<git rev>`；首頁資訊頁列出所有工具的版本。
+整個 repo 共用一個版本：根目錄 `package.json` 的 `version`。各 app 與套件的 `package.json` 不寫版本（`scripts/check-version.ts` 在 `pnpm lint` 檢查）。建置時每個 app 都注入同一個 `<version>-<git rev>`，顯示在首頁資訊頁與遊戲紀錄的設定頁最下方。
 
 ## 部署
 
