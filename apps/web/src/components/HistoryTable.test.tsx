@@ -27,7 +27,7 @@ function game(mode: 'approvals' | 'anomalies'): Game {
 /** Cells of the first proposal row in the quest 1 table. */
 function cells() {
   const table = screen.getByRole('table', { name: '任務 1' })
-  const row = within(table).getAllByRole('row')[1]!
+  const row = within(table).getAllByRole('row')[2]! // after title and seat-number rows
   return within(row).getAllByRole('cell')
 }
 
@@ -59,5 +59,18 @@ describe('HistoryTable', () => {
   it('marks the leader and team members for screen readers', () => {
     render(<HistoryTable game={game('approvals')} viewMode="full" />)
     expect(cells()[0]!.textContent).toContain('1號，隊長，隊員')
+  })
+})
+
+describe('HistoryTable headers', () => {
+  it('labels each quest table with seat numbers only', () => {
+    render(<HistoryTable game={game('approvals')} viewMode="full" />)
+    const table = screen.getByRole('table', { name: '任務 1' })
+    const header = within(table).getAllByRole('row')[1]!
+    const cols = within(header)
+      .getAllByRole('columnheader')
+      .map((th) => th.textContent)
+    expect(cols).toEqual(['次', '1', '2', '3', '4', '5', '票'])
+    expect(within(header).getByRole('columnheader', { name: '1 號 1號' })).toBeTruthy()
   })
 })
