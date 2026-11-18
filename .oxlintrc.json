@@ -23,7 +23,7 @@
     "import/no-unassigned-import": [
       "warn",
       {
-        "allow": ["**/*.css", "virtual:*"]
+        "allow": ["**/*.css", "virtual:*", "fake-indexeddb/auto"]
       }
     ]
   },
