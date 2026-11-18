@@ -1,5 +1,11 @@
 import { deriveState, type GameAction } from '@avalon/core'
-import { IconChecklist, IconCopy, IconPencil, IconPlayerPlay } from '@tabler/icons-react'
+import {
+  IconChecklist,
+  IconCopy,
+  IconFileExport,
+  IconPencil,
+  IconPlayerPlay,
+} from '@tabler/icons-react'
 import { useState } from 'react'
 import { HistoryTable } from '../components/HistoryTable.tsx'
 import { Page } from '../components/Layout.tsx'
@@ -7,6 +13,7 @@ import { ProgressOverview } from '../components/ProgressOverview.tsx'
 import { StatsPanel } from '../components/StatsPanel.tsx'
 import { Button, Card, IconButton, SectionTitle } from '../components/ui.tsx'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
+import { ExportSheet } from '../export/ExportSheet.tsx'
 import { useGame, useGames } from '../games/store.ts'
 import { LadyEditSheet } from '../lady/LadyEditSheet.tsx'
 import { useDisplayName } from '../naming/useDisplayName.ts'
@@ -25,6 +32,7 @@ export function GameDetailPage({ id }: { id: string }) {
   const showRoles = useSettings((s) => s.settings.showRoles)
   const title = useDisplayName(game)
   const [editOpen, setEditOpen] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
   const [editingLady, setEditingLady] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   if (!game) return <NotFoundPage message="找不到這場遊戲" />
@@ -44,9 +52,14 @@ export function GameDetailPage({ id }: { id: string }) {
       title={title}
       back={{ name: 'home' }}
       actions={
-        <IconButton label="編輯名稱、備註與角色" onClick={() => setEditOpen(true)}>
-          <IconPencil size={22} />
-        </IconButton>
+        <>
+          <IconButton label="匯出" onClick={() => setExportOpen(true)}>
+            <IconFileExport size={22} />
+          </IconButton>
+          <IconButton label="編輯名稱、備註與角色" onClick={() => setEditOpen(true)}>
+            <IconPencil size={22} />
+          </IconButton>
+        </>
       }
       header={<ProgressOverview game={game} />}
     >
@@ -105,6 +118,10 @@ export function GameDetailPage({ id }: { id: string }) {
           <StatsPanel game={game} showRoles={showRoles} />
         </Card>
 
+        <Button className="w-full" onClick={() => setExportOpen(true)}>
+          <IconFileExport size={20} aria-hidden />
+          匯出（JSON、CSV、Markdown、文字、PNG）
+        </Button>
         <Button className="w-full" onClick={() => navigate({ name: 'new', from: id })}>
           <IconCopy size={20} aria-hidden />
           複製為新局
@@ -117,6 +134,7 @@ export function GameDetailPage({ id }: { id: string }) {
         onClose={() => setEditOpen(false)}
         dispatch={dispatch}
       />
+      <ExportSheet game={game} open={exportOpen} onClose={() => setExportOpen(false)} />
       <LadyEditSheet
         game={game}
         index={editingLady}
