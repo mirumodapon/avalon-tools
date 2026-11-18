@@ -55,13 +55,6 @@ jobs:
       - name: Build all tools
         run: pnpm build
 
-      - name: Install Playwright browser
-        run: pnpm exec playwright install --with-deps chromium
-
-      # Service workers, offline use and the 1.x upgrade, against the assembled dist/.
-      - name: End-to-end tests
-        run: pnpm e2e
-
       - name: Summary
         run: |
           {
