@@ -124,4 +124,31 @@ describe('bootstrap script', () => {
       'macchiato',
     )
   })
+  it('prefers the first stored key and falls back to the 1.x settings', () => {
+    const keys = ['avalon:global:theme', 'avalon-recorder:settings']
+    const v1 = JSON.stringify({ version: 1, data: { theme: { mode: 'light', accent: 'peach' } } })
+    const v2 = JSON.stringify({ version: 1, data: { mode: 'dark', accent: 'green' } })
+    const boot = (items: Record<string, string>) => {
+      const attrs: Record<string, string> = {}
+      new Function(
+        'localStorage',
+        'document',
+        'window',
+        themeBootstrapScript({ storageKeys: keys }),
+      )(
+        { getItem: (k: string) => items[k] ?? null },
+        {
+          documentElement: { setAttribute: (k: string, v: string) => (attrs[k] = v) },
+          querySelector: () => null,
+        },
+        { matchMedia: () => ({ matches: false }) },
+      )
+      return attrs
+    }
+    expect(boot({ [keys[1]!]: v1 })).toEqual({ 'data-flavor': 'latte', 'data-accent': 'peach' })
+    expect(boot({ [keys[0]!]: v2, [keys[1]!]: v1 })).toEqual({
+      'data-flavor': 'macchiato',
+      'data-accent': 'green',
+    })
+  })
 })

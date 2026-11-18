@@ -54,7 +54,8 @@ export default defineConfig({
     ],
   },
   plugins: [
-    catppuccinThemePlugin({ storageKeys: ['avalon:global:theme'] }),
+    // 1.x kept the theme inside its settings; read it until the upgrade has run.
+    catppuccinThemePlugin({ storageKeys: ['avalon:global:theme', 'avalon-recorder:settings'] }),
     react(),
     tailwindcss(),
     VitePWA(createPwaConfig(RECORD)),
