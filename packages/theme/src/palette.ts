@@ -9,12 +9,6 @@ export const FLAVOR_NAMES = [
   'macchiato',
   'mocha',
 ] as const satisfies readonly FlavorName[]
-export const DARK_FLAVOR_NAMES = [
-  'frappe',
-  'macchiato',
-  'mocha',
-] as const satisfies readonly FlavorName[]
-export type DarkFlavorName = (typeof DARK_FLAVOR_NAMES)[number]
 
 export const ACCENT_NAMES = [
   'rosewater',

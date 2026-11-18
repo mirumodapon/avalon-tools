@@ -52,11 +52,16 @@ describe('generateThemeCss', () => {
 })
 
 describe('theme settings', () => {
-  it('resolves system flavor with the chosen dark flavor', () => {
-    const t = { ...DEFAULT_THEME, darkFlavor: 'frappe' as const }
-    expect(resolveFlavor(t, true)).toBe('frappe')
-    expect(resolveFlavor(t, false)).toBe('latte')
-    expect(resolveFlavor({ ...t, flavor: 'macchiato' }, false)).toBe('macchiato')
+  it('resolves system flavor to Latte (light) or Macchiato (dark)', () => {
+    expect(resolveFlavor(DEFAULT_THEME, true)).toBe('macchiato')
+    expect(resolveFlavor(DEFAULT_THEME, false)).toBe('latte')
+    expect(resolveFlavor({ ...DEFAULT_THEME, flavor: 'mocha' }, false)).toBe('mocha')
+  })
+  it('drops the legacy darkFlavor field', () => {
+    expect(normalizeTheme({ flavor: 'system', darkFlavor: 'frappe', accent: 'teal' })).toEqual({
+      flavor: 'system',
+      accent: 'teal',
+    })
   })
   it('normalizes garbage to defaults', () => {
     expect(normalizeTheme(null)).toEqual(DEFAULT_THEME)
@@ -90,15 +95,19 @@ function run(stored: unknown, prefersDark: boolean) {
 describe('bootstrap script', () => {
   it('applies defaults when nothing is stored', () => {
     const { attrs, meta } = run(undefined, true)
-    expect(attrs).toEqual({ 'data-flavor': 'mocha', 'data-accent': 'mauve' })
-    expect(meta.content).toBe(flavors.mocha.colors.base.hex)
+    expect(attrs).toEqual({ 'data-flavor': 'macchiato', 'data-accent': 'mauve' })
+    expect(meta.content).toBe(flavors.macchiato.colors.base.hex)
   })
   it('applies the stored theme', () => {
+    expect(run({ data: { theme: { flavor: 'frappe', accent: 'blue' } } }, false).attrs).toEqual({
+      'data-flavor': 'frappe',
+      'data-accent': 'blue',
+    })
     const { attrs } = run(
       { version: 1, data: { theme: { flavor: 'system', darkFlavor: 'frappe', accent: 'teal' } } },
       true,
     )
-    expect(attrs).toEqual({ 'data-flavor': 'frappe', 'data-accent': 'teal' })
+    expect(attrs).toEqual({ 'data-flavor': 'macchiato', 'data-accent': 'teal' })
     expect(
       run({ data: { theme: { flavor: 'system', darkFlavor: 'frappe', accent: 'teal' } } }, false)
         .attrs['data-flavor'],

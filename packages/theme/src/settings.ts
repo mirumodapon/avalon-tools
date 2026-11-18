@@ -1,24 +1,26 @@
-import type { AccentName, DarkFlavorName, FlavorName } from './palette.ts'
-import { ACCENT_NAMES, DARK_FLAVOR_NAMES, FLAVOR_NAMES, hexOf } from './palette.ts'
+import type { AccentName, FlavorName } from './palette.ts'
+import { ACCENT_NAMES, FLAVOR_NAMES, hexOf } from './palette.ts'
 
 export type FlavorPreference = 'system' | FlavorName
 
+/** Flavors used when following the OS color scheme. */
+export const SYSTEM_LIGHT_FLAVOR: FlavorName = 'latte'
+export const SYSTEM_DARK_FLAVOR: FlavorName = 'macchiato'
+
 export interface ThemeSettings {
+  /** `system` resolves to Latte (light) or Macchiato (dark). */
   flavor: FlavorPreference
-  /** Dark flavor used when `flavor` is `system` and the OS prefers dark. */
-  darkFlavor: DarkFlavorName
   accent: AccentName
 }
 
 export const DEFAULT_THEME: ThemeSettings = {
   flavor: 'system',
-  darkFlavor: 'mocha',
   accent: 'mauve',
 }
 
 export function resolveFlavor(theme: ThemeSettings, prefersDark: boolean): FlavorName {
   if (theme.flavor !== 'system') return theme.flavor
-  return prefersDark ? theme.darkFlavor : 'latte'
+  return prefersDark ? SYSTEM_DARK_FLAVOR : SYSTEM_LIGHT_FLAVOR
 }
 
 /** Coerces an unknown value into valid theme settings, falling back to defaults per field. */
@@ -28,13 +30,10 @@ export function normalizeTheme(value: unknown): ThemeSettings {
     v.flavor === 'system' || FLAVOR_NAMES.includes(v.flavor as FlavorName)
       ? (v.flavor as FlavorPreference)
       : DEFAULT_THEME.flavor
-  const darkFlavor = DARK_FLAVOR_NAMES.includes(v.darkFlavor as DarkFlavorName)
-    ? (v.darkFlavor as DarkFlavorName)
-    : DEFAULT_THEME.darkFlavor
   const accent = ACCENT_NAMES.includes(v.accent as AccentName)
     ? (v.accent as AccentName)
     : DEFAULT_THEME.accent
-  return { flavor, darkFlavor, accent }
+  return { flavor, accent }
 }
 
 export function themeColorOf(flavor: FlavorName): string {
