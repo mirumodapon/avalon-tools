@@ -121,7 +121,7 @@ export function GameDetailPage({ id }: { id: string }) {
 
         <Button className="w-full" onClick={() => setExportOpen(true)}>
           <IconFileExport size={20} aria-hidden />
-          匯出（JSON、CSV、Markdown、文字、PNG）
+          匯出
         </Button>
         <Button className="w-full" onClick={() => navigate({ name: 'new', from: id })}>
           <IconCopy size={20} aria-hidden />
