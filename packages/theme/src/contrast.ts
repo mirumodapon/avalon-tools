@@ -11,12 +11,14 @@ export function parseHex(hex: string): Rgb {
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
 }
 
+function hexByte(v: number): string {
+  return Math.round(Math.min(255, Math.max(0, v)))
+    .toString(16)
+    .padStart(2, '0')
+}
+
 export function toHex({ r, g, b }: Rgb): string {
-  const c = (v: number) =>
-    Math.round(Math.min(255, Math.max(0, v)))
-      .toString(16)
-      .padStart(2, '0')
-  return `#${c(r)}${c(g)}${c(b)}`
+  return `#${hexByte(r)}${hexByte(g)}${hexByte(b)}`
 }
 
 function channel(v: number): number {
