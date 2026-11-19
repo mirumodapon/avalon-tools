@@ -46,7 +46,10 @@ function SeatList({ seats, showFaction = false }: { seats: SeatRole[]; showFacti
   )
 }
 
-/** One past deal. Identities stay covered until held, and cover again when the page is left. */
+/**
+ * One past deal. Identities stay covered until held, and cover again when the page is
+ * left or the app goes to the background.
+ */
 export function RecordPage({ id }: { id: string }) {
   const [record, setRecord] = useState<GameRecord | null | undefined>(undefined)
   const [shown, setShown] = useState(false)
@@ -113,13 +116,6 @@ export function RecordPage({ id }: { id: string }) {
               )
             })
           )}
-          <button
-            type="button"
-            className="w-full py-3 text-subtext0"
-            onClick={() => setShown(false)}
-          >
-            遮蔽身分
-          </button>
         </div>
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center py-8">
