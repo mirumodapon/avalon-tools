@@ -21,6 +21,7 @@ beforeEach(async () => {
   await saveRecord({
     id: 'r',
     createdAt: 0,
+    kind: 'roles' as const,
     playerCount: 7,
     config: ['merlin', 'percival', 'assassin', 'oberon'],
     assignments: ROLES.map((role, i) => ({ seat: i + 1, role })).toReversed(),

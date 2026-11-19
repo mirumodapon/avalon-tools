@@ -1,14 +1,13 @@
 import { FACTION_LABEL } from '@avalon/rules'
-import { AppShell, Button, ConfirmSheet, FACTION_ICONS, IconButton, cx } from '@avalon/ui'
+import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
 import { IconRipple, IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
+import { LADY_MARK } from '../components/marks.tsx'
 import { useDoubleTap } from '../hooks/useDoubleTap.ts'
 import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
 import { loyaltyOrder, type Loyalty } from '../lady/lady.ts'
 import { useLady } from '../lady/store.ts'
-
-const FACTION_TEXT: Record<Loyalty, string> = { good: 'text-good-fg', evil: 'text-evil-fg' }
 
 function Handoff({ who }: { who: string }) {
   return (
@@ -21,24 +20,22 @@ function Handoff({ who }: { who: string }) {
 /** What the inspected player showed, for the holder's eyes only. Double tap to cover. */
 function LoyaltyCard({ shown, onCover }: { shown: Loyalty; onCover: () => void }) {
   const tap = useDoubleTap(onCover)
-  const Icon = FACTION_ICONS[shown]
+  const { label, icon: Icon, text, border } = LADY_MARK[shown]
   return (
     <div className="flex flex-col items-center gap-4">
       <button
         type="button"
-        aria-label={`亮出${FACTION_LABEL[shown]}，雙擊蓋上`}
+        aria-label={`亮出${label}，雙擊蓋上`}
         onClick={tap}
         onContextMenu={(e) => e.preventDefault()}
         className={cx(
           'no-select animate-flip-in flex aspect-[3/4] w-60 flex-col items-center justify-center gap-4 rounded-3xl border-4 bg-mantle',
-          shown === 'good' ? 'border-good' : 'border-evil',
+          border,
         )}
       >
         <span className="text-lg text-subtext1">對方亮出</span>
-        <Icon size={64} className={FACTION_TEXT[shown]} aria-hidden />
-        <span className={cx('text-4xl font-bold', FACTION_TEXT[shown])}>
-          {FACTION_LABEL[shown]}
-        </span>
+        <Icon size={64} className={text} aria-hidden />
+        <span className={cx('text-4xl font-bold', text)}>{label}</span>
       </button>
       <p className="text-lg text-subtext1">看完後雙擊卡片蓋上</p>
     </div>
