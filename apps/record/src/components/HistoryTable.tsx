@@ -25,7 +25,7 @@ import {
   IconX,
 } from '@tabler/icons-react'
 import { DeclarationMark, LadyIcon, LadyTruthMark, VerdictIcon } from '../lady/marks.tsx'
-import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
+import { FactionMark, RoleIcon } from '@avalon/ui'
 import type { DisplayOptions } from '../settings/settings.ts'
 import { useSettings } from '../settings/store.ts'
 import { AnomalyMark, CrownMark, VoteMark } from './marks.tsx'

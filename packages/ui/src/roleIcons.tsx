@@ -1,4 +1,4 @@
-import { FACTION_LABEL, roleDef, type Faction, type RoleId } from '@avalon/record-core'
+import { FACTION_LABEL, roleDef, type Faction, type RoleId } from '@avalon/rules'
 import {
   IconEye,
   IconEyeOff,
@@ -12,7 +12,7 @@ import {
   IconWand,
   type Icon,
 } from '@tabler/icons-react'
-import { cx } from '@avalon/ui'
+import { cx } from './ui.tsx'
 
 /** Role → Tabler icon. The leader uses IconCrown, which no role shares. */
 export const ROLE_ICONS: Record<RoleId, Icon> = {

@@ -11,7 +11,7 @@ import {
 import { IconChevronDown, IconQuestionMark } from '@tabler/icons-react'
 import { useState } from 'react'
 import { cx } from '@avalon/ui'
-import { RoleIcon } from './roleIcons.tsx'
+import { RoleIcon } from '@avalon/ui'
 
 /** Assign roles to players; partial assignment is fine. Used-up roles are disabled. */
 export function RoleAssignmentEditor({
