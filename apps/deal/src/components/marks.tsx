@@ -12,7 +12,7 @@ interface Mark {
   tint?: string
 }
 
-/** How each quest card looks, wherever it is shown: a yellow trophy, or a dark blue one crossed out. */
+/** How each quest card looks, wherever it is shown: a yellow trophy, or the good faction's blue one crossed out. */
 export const QUEST_CARD: Record<QuestCard, Mark> = {
   success: {
     label: '任務成功',
@@ -26,7 +26,7 @@ export const QUEST_CARD: Record<QuestCard, Mark> = {
     icon: IconTrophyOff,
     text: 'text-quest-fail-fg',
     border: 'border-quest-fail',
-    tint: 'bg-quest-fail/25',
+    tint: 'bg-quest-fail/15',
   },
 }
 
