@@ -1,3 +1,5 @@
+// oxlint-disable-next-line import/no-unassigned-import -- must run before any other code
+import '@avalon/ui/polyfills'
 import { requestPersistentStorage } from '@avalon/storage'
 import { installZoomGuard, markHomeWindow, UpdateGate } from '@avalon/ui'
 import { StrictMode } from 'react'
