@@ -3,7 +3,7 @@ import { AppShell, EmptyState, ROLE_ICONS, Segmented, cx, type SegmentOption } f
 import { IconFileOff } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
-import { LADY_MARK, QuestCards } from '../components/marks.tsx'
+import { LADY_MARK, QuestCards, questResultText } from '../components/marks.tsx'
 import type { GameRecord } from '../history/records.ts'
 import { getRecord } from '../history/store.ts'
 import { configSummary, formatDate } from '../history/summary.ts'
@@ -93,9 +93,7 @@ export function RecordPage({ id }: { id: string }) {
       <AppShell title={formatDate(record.createdAt)} onBack={back}>
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-8 text-center">
           <p className="text-subtext1">{record.size} 人出任務</p>
-          <p
-            className={cx('text-4xl font-bold', record.fails ? 'text-fail-fg' : 'text-success-fg')}
-          >
+          <p className={cx('text-4xl font-bold', questResultText(record.fails))}>
             {resultText(record.fails)}
           </p>
           <QuestCards size={record.size} fails={record.fails} />

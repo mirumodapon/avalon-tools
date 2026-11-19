@@ -12,7 +12,7 @@ import {
 } from '@tabler/icons-react'
 import { useCallback, useEffect, useState } from 'react'
 import { startReplay } from '../flow/start.ts'
-import { QuestCards } from '../components/marks.tsx'
+import { QuestCards, questResultText } from '../components/marks.tsx'
 import {
   MAX_RECORDS,
   type GameRecord,
@@ -73,7 +73,7 @@ function QuestBody({ record }: { record: QuestRecord }) {
   return (
     <div className="mt-3 flex items-center justify-between gap-3">
       <QuestCards size={record.size} fails={record.fails} small />
-      <span className={cx('font-semibold', record.fails ? 'text-fail-fg' : 'text-success-fg')}>
+      <span className={cx('font-semibold', questResultText(record.fails))}>
         {resultText(record.fails)}
       </span>
     </div>
