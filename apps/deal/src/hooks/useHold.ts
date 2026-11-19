@@ -10,7 +10,7 @@ import {
 const prevent = (e: SyntheticEvent) => e.preventDefault()
 
 /** How long a card must be held before it turns over. */
-export const HOLD_MS = 2500
+export const HOLD_MS = 2000
 
 /**
  * Press-and-hold. Pointer events cover touch, pen and mouse. Lifting early, sliding
