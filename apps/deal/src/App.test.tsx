@@ -108,6 +108,18 @@ describe('deal app', () => {
     for (const name of ROLE_NAMES) expect(domText()).not.toContain(name)
   })
 
+  it('turns the card face down on the back key instead of going back', async () => {
+    render(<App />)
+    await startDeal()
+    hold()
+    const depth = window.history.length
+    act(() => void window.dispatchEvent(new PopStateEvent('popstate')))
+    expect(screen.getByText('1 號玩家')).toBeTruthy()
+    expect(screen.getByRole('button', { name: '長按查看身分' })).toBeTruthy()
+    // a new entry absorbs the next back press too
+    expect(window.history.length).toBeGreaterThan(depth)
+  })
+
   it('keeps the history out of reach while dealing', async () => {
     render(<App />)
     await startDeal()
