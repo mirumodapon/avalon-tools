@@ -7,6 +7,7 @@ describe('settings', () => {
       playerCount: 5,
       special: ['merlin', 'assassin'],
       recordView: 'seat',
+      tab: 'roles',
     })
   })
 
@@ -17,6 +18,7 @@ describe('settings', () => {
       playerCount: 5,
       special: ['merlin'],
       recordView: 'seat',
+      tab: 'roles',
     })
   })
 
@@ -24,7 +26,7 @@ describe('settings', () => {
     useSettings.getState().update({ playerCount: 8 })
     expect(JSON.parse(localStorage.getItem(SETTINGS_STORE.key)!)).toEqual({
       version: 1,
-      data: { playerCount: 8, special: ['merlin', 'assassin'], recordView: 'seat' },
+      data: { playerCount: 8, special: ['merlin', 'assassin'], recordView: 'seat', tab: 'roles' },
     })
   })
 })

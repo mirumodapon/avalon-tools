@@ -1,6 +1,8 @@
 import { useApplyGlobalTheme } from '@avalon/ui'
 import { startDeal } from './flow/start.ts'
 import { useFlow } from './flow/store.ts'
+import { useLady } from './lady/store.ts'
+import { useQuest } from './quest/store.ts'
 import { DealPage } from './pages/DealPage.tsx'
 import { HistoryPage } from './pages/HistoryPage.tsx'
 import { LadyPage } from './pages/LadyPage.tsx'
@@ -20,20 +22,20 @@ export function App() {
   useApplyGlobalTheme()
   const route = useRoute()
   const flow = useFlow((s) => s.flow)
+  const quest = useQuest((s) => s.flow)
+  const lady = useLady((s) => s.flow)
 
-  // While a deal or replay is running (and on its end screen), only it is reachable:
-  // the history, this deal's result included, stays out of reach.
+  // The three modes are independent. While one is running (and on its end screen),
+  // only it is reachable; during a deal that keeps the history out of reach too.
   if (flow.step !== 'idle') return <DealPage onRedeal={redeal} />
+  if (quest.step !== 'setup') return <QuestPage />
+  if (lady.step !== 'idle') return <LadyPage />
 
   switch (route.name) {
     case 'history':
       return <HistoryPage />
     case 'record':
       return <RecordPage id={route.id} />
-    case 'quest':
-      return <QuestPage />
-    case 'lady':
-      return <LadyPage />
     case 'setup':
       return <SetupPage onStart={deal} />
   }

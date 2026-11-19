@@ -9,14 +9,20 @@ export interface Settings {
   special: RoleId[]
   /** How a past deal lists its seats: in seat order, or grouped by faction. */
   recordView: RecordView
+  tab: DealTab
 }
 
 export type RecordView = 'seat' | 'faction'
+
+/** The mode tab last used on the setup page. */
+export type DealTab = 'roles' | 'quest' | 'lady'
+const TABS: readonly DealTab[] = ['roles', 'quest', 'lady']
 
 export const DEFAULT_SETTINGS: Settings = {
   playerCount: 5,
   special: [...DEFAULT_SPECIAL],
   recordView: 'seat',
+  tab: 'roles',
 }
 
 export function normalizeSettings(data: unknown): Settings {
@@ -27,6 +33,7 @@ export function normalizeSettings(data: unknown): Settings {
     playerCount: normalizePlayerCount(d.playerCount),
     special: normalizeSpecial(d.special),
     recordView: d.recordView === 'faction' ? 'faction' : 'seat',
+    tab: TABS.includes(d.tab as DealTab) ? (d.tab as DealTab) : 'roles',
   }
 }
 
