@@ -3,6 +3,7 @@ import { startDeal } from './flow/start.ts'
 import { useFlow } from './flow/store.ts'
 import { DealPage } from './pages/DealPage.tsx'
 import { HistoryPage } from './pages/HistoryPage.tsx'
+import { QuestPage } from './pages/QuestPage.tsx'
 import { RecordPage } from './pages/RecordPage.tsx'
 import { SetupPage } from './pages/SetupPage.tsx'
 import { navigate, useRoute } from './router.ts'
@@ -28,6 +29,8 @@ export function App() {
       return <HistoryPage />
     case 'record':
       return <RecordPage id={route.id} />
+    case 'quest':
+      return <QuestPage />
     case 'setup':
       return <SetupPage onStart={deal} />
   }

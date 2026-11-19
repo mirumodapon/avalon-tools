@@ -1,9 +1,10 @@
 import { AppShell, Button, ConfirmSheet, IconButton } from '@avalon/ui'
 import { IconCircleCheck, IconConfetti, IconX } from '@tabler/icons-react'
-import { useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
 import { RoleCard } from '../components/RoleCard.tsx'
 import { isDealing } from '../flow/machine.ts'
+import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
 import { useFlow } from '../flow/store.ts'
 import { navigate } from '../router.ts'
 
@@ -17,24 +18,8 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
   const dealing = isDealing(flow)
   const [confirm, setConfirm] = useState<'stop' | 'redeal' | 'setup' | null>(null)
 
-  useEffect(() => {
-    if (!dealing) return
-    // An extra history entry absorbs the back key while cards are being dealt.
-    window.history.pushState({ deal: true }, '')
-    const onPop = () => {
-      window.history.pushState({ deal: true }, '')
-      dispatch({ type: 'hide' })
-    }
-    const onVisibility = () => {
-      if (document.visibilityState === 'hidden') dispatch({ type: 'hide' })
-    }
-    window.addEventListener('popstate', onPop)
-    document.addEventListener('visibilitychange', onVisibility)
-    return () => {
-      window.removeEventListener('popstate', onPop)
-      document.removeEventListener('visibilitychange', onVisibility)
-    }
-  }, [dealing, dispatch])
+  const hide = useCallback(() => dispatch({ type: 'hide' }), [dispatch])
+  usePrivacyGuard(dealing, hide)
 
   const leave = (to: 'setup' | 'history') => {
     dispatch({ type: 'reset' })
