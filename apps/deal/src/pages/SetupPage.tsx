@@ -18,6 +18,7 @@ import {
   IconHistory,
   IconInfoCircle,
   IconPlayCard,
+  IconRipple,
 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { checkConfig, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
@@ -134,10 +135,16 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
         )}
         <Card>
           <SectionTitle>其他功能</SectionTitle>
-          <Button className="w-full" onClick={() => navigate({ name: 'quest' })}>
-            <IconFlag size={20} aria-hidden />
-            出任務
-          </Button>
+          <div className="grid grid-cols-2 gap-2">
+            <Button onClick={() => navigate({ name: 'quest' })}>
+              <IconFlag size={20} aria-hidden />
+              出任務
+            </Button>
+            <Button onClick={() => navigate({ name: 'lady' })}>
+              <IconRipple size={20} aria-hidden />
+              湖中女神
+            </Button>
+          </div>
         </Card>
       </div>
 
