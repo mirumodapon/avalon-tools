@@ -278,6 +278,67 @@ importers:
         specifier: 'catalog:'
         version: 5.1.1(@types/node@26.6.6)(jsdom@31.0.1)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))
 
+  apps/deal:
+    dependencies:
+      '@avalon/registry':
+        specifier: workspace:*
+        version: link:../../packages/registry
+      '@avalon/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      '@avalon/theme':
+        specifier: workspace:*
+        version: link:../../packages/theme
+      '@avalon/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@tabler/icons-react':
+        specifier: 'catalog:'
+        version: 3.52.0(react@19.3.1)
+      react:
+        specifier: 'catalog:'
+        version: 19.3.1
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@avalon/pwa':
+        specifier: workspace:*
+        version: link:../../packages/pwa
+      '@avalon/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.3.5(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))
+      '@testing-library/react':
+        specifier: 'catalog:'
+        version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: 'catalog:'
+        version: 6.3.0(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))
+      jsdom:
+        specifier: 'catalog:'
+        version: 31.0.1
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.3.5
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)
+      vite-plugin-pwa:
+        specifier: 'catalog:'
+        version: 2.0.0(@vite-pwa/assets-generator@2.0.0(@types/node@26.6.6))(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))(workbox-build@7.4.1)(workbox-window@7.4.1)
+      workbox-window:
+        specifier: 'catalog:'
+        version: 7.4.1
+
   apps/home:
     dependencies:
       '@avalon/registry':

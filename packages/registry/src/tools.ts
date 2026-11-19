@@ -43,7 +43,7 @@ export const TOOLS = [
     path: '/deal/',
     icon: 'IconCards',
     accent: 'peach',
-    status: 'coming-soon',
+    status: 'beta',
   },
   // new:app inserts here
 ] as const satisfies readonly ToolMeta[]
