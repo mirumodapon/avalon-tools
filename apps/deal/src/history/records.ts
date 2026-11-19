@@ -1,4 +1,5 @@
 import type { Faction, RoleId } from '@avalon/rules'
+import type { QuestCard } from '../quest/quest.ts'
 
 /** Which mode made the record. */
 export type RecordKind = 'roles' | 'quest' | 'lady'
@@ -17,11 +18,13 @@ export interface RolesRecord extends RecordBase {
   assignments: { seat: number; role: RoleId }[]
 }
 
-/** 出任務: how many went and how many fail cards were played (never who played what). */
+/** 出任務: how many went, how many failed, and the cards in the order they were played. */
 export interface QuestRecord extends RecordBase {
   kind: 'quest'
   size: number
   fails: number
+  /** Play order (1st to last person); missing on records saved before it was kept. */
+  cards?: QuestCard[]
 }
 
 /** 湖中女神: what the inspected player chose to show. */
@@ -56,7 +59,17 @@ export function normalizeRecord(r: unknown): GameRecord | null {
     }
   }
   if (kind === 'quest' && isCount(r.size) && isCount(r.fails) && r.fails <= r.size) {
-    return { ...base, kind, size: r.size, fails: r.fails }
+    const quest: QuestRecord = { ...base, kind, size: r.size, fails: r.fails }
+    const cards = r.cards
+    if (
+      Array.isArray(cards) &&
+      cards.length === r.size &&
+      cards.every((c) => c === 'success' || c === 'fail') &&
+      cards.filter((c) => c === 'fail').length === r.fails
+    ) {
+      quest.cards = cards as QuestCard[]
+    }
+    return quest
   }
   if (kind === 'lady' && (r.shown === 'good' || r.shown === 'evil')) {
     return { ...base, kind, shown: r.shown }

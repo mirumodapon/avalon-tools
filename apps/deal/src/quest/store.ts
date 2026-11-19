@@ -9,8 +9,8 @@ import {
 } from './quest.ts'
 
 /**
- * Quest voting lives in memory; once every card is in, only the result (how many went,
- * how many failed) is saved to the history.
+ * Quest voting lives in memory; once every card is in, the result is saved to the
+ * history with the cards in the order they were played.
  */
 export const useQuest = create<{
   flow: QuestFlow
@@ -25,7 +25,7 @@ export const useQuest = create<{
     set((s) => {
       const flow = questReducer(s.flow, action)
       if (s.flow.step === 'choose' && flow.step === 'collected') {
-        void recordResult({ kind: 'quest', size: flow.size, fails: flow.fails })
+        void recordResult({ kind: 'quest', size: flow.size, fails: flow.fails, cards: flow.played })
       }
       return { flow }
     }),

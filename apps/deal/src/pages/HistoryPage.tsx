@@ -72,7 +72,7 @@ function RolesBody({ record }: { record: RolesRecord }) {
 function QuestBody({ record }: { record: QuestRecord }) {
   return (
     <div className="mt-3 flex items-center justify-between gap-3">
-      <QuestCards size={record.size} fails={record.fails} small />
+      <QuestCards size={record.size} fails={record.fails} cards={record.cards} small />
       <span className={cx('font-semibold', questResultText(record.fails))}>
         {resultText(record.fails)}
       </span>

@@ -16,7 +16,7 @@ const vote = (card: 'success' | 'fail'): QuestAction[] => [
 ]
 
 describe('questReducer', () => {
-  it('collects one card from each person on the quest, keeping only the fail count', () => {
+  it('collects one card from each person on the quest, in play order', () => {
     const flow = run(
       { type: 'start', size: 4 },
       ...vote('success'),
@@ -24,8 +24,14 @@ describe('questReducer', () => {
       ...vote('success'),
       ...vote('fail'),
     )
-    expect(flow).toEqual({ step: 'collected', size: 4, fails: 2 })
-    expect(questReducer(flow, { type: 'show' })).toEqual({ step: 'result', size: 4, fails: 2 })
+    const played = ['success', 'fail', 'success', 'fail']
+    expect(flow).toEqual({ step: 'collected', size: 4, fails: 2, played })
+    expect(questReducer(flow, { type: 'show' })).toEqual({
+      step: 'result',
+      size: 4,
+      fails: 2,
+      played,
+    })
   })
 
   it('only takes quest sizes 2–5', () => {
@@ -41,7 +47,7 @@ describe('questReducer', () => {
       { type: 'reveal', order: ['success', 'fail'] },
       { type: 'hide' },
     )
-    expect(flow).toEqual({ step: 'handoff', size: 3, index: 1, fails: 1 })
+    expect(flow).toEqual({ step: 'handoff', size: 3, index: 1, fails: 1, played: ['fail'] })
   })
 })
 

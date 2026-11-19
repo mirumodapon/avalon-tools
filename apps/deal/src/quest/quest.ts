@@ -16,15 +16,23 @@ export function cardOrder(randomInt?: (max: number) => number): [QuestCard, Ques
 }
 
 /**
- * Quest voting: the phone goes to each person on the quest in turn. Only the number
- * of fail cards is kept, never who played what or in which order.
+ * Quest voting: the phone goes to each person on the quest in turn. `played` keeps the
+ * cards in the order they were played (saved to the history); the result screen shows
+ * them successes first.
  */
 export type QuestFlow =
   | { step: 'setup' }
-  | { step: 'handoff'; size: QuestSize; index: number; fails: number }
-  | { step: 'choose'; size: QuestSize; index: number; fails: number; order: [QuestCard, QuestCard] }
-  | { step: 'collected'; size: QuestSize; fails: number }
-  | { step: 'result'; size: QuestSize; fails: number }
+  | { step: 'handoff'; size: QuestSize; index: number; fails: number; played: QuestCard[] }
+  | {
+      step: 'choose'
+      size: QuestSize
+      index: number
+      fails: number
+      played: QuestCard[]
+      order: [QuestCard, QuestCard]
+    }
+  | { step: 'collected'; size: QuestSize; fails: number; played: QuestCard[] }
+  | { step: 'result'; size: QuestSize; fails: number; played: QuestCard[] }
 
 export type QuestAction =
   | { type: 'start'; size: QuestSize }
@@ -41,21 +49,28 @@ export function questReducer(flow: QuestFlow, action: QuestAction): QuestFlow {
   switch (action.type) {
     case 'start':
       return isQuestSize(action.size)
-        ? { step: 'handoff', size: action.size, index: 0, fails: 0 }
+        ? { step: 'handoff', size: action.size, index: 0, fails: 0, played: [] }
         : flow
     case 'reveal':
       return flow.step === 'handoff' ? { ...flow, step: 'choose', order: action.order } : flow
     case 'play': {
       if (flow.step !== 'choose') return flow
       const fails = flow.fails + (action.card === 'fail' ? 1 : 0)
+      const played = [...flow.played, action.card]
       const next = flow.index + 1
       return next < flow.size
-        ? { step: 'handoff', size: flow.size, index: next, fails }
-        : { step: 'collected', size: flow.size, fails }
+        ? { step: 'handoff', size: flow.size, index: next, fails, played }
+        : { step: 'collected', size: flow.size, fails, played }
     }
     case 'hide':
       return flow.step === 'choose'
-        ? { step: 'handoff', size: flow.size, index: flow.index, fails: flow.fails }
+        ? {
+            step: 'handoff',
+            size: flow.size,
+            index: flow.index,
+            fails: flow.fails,
+            played: flow.played,
+          }
         : flow
     case 'show':
       return flow.step === 'collected' ? { ...flow, step: 'result' } : flow
