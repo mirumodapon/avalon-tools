@@ -62,8 +62,8 @@
   /* Quest cards in the deal tool: a yellow trophy for success, the good faction's blue for failure. */
   --color-quest-success: var(--ctp-yellow);
   --color-quest-success-fg: var(--ctp-yellow-fg);
-  --color-quest-fail: var(--color-good);
-  --color-quest-fail-fg: var(--color-good-fg);
+  --color-quest-fail: var(--ctp-blue);
+  --color-quest-fail-fg: var(--ctp-blue-fg);
   --color-crown: var(--ctp-yellow);
   --color-crown-fg: var(--ctp-yellow-fg);
   --color-forced: var(--ctp-peach);
