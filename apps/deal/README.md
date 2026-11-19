@@ -5,28 +5,28 @@
 設定頁用分頁區隔三種彼此獨立的模式（互不讀取對方的資料）：
 
 - **發角色**：上述流程。
-- **出任務**：只選出任務的人數（2–5 人），手機依序交給每一位出任務的玩家，長按後選「任務成功」或「任務失敗」（兩個按鈕位置每人隨機），全部出完後長按公布：「任務成功」或「N 張失敗」，牌一律先排成功再排失敗。只記失敗張數，不存任何紀錄。
-- **湖中女神**：不需設定。手機交給被查驗的玩家選擇要亮出的身分，再交給持有者長按查看，看完雙擊蓋上；不存任何紀錄。
+- **出任務**：只選出任務的人數（2–5 人），手機依序交給每一位出任務的玩家，長按後選「任務成功」或「任務失敗」（兩個按鈕位置每人隨機），全部出完後長按公布：「任務成功」或「N 張失敗」，牌一律先排成功再排失敗。結果（人數與失敗張數，不含誰出了什麼）存進歷史紀錄。
+- **湖中女神**：不需設定。手機交給被查驗的玩家選擇要亮出的身分，再交給持有者長按查看，看完雙擊蓋上；亮出的身分存進歷史紀錄。
 
-歷史紀錄固定保留最近 10 筆。每筆可以「檢視」（長按一次顯示全部座位的角色，可切換依座位或依陣營呈現）或「回放」（用同一組結果再輪流傳一次手機，讓每位玩家各自重看，不會新增紀錄）。
+歷史紀錄包含三種模式，合計保留最近 50 筆。發角色的紀錄可以「檢視」（長按一次顯示全部座位的角色，可切換依座位或依陣營呈現）或「回放」（用同一組結果再輪流傳一次手機，讓每位玩家各自重看，不會新增紀錄）；出任務直接顯示結果；湖中女神的結果需長按才顯示。
 
 ## 程式結構
 
-| 檔案                                  | 內容                                                                                 |
-| ------------------------------------- | ------------------------------------------------------------------------------------ |
-| `packages/avalon-rules/src/roles.ts`  | 角色定義（名稱、陣營、是否唯一），各 app 共用                                        |
-| `packages/avalon-rules/src/rules.ts`  | 各人數的好人／壞人數                                                                 |
-| `packages/avalon-rules/src/vision.ts` | 視野計算 `visionFor`（純函式）                                                       |
-| `packages/ui/src/roleIcons.tsx`       | 角色圖示                                                                             |
-| `src/roles/config.ts`                 | 可開關的特殊角色、補位角色、配置驗證 `checkConfig`、`rolesInPlay`                    |
-| `src/roles/text.ts`                   | 卡片上的能力說明、額外提示、視野文字                                                 |
-| `src/deal/shuffle.ts`                 | `crypto.getRandomValues` + Fisher–Yates 洗牌與發牌                                   |
-| `src/history/records.ts`              | 紀錄型別、保留上限 `MAX_RECORDS`（10）與修剪 `recordsToPrune`（純函式）              |
-| `src/history/store.ts`                | 儲存模組：IndexedDB（`avalon-deal`），失敗時用 localStorage（`avalon:deal:records`） |
-| `src/flow/machine.ts`                 | 發牌與回放共用的流程狀態機（待機 → 翻牌 → 下一位 → 完成）                            |
-| `src/quest/quest.ts`                  | 出任務：人數、按鈕隨機順序、出牌狀態機（只記失敗張數）                               |
-| `src/lady/lady.ts`                    | 湖中女神：查驗狀態機（被查驗者選擇 → 持有者查看）                                    |
-| `src/settings.ts`                     | 設定（人數、角色），存在 `avalon:deal:settings`                                      |
+| 檔案                                  | 內容                                                                                                        |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `packages/avalon-rules/src/roles.ts`  | 角色定義（名稱、陣營、是否唯一），各 app 共用                                                               |
+| `packages/avalon-rules/src/rules.ts`  | 各人數的好人／壞人數                                                                                        |
+| `packages/avalon-rules/src/vision.ts` | 視野計算 `visionFor`（純函式）                                                                              |
+| `packages/ui/src/roleIcons.tsx`       | 角色圖示                                                                                                    |
+| `src/roles/config.ts`                 | 可開關的特殊角色、補位角色、配置驗證 `checkConfig`、`rolesInPlay`                                           |
+| `src/roles/text.ts`                   | 卡片上的能力說明、額外提示、視野文字                                                                        |
+| `src/deal/shuffle.ts`                 | `crypto.getRandomValues` + Fisher–Yates 洗牌與發牌                                                          |
+| `src/history/records.ts`              | 三種紀錄的型別、舊紀錄讀取 `normalizeRecord`、保留上限 `MAX_RECORDS`（50）與修剪 `recordsToPrune`（純函式） |
+| `src/history/store.ts`                | 儲存模組：IndexedDB（`avalon-deal`），失敗時用 localStorage（`avalon:deal:records`）                        |
+| `src/flow/machine.ts`                 | 發牌與回放共用的流程狀態機（待機 → 翻牌 → 下一位 → 完成）                                                   |
+| `src/quest/quest.ts`                  | 出任務：人數、按鈕隨機順序、出牌狀態機（只記失敗張數）                                                      |
+| `src/lady/lady.ts`                    | 湖中女神：查驗狀態機（被查驗者選擇 → 持有者查看）                                                           |
+| `src/settings.ts`                     | 設定（人數、角色），存在 `avalon:deal:settings`                                                             |
 
 ## 新增角色或調整規則
 

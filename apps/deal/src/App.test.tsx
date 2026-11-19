@@ -142,15 +142,23 @@ describe('deal app', () => {
     expect(screen.getByText('特殊壞人有 3 位，但 5 人只有 2 位壞人')).toBeTruthy()
   })
 
-  it('keeps only the newest 10 deals', async () => {
-    for (let i = 0; i < 10; i++) {
-      await saveRecord({ id: `old${i}`, createdAt: i, playerCount: 5, config: [], assignments: [] })
+  it('keeps only the newest 50 records', async () => {
+    for (let i = 0; i < 50; i++) {
+      await saveRecord({
+        id: `old${i}`,
+        createdAt: i,
+        kind: 'roles' as const,
+        playerCount: 5,
+        config: [],
+        assignments: [],
+      })
     }
     render(<App />)
     await startDeal()
     const ids = (await listRecords()).map((r) => r.id)
-    expect(ids).toHaveLength(10)
+    expect(ids).toHaveLength(50)
     expect(ids).not.toContain('old0')
+    expect(ids).toContain('old1')
     expect(screen.queryByText(/保留筆數/)).toBeNull()
   })
 
@@ -165,6 +173,7 @@ describe('deal app', () => {
     await saveRecord({
       id: 'past',
       createdAt: Date.now(),
+      kind: 'roles' as const,
       playerCount: 5,
       config: ['merlin', 'assassin'],
       assignments,
@@ -200,6 +209,7 @@ describe('deal app', () => {
     await saveRecord({
       id: 'past',
       createdAt: Date.now(),
+      kind: 'roles' as const,
       playerCount: 5,
       config: [],
       assignments: [],

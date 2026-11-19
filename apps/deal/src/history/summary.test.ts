@@ -19,7 +19,7 @@ describe('formatWhen', () => {
 
 describe('configSummary', () => {
   it('names the special roles', () => {
-    const base = { id: 'x', createdAt: 0, playerCount: 5, assignments: [] }
+    const base = { id: 'x', createdAt: 0, kind: 'roles' as const, playerCount: 5, assignments: [] }
     expect(configSummary({ ...base, config: ['merlin', 'assassin'] })).toBe('梅林、刺客')
     expect(configSummary({ ...base, config: [] })).toBe('只有忠臣與爪牙')
   })

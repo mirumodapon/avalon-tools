@@ -1,5 +1,5 @@
 import { roleDef } from '@avalon/rules'
-import type { GameRecord } from './records.ts'
+import type { RolesRecord } from './records.ts'
 
 const DATE = new Intl.DateTimeFormat('zh-Hant-TW', {
   year: 'numeric',
@@ -28,6 +28,6 @@ export function formatWhen(ms: number, now = Date.now()): { day: string; time: s
 }
 
 /** e.g. 「梅林、刺客」, or 「只有忠臣與爪牙」. */
-export function configSummary(r: GameRecord): string {
+export function configSummary(r: RolesRecord): string {
   return r.config.length ? r.config.map((id) => roleDef(id).name).join('、') : '只有忠臣與爪牙'
 }
