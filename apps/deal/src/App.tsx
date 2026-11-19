@@ -1,5 +1,4 @@
 import { useApplyGlobalTheme } from '@avalon/ui'
-import { isDealing } from './flow/machine.ts'
 import { startDeal } from './flow/start.ts'
 import { useFlow } from './flow/store.ts'
 import { DealPage } from './pages/DealPage.tsx'
@@ -20,10 +19,9 @@ export function App() {
   const route = useRoute()
   const flow = useFlow((s) => s.flow)
 
-  // While someone still has to see their card, only the deal is reachable:
-  // the history (this deal's result included) stays out of reach.
-  if (isDealing(flow)) return <DealPage onRedeal={redeal} />
-  if (flow.step === 'done' && route.name === 'setup') return <DealPage onRedeal={redeal} />
+  // While a deal or replay is running (and on its end screen), only it is reachable:
+  // the history, this deal's result included, stays out of reach.
+  if (flow.step !== 'idle') return <DealPage onRedeal={redeal} />
 
   switch (route.name) {
     case 'history':

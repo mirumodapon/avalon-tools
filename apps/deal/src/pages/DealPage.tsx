@@ -1,5 +1,5 @@
 import { AppShell, Button, ConfirmSheet, IconButton } from '@avalon/ui'
-import { IconConfetti, IconX } from '@tabler/icons-react'
+import { IconCircleCheck, IconConfetti, IconX } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
 import { RoleCard } from '../components/RoleCard.tsx'
@@ -8,7 +8,7 @@ import { useFlow } from '../flow/store.ts'
 import { navigate } from '../router.ts'
 
 /**
- * Pass-the-phone screens. While dealing, the back key and switching apps only turn
+ * Pass-the-phone screens, for a fresh deal or a replay of a saved one. While dealing, the back key and switching apps only turn
  * the current card face down; they never step back to an earlier card.
  */
 export function DealPage({ onRedeal }: { onRedeal: () => void }) {
@@ -36,12 +36,31 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
     }
   }, [dealing, dispatch])
 
-  const toSetup = () => {
+  const leave = (to: 'setup' | 'history') => {
     dispatch({ type: 'reset' })
-    navigate({ name: 'setup' })
+    navigate({ name: to })
   }
+  const toSetup = () => leave('setup')
+  const toHistory = () => leave('history')
 
   if (flow.step === 'idle') return null
+
+  if (flow.step === 'done' && flow.mode === 'replay') {
+    return (
+      <AppShell title="回放完成">
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 py-10 text-center">
+          <IconCircleCheck size={64} className="text-accent-fg" aria-hidden />
+          <p className="text-2xl font-bold">所有玩家已重新查看身分</p>
+          <div className="flex w-full max-w-xs flex-col gap-3">
+            <Button variant="primary" onClick={toHistory}>
+              回到歷史紀錄
+            </Button>
+            <Button onClick={toSetup}>回到設定</Button>
+          </div>
+        </div>
+      </AppShell>
+    )
+  }
 
   if (flow.step === 'done') {
     return (
@@ -54,7 +73,7 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
               重新發牌
             </Button>
             <Button onClick={() => setConfirm('setup')}>回到設定</Button>
-            <Button variant="ghost" onClick={() => navigate({ name: 'history' })}>
+            <Button variant="ghost" onClick={toHistory}>
               查看歷史紀錄
             </Button>
           </div>
@@ -81,12 +100,13 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
 
   const self = flow.table[flow.index]!
   const total = flow.table.length
+  const replay = flow.mode === 'replay'
   return (
     <AppShell
-      title={`第 ${flow.index + 1} / ${total} 位`}
+      title={`${replay ? '回放・' : ''}第 ${flow.index + 1} / ${total} 位`}
       homeHref={null}
       actions={
-        <IconButton label="結束發牌" onClick={() => setConfirm('stop')}>
+        <IconButton label={replay ? '結束回放' : '結束發牌'} onClick={() => setConfirm('stop')}>
           <IconX size={22} />
         </IconButton>
       }
@@ -111,11 +131,13 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
       </div>
       <ConfirmSheet
         open={confirm === 'stop'}
-        title="結束發牌？"
-        message="還有玩家沒看過身分。結果已保存在歷史紀錄。"
-        confirmLabel="結束發牌"
-        danger
-        onConfirm={toSetup}
+        title={replay ? '結束回放？' : '結束發牌？'}
+        message={
+          replay ? '隨時可以從歷史紀錄再次回放。' : '還有玩家沒看過身分。結果已保存在歷史紀錄。'
+        }
+        confirmLabel={replay ? '結束回放' : '結束發牌'}
+        danger={!replay}
+        onConfirm={replay ? toHistory : toSetup}
         onClose={() => setConfirm(null)}
       />
     </AppShell>
