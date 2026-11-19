@@ -22,7 +22,7 @@ beforeEach(() => {
   })
   setRecordStore(createLocalStore())
   useFlow.setState({ flow: IDLE })
-  useQuest.setState({ flow: QUEST_IDLE, draft: { playerCount: 5, team: [] } })
+  useQuest.setState({ flow: QUEST_IDLE, size: 2 })
   useLady.setState({ flow: LADY_IDLE })
   useSettings.setState({
     settings: { ...DEFAULT_SETTINGS, special: [...DEFAULT_SETTINGS.special] },
@@ -35,7 +35,6 @@ afterEach(() => {
   setRecordStore(null)
 })
 
-const seat = (n: number) => screen.getByRole('button', { name: `${n} 號` })
 const tab = (name: string) => fireEvent.click(screen.getByRole('tab', { name }))
 
 function hold(label: RegExp | string) {
@@ -68,55 +67,50 @@ describe('setup tabs', () => {
     expect(useSettings.getState().settings.tab).toBe('lady')
   })
 
-  it('keeps each mode to itself: the quest has its own player count', () => {
+  it('keeps each mode to itself', () => {
     useSettings.getState().update({ playerCount: 9 })
     render(<App />)
     tab('出任務')
-    const quest = screen.getByRole('tabpanel')
-    expect(within(quest).getByRole('radio', { name: '5' })).toHaveProperty('checked', true)
-    fireEvent.click(within(quest).getByRole('radio', { name: '7' }))
+    fireEvent.click(within(screen.getByRole('tabpanel')).getByRole('radio', { name: '4 人' }))
+    expect(useQuest.getState().size).toBe(4)
     expect(useSettings.getState().settings.playerCount).toBe(9)
   })
 })
 
 describe('出任務', () => {
-  it('only needs the player count and the members, then shows the fail count', () => {
+  it('only needs how many go, passes the phone in turn and shows successes then fails', () => {
     render(<App />)
     tab('出任務')
-    const start = screen.getByRole('button', { name: /開始出任務/ })
-    expect(screen.getByText('任務人數：2、3 人')).toBeTruthy()
-    fireEvent.click(seat(4))
-    expect(start).toHaveProperty('disabled', true)
-    expect(screen.getByText('5 人局的任務人數為 2、3 人（目前 1 人）')).toBeTruthy()
-    fireEvent.click(seat(2))
-    fireEvent.click(seat(5))
-    fireEvent.click(start)
+    expect(screen.queryByRole('button', { name: /^\d+ 號$/ })).toBeNull()
+    fireEvent.click(screen.getByRole('radio', { name: '3 人' }))
+    fireEvent.click(screen.getByRole('button', { name: /開始出任務/ }))
 
     for (const [n, card] of [
+      [1, '任務失敗'],
       [2, '任務成功'],
-      [4, '任務失敗'],
-      [5, '任務失敗'],
+      [3, '任務成功'],
     ] as const) {
-      expect(screen.getByText(`${n} 號玩家`)).toBeTruthy()
+      expect(screen.getByText(`第 ${n} 位出任務的玩家`)).toBeTruthy()
+      expect(screen.getByRole('heading', { name: `出任務・第 ${n} / 3 位` })).toBeTruthy()
       expect(screen.queryByRole('button', { name: /^任務(成功|失敗)$/ })).toBeNull()
       hold('長按出牌')
       expect(screen.getAllByRole('button', { name: /^任務(成功|失敗)$/ })).toHaveLength(2)
       fireEvent.click(screen.getByRole('button', { name: card }))
     }
     hold('長按公布結果')
-    expect(screen.getByText('2 張失敗')).toBeTruthy()
+    expect(screen.getByText('1 張失敗')).toBeTruthy()
     const cards = within(screen.getByRole('list', { name: '出的牌' })).getAllByRole('listitem')
-    expect(cards.map((c) => c.getAttribute('aria-label')).toSorted()).toEqual(
-      ['任務失敗', '任務失敗', '任務成功'].toSorted(),
-    )
+    expect(cards.map((c) => c.getAttribute('aria-label'))).toEqual([
+      '任務成功',
+      '任務成功',
+      '任務失敗',
+    ])
 
     fireEvent.click(screen.getByRole('button', { name: '再出一次任務' }))
-    expect(screen.getByRole('tab', { name: '出任務' }).getAttribute('aria-selected')).toBe('true')
-    expect(useQuest.getState().draft.team).toEqual([])
+    expect(screen.getByText('第 1 位出任務的玩家')).toBeTruthy()
   })
 
   it('says 任務成功 when nobody failed it', () => {
-    useQuest.setState({ draft: { playerCount: 5, team: [1, 3] } })
     useSettings.getState().update({ tab: 'quest' })
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /開始出任務/ }))
@@ -126,16 +120,17 @@ describe('出任務', () => {
     }
     hold('長按公布結果')
     expect(screen.getByText('任務成功', { selector: 'p' })).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: '回到設定' }))
+    expect(screen.getByRole('tab', { name: '出任務' }).getAttribute('aria-selected')).toBe('true')
   })
 
-  it('the back key puts the same member back without a card played', () => {
-    useQuest.setState({ draft: { playerCount: 5, team: [1, 2] } })
+  it('the back key puts the same player back without a card played', () => {
     useSettings.getState().update({ tab: 'quest' })
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /開始出任務/ }))
     hold('長按出牌')
     act(() => void window.dispatchEvent(new PopStateEvent('popstate')))
-    expect(screen.getByText('1 號玩家')).toBeTruthy()
+    expect(screen.getByText('第 1 位出任務的玩家')).toBeTruthy()
     expect(useQuest.getState().flow).toMatchObject({ step: 'handoff', index: 0, fails: 0 })
   })
 })

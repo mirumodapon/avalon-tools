@@ -1,4 +1,4 @@
-import { PLAYER_COUNTS, roleDef, type Faction, type PlayerCount, type RoleId } from '@avalon/rules'
+import { PLAYER_COUNTS, roleDef, type Faction, type RoleId } from '@avalon/rules'
 import {
   AppShell,
   BottomBar,
@@ -22,16 +22,15 @@ import {
 } from '@tabler/icons-react'
 import { useState } from 'react'
 import { ModeTabs, panelId, tabId, type TabOption } from '../components/ModeTabs.tsx'
-import { SeatPicker } from '../components/SeatPicker.tsx'
 import { useLady } from '../lady/store.ts'
-import { checkTeam } from '../quest/quest.ts'
+import { QUEST_SIZES, type QuestSize } from '../quest/quest.ts'
 import { useQuest } from '../quest/store.ts'
 import { checkConfig, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
 import { navigate } from '../router.ts'
 import { useSettings, type DealTab } from '../settings.ts'
 
 const FACTION_TITLE: Record<Faction, string> = { good: '好人陣營', evil: '壞人陣營' }
-const PLAYER_OPTIONS = PLAYER_COUNTS.map((n) => ({ value: String(n), label: `${n}` }))
+const SIZE_OPTIONS = QUEST_SIZES.map((n) => ({ value: String(n), label: `${n} 人` }))
 
 const TABS: TabOption<DealTab>[] = [
   { value: 'roles', label: '發角色' },
@@ -156,57 +155,30 @@ function RolesPanel({ onStart }: { onStart: () => Promise<void> }) {
   )
 }
 
-/** 出任務: only the player count and who goes on the quest. */
+/** 出任務: only how many people go on the quest. */
 function QuestPanel() {
-  const draft = useQuest((s) => s.draft)
-  const setDraft = useQuest((s) => s.setDraft)
+  const size = useQuest((s) => s.size)
+  const setSize = useQuest((s) => s.setSize)
   const dispatch = useQuest((s) => s.dispatch)
-  const check = checkTeam(draft)
-  const toggle = (seat: number) =>
-    setDraft({
-      team: draft.team.includes(seat)
-        ? draft.team.filter((s) => s !== seat)
-        : [...draft.team, seat].toSorted((a, b) => a - b),
-    })
-
   return (
     <>
       <div className="flex-1 space-y-4 pt-2">
         <Card>
-          <SectionTitle>玩家人數</SectionTitle>
+          <SectionTitle>出任務的人數</SectionTitle>
           <Segmented
-            label="出任務的玩家人數"
-            value={String(draft.playerCount)}
-            options={PLAYER_OPTIONS}
-            onChange={(v) => {
-              const n = Number(v) as PlayerCount
-              setDraft({ playerCount: n, team: draft.team.filter((s) => s <= n) })
-            }}
+            label="出任務的人數"
+            value={String(size)}
+            options={SIZE_OPTIONS}
+            onChange={(v) => setSize(Number(v) as QuestSize)}
           />
-        </Card>
-        <Card>
-          <SectionTitle>
-            參與任務的號碼
-            <span className="ml-2 font-normal text-subtext0 tabular-nums">
-              {draft.team.length} 人
-            </span>
-          </SectionTitle>
-          <SeatPicker
-            count={draft.playerCount}
-            selected={draft.team}
-            onToggle={toggle}
-            label="隊員"
-          />
-          <p className="mt-3 text-sm text-subtext0">任務人數：{check.sizes.join('、')} 人</p>
+          <p className="mt-3 text-sm text-subtext0">手機會依序交給每一位出任務的玩家</p>
         </Card>
       </div>
       <BottomBar>
-        {check.message && <p className="mb-2 text-sm text-subtext0">{check.message}</p>}
         <Button
           variant="primary"
           className="w-full"
-          disabled={!check.ok}
-          onClick={() => dispatch({ type: 'start', setup: draft })}
+          onClick={() => dispatch({ type: 'start', size })}
         >
           <IconFlag size={20} aria-hidden />
           開始出任務
