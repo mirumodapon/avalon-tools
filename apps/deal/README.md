@@ -2,6 +2,8 @@
 
 一支手機輪流傳遞：設定人數與角色 → 開始發牌（隨機分配並立即存成歷史紀錄）→ 每位玩家長按卡背 2 秒看自己的角色、雙擊蓋牌交給下一位 → 全部看完。
 
+歷史紀錄固定保留最近 10 筆。每筆可以「檢視」（長按一次顯示全部座位的角色）或「回放」（用同一組結果再輪流傳一次手機，讓每位玩家各自重看，不會新增紀錄）。
+
 ## 程式結構
 
 | 檔案                                  | 內容                                                                                 |
@@ -13,10 +15,10 @@
 | `src/roles/config.ts`                 | 可開關的特殊角色、補位角色、配置驗證 `checkConfig`、`rolesInPlay`                    |
 | `src/roles/text.ts`                   | 卡片上的能力說明、額外提示、視野文字                                                 |
 | `src/deal/shuffle.ts`                 | `crypto.getRandomValues` + Fisher–Yates 洗牌與發牌                                   |
-| `src/history/records.ts`              | 紀錄型別與修剪 `recordsToPrune`（純函式）                                            |
+| `src/history/records.ts`              | 紀錄型別、保留上限 `MAX_RECORDS`（10）與修剪 `recordsToPrune`（純函式）              |
 | `src/history/store.ts`                | 儲存模組：IndexedDB（`avalon-deal`），失敗時用 localStorage（`avalon:deal:records`） |
-| `src/flow/machine.ts`                 | 發牌流程狀態機（待機 → 翻牌 → 下一位 → 完成）                                        |
-| `src/settings.ts`                     | 設定（人數、角色、保留筆數），存在 `avalon:deal:settings`                            |
+| `src/flow/machine.ts`                 | 發牌與回放共用的流程狀態機（待機 → 翻牌 → 下一位 → 完成）                            |
+| `src/settings.ts`                     | 設定（人數、角色），存在 `avalon:deal:settings`                                      |
 
 ## 新增角色或調整規則
 
