@@ -48,9 +48,9 @@ export const LADY_MARK: Record<Faction, Mark> = {
   },
 }
 
-/** Colour for a quest result headline: the success card's, or the fail card's. */
+/** Colour for a quest result headline: green for 任務成功, red for 「N 張失敗」. */
 export function questResultText(fails: number): string {
-  return QUEST_CARD[fails === 0 ? 'success' : 'fail'].text
+  return fails === 0 ? 'text-success-fg' : 'text-fail-fg'
 }
 
 /** The played quest cards, successes first. `small` for the history list. */
@@ -66,19 +66,20 @@ export function QuestCards({
   return (
     <ul className={cx('flex flex-wrap gap-2', !small && 'justify-center')} aria-label="出的牌">
       {playedCards(size, fails).map((card, i) => {
-        const { label, icon: CardIcon, text, border } = QUEST_CARD[card]
+        const { label, icon: CardIcon, text, border, tint } = QUEST_CARD[card]
         return (
           <li
             key={i}
             aria-label={label}
             className={cx(
-              'flex items-center justify-center rounded-xl border-2 bg-mantle',
+              // Same look as the choice buttons: coloured border, tint and icon.
+              'flex items-center justify-center rounded-xl border-2',
               small ? 'h-10 w-7 rounded-lg' : 'h-20 w-14',
               border,
-              text,
+              tint,
             )}
           >
-            <CardIcon size={small ? 16 : 28} aria-hidden />
+            <CardIcon size={small ? 16 : 28} className={text} aria-hidden />
           </li>
         )
       })}
