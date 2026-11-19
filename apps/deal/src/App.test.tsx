@@ -88,6 +88,9 @@ describe('deal app', () => {
     }
     expect(screen.getByText('所有玩家已確認身分，遊戲開始！')).toBeTruthy()
     for (const name of ROLE_NAMES) expect(domText()).not.toContain(name)
+    // straight back to the setup, no confirmation
+    fireEvent.click(screen.getByRole('button', { name: '回到設定' }))
+    expect(screen.getByRole('button', { name: /開始發牌/ })).toBeTruthy()
   })
 
   it('ignores the tap that ends the hold', async () => {
