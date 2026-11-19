@@ -1,5 +1,8 @@
 import type { SeatRole } from '@avalon/rules'
 
+/** A fresh deal, or replaying a saved one so players can look at their cards again. */
+export type FlowMode = 'deal' | 'replay'
+
 /**
  * The pass-the-phone flow. Only the player currently looking has a role on screen:
  * `handoff` and `done` carry no role data that the UI could render.
@@ -7,14 +10,14 @@ import type { SeatRole } from '@avalon/rules'
 export type Flow =
   | { step: 'idle' }
   /** Waiting for the player in `table[index]` to take the phone. */
-  | { step: 'handoff'; recordId: string; table: SeatRole[]; index: number }
+  | { step: 'handoff'; mode: FlowMode; recordId: string; table: SeatRole[]; index: number }
   /** That player's card is face up. */
-  | { step: 'reveal'; recordId: string; table: SeatRole[]; index: number }
+  | { step: 'reveal'; mode: FlowMode; recordId: string; table: SeatRole[]; index: number }
   /** Everyone has seen their card; the table is dropped. */
-  | { step: 'done'; recordId: string }
+  | { step: 'done'; mode: FlowMode; recordId: string }
 
 export type FlowAction =
-  | { type: 'start'; recordId: string; table: SeatRole[] }
+  | { type: 'start'; mode: FlowMode; recordId: string; table: SeatRole[] }
   | { type: 'reveal' }
   /** Card turned face down by the player (double tap): move on. */
   | { type: 'confirm' }
@@ -27,7 +30,13 @@ export const IDLE: Flow = { step: 'idle' }
 export function flowReducer(flow: Flow, action: FlowAction): Flow {
   switch (action.type) {
     case 'start':
-      return { step: 'handoff', recordId: action.recordId, table: action.table, index: 0 }
+      return {
+        step: 'handoff',
+        mode: action.mode,
+        recordId: action.recordId,
+        table: action.table,
+        index: 0,
+      }
     case 'reveal':
       return flow.step === 'handoff' ? { ...flow, step: 'reveal' } : flow
     case 'confirm': {
@@ -35,7 +44,7 @@ export function flowReducer(flow: Flow, action: FlowAction): Flow {
       const next = flow.index + 1
       return next < flow.table.length
         ? { ...flow, step: 'handoff', index: next }
-        : { step: 'done', recordId: flow.recordId }
+        : { step: 'done', mode: flow.mode, recordId: flow.recordId }
     }
     case 'hide':
       return flow.step === 'reveal' ? { ...flow, step: 'handoff' } : flow
