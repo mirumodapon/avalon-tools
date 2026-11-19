@@ -57,9 +57,7 @@ export function RoleCard({
         </span>
         <Icon size={64} className={good ? 'text-good-fg' : 'text-evil-fg'} aria-hidden />
         <span className="text-2xl font-bold">{def.name}</span>
-        <span className="text-base font-semibold text-text">
-          {visionText(visionFor(self, table))}
-        </span>
+        <span className="font-semibold text-text">{visionText(visionFor(self, table))}</span>
         {EXTRA[self.role] && <span className="text-sm text-evil-fg">{EXTRA[self.role]}</span>}
         <span className="text-sm text-subtext0">{ABILITY[self.role]}</span>
       </button>
