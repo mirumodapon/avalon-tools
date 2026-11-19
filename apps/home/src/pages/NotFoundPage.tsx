@@ -1,10 +1,10 @@
 import { AppShell, EmptyState } from '@avalon/ui'
-import { IconToolsOff } from '@tabler/icons-react'
+import { IconFileUnknown } from '@tabler/icons-react'
 
 export function NotFoundPage() {
   return (
     <AppShell title="找不到頁面" homeHref={null}>
-      <EmptyState icon={<IconToolsOff size={48} />}>
+      <EmptyState icon={<IconFileUnknown size={48} />}>
         <p>找不到這個頁面</p>
         <a
           href="/"
