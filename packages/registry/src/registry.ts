@@ -19,7 +19,12 @@ export function builtTools(list: readonly ToolMeta[] = tools): ToolMeta[] {
 
 /** Tools listed on the home page (home itself excluded). */
 export function listedTools(list: readonly ToolMeta[] = tools): ToolMeta[] {
-  return list.filter((t) => t.id !== 'home')
+  // Usable tools first; coming-soon ones go last, each group keeping registry order.
+  const listed = list.filter((t) => t.id !== 'home')
+  return [
+    ...listed.filter((t) => t.status !== 'coming-soon'),
+    ...listed.filter((t) => t.status === 'coming-soon'),
+  ]
 }
 
 /** The PWA name: home keeps its own name, tools are prefixed with 阿瓦隆・. */
