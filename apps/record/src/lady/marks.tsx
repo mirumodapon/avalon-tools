@@ -1,7 +1,7 @@
 import { LADY_DECLARATION_LABEL, type Faction, type LadyDeclaration } from '@avalon/record-core'
 import { IconAlertTriangle, IconRipple, IconUserCheck, IconUserX } from '@tabler/icons-react'
 import { cx } from '@avalon/ui'
-import { FactionMark } from '../roles/roleIcons.tsx'
+import { FactionMark } from '@avalon/ui'
 
 export function LadyIcon({
   size = 16,

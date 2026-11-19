@@ -522,6 +522,9 @@ importers:
 
   packages/ui:
     dependencies:
+      '@avalon/rules':
+        specifier: workspace:*
+        version: link:../avalon-rules
       '@avalon/storage':
         specifier: workspace:*
         version: link:../storage

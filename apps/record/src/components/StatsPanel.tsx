@@ -7,7 +7,7 @@ import {
   type PlayerStats,
 } from '@avalon/record-core'
 import { LadyIcon } from '../lady/marks.tsx'
-import { FactionMark, RoleIcon } from '../roles/roleIcons.tsx'
+import { FactionMark, RoleIcon } from '@avalon/ui'
 
 const pct = (r: number | null) => (r === null ? '—' : `${Math.round(r * 100)}%`)
 
