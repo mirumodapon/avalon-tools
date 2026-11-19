@@ -34,6 +34,9 @@ afterEach(() => {
 /** Visible text and hidden text alike: nothing about roles may sit in the DOM. */
 const domText = () => document.body.innerHTML
 
+/** Lets pending storage promises settle (the timers are fake, so findBy* would hang). */
+const settle = () => act(async () => {})
+
 async function startDeal() {
   await act(async () => fireEvent.click(screen.getByRole('button', { name: /開始發牌/ })))
 }
@@ -139,16 +142,72 @@ describe('deal app', () => {
     expect(screen.getByText('特殊壞人有 3 位，但 5 人只有 2 位壞人')).toBeTruthy()
   })
 
-  it('asks before lowering the history limit drops records', async () => {
-    useSettings.getState().update({ keep: 10 })
-    for (let i = 0; i < 7; i++) {
-      await saveRecord({ id: `r${i}`, createdAt: i, playerCount: 5, config: [], assignments: [] })
+  it('keeps only the newest 10 deals', async () => {
+    for (let i = 0; i < 10; i++) {
+      await saveRecord({ id: `old${i}`, createdAt: i, playerCount: 5, config: [], assignments: [] })
     }
     render(<App />)
-    await act(async () => fireEvent.click(screen.getByRole('radio', { name: '3 筆' })))
-    expect(screen.getByText('將刪除 4 筆舊紀錄。')).toBeTruthy()
-    await act(async () => fireEvent.click(screen.getByRole('button', { name: '刪除並套用' })))
-    expect(useSettings.getState().settings.keep).toBe(3)
-    expect((await listRecords()).map((r) => r.id)).toEqual(['r6', 'r5', 'r4'])
+    await startDeal()
+    const ids = (await listRecords()).map((r) => r.id)
+    expect(ids).toHaveLength(10)
+    expect(ids).not.toContain('old0')
+    expect(screen.queryByText(/保留筆數/)).toBeNull()
+  })
+
+  it('replays a saved deal seat by seat without saving a new one', async () => {
+    const assignments = [
+      { seat: 1, role: 'assassin' as const },
+      { seat: 2, role: 'merlin' as const },
+      { seat: 3, role: 'loyal' as const },
+      { seat: 4, role: 'minion' as const },
+      { seat: 5, role: 'loyal' as const },
+    ]
+    await saveRecord({
+      id: 'past',
+      createdAt: Date.now(),
+      playerCount: 5,
+      config: ['merlin', 'assassin'],
+      assignments,
+    })
+    window.location.hash = '#/history'
+    render(<App />)
+    await settle()
+    const replay = screen.getByRole('button', { name: /回放/ })
+    expect(screen.getByRole('button', { name: /檢視/ })).toBeTruthy()
+    act(() => fireEvent.click(replay))
+
+    expect(screen.getByRole('heading', { name: '回放・第 1 / 5 位' })).toBeTruthy()
+    for (const name of ROLE_NAMES) expect(domText()).not.toContain(name)
+    hold()
+    expect(screen.getByRole('button', { name: /刺客/ })).toBeTruthy()
+    expect(screen.getByText('壞人隊友：4 號')).toBeTruthy()
+    doubleTap()
+    hold()
+    expect(screen.getByText('壞人：1、4 號')).toBeTruthy()
+    doubleTap()
+    for (let i = 3; i <= 5; i++) {
+      hold()
+      doubleTap()
+    }
+    expect(screen.getByText('所有玩家已重新查看身分')).toBeTruthy()
+    expect((await listRecords()).map((r) => r.id)).toEqual(['past'])
+    act(() => fireEvent.click(screen.getByRole('button', { name: '回到歷史紀錄' })))
+    await settle()
+    expect(screen.getByRole('heading', { name: '歷史紀錄' })).toBeTruthy()
+  })
+
+  it('opens 檢視 for a saved deal', async () => {
+    await saveRecord({
+      id: 'past',
+      createdAt: Date.now(),
+      playerCount: 5,
+      config: [],
+      assignments: [],
+    })
+    window.location.hash = '#/history'
+    render(<App />)
+    await settle()
+    act(() => fireEvent.click(screen.getByRole('button', { name: /檢視/ })))
+    expect(window.location.hash).toBe('#/history/past')
   })
 })
