@@ -10,9 +10,8 @@ export interface GameRecord {
   assignments: { seat: number; role: RoleId }[]
 }
 
-export const KEEP_OPTIONS = [3, 5, 10, 20] as const
-export type KeepCount = (typeof KEEP_OPTIONS)[number]
-export const DEFAULT_KEEP: KeepCount = 5
+/** The history keeps the newest 10 deals. */
+export const MAX_RECORDS = 10
 
 /** Newest first; ties keep a stable order by id. */
 export function newestFirst(records: readonly GameRecord[]): GameRecord[] {

@@ -1,21 +1,17 @@
 import type { PlayerCount, RoleId } from '@avalon/rules'
 import { onStoreChange, readStore, storageKey, writeStore, type StoreSpec } from '@avalon/storage'
 import { create } from 'zustand'
-import { DEFAULT_KEEP, KEEP_OPTIONS, type KeepCount } from './history/records.ts'
 import { DEFAULT_SPECIAL, normalizePlayerCount, normalizeSpecial } from './roles/config.ts'
 
 export interface Settings {
   playerCount: PlayerCount
   /** Enabled special roles. */
   special: RoleId[]
-  /** How many deals the history keeps. */
-  keep: KeepCount
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   playerCount: 5,
   special: [...DEFAULT_SPECIAL],
-  keep: DEFAULT_KEEP,
 }
 
 export function normalizeSettings(data: unknown): Settings {
@@ -25,9 +21,6 @@ export function normalizeSettings(data: unknown): Settings {
   return {
     playerCount: normalizePlayerCount(d.playerCount),
     special: normalizeSpecial(d.special),
-    keep: (KEEP_OPTIONS as readonly unknown[]).includes(d.keep)
-      ? (d.keep as KeepCount)
-      : DEFAULT_KEEP,
   }
 }
 

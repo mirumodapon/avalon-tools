@@ -4,7 +4,6 @@ import {
   BottomBar,
   Button,
   Card,
-  ConfirmSheet,
   FACTION_ICONS,
   IconButton,
   RoleIcon,
@@ -15,8 +14,6 @@ import {
 } from '@avalon/ui'
 import { IconAlertTriangle, IconHistory, IconInfoCircle, IconPlayCard } from '@tabler/icons-react'
 import { useState } from 'react'
-import { KEEP_OPTIONS, type KeepCount } from '../history/records.ts'
-import { listRecords, pruneRecords } from '../history/store.ts'
 import { checkConfig, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
 import { navigate } from '../router.ts'
 import { useSettings } from '../settings.ts'
@@ -29,17 +26,10 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
   const check = checkConfig(settings)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [lowerKeep, setLowerKeep] = useState<{ keep: KeepCount; drop: number } | null>(null)
 
   function toggle(id: RoleId, on: boolean) {
     const special = on ? [...settings.special, id] : settings.special.filter((x) => x !== id)
     update({ special })
-  }
-
-  async function changeKeep(keep: KeepCount) {
-    const count = (await listRecords()).length
-    if (count > keep) setLowerKeep({ keep, drop: count - keep })
-    else update({ keep })
   }
 
   async function start() {
@@ -136,17 +126,6 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
             ))}
           </ul>
         )}
-
-        <Card>
-          <SectionTitle>歷史紀錄保留筆數</SectionTitle>
-          <Segmented
-            label="歷史紀錄保留筆數"
-            value={String(settings.keep)}
-            options={KEEP_OPTIONS.map((n) => ({ value: String(n), label: `${n} 筆` }))}
-            onChange={(v) => void changeKeep(Number(v) as KeepCount)}
-          />
-          <p className="mt-2 text-sm text-subtext0">超過時自動刪除最舊的紀錄</p>
-        </Card>
       </div>
 
       <BottomBar>
@@ -161,20 +140,6 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
           開始發牌
         </Button>
       </BottomBar>
-
-      <ConfirmSheet
-        open={lowerKeep !== null}
-        title="調低保留筆數？"
-        message={lowerKeep && `將刪除 ${lowerKeep.drop} 筆舊紀錄。`}
-        confirmLabel="刪除並套用"
-        danger
-        onConfirm={() => {
-          if (!lowerKeep) return
-          update({ keep: lowerKeep.keep })
-          void pruneRecords(lowerKeep.keep)
-        }}
-        onClose={() => setLowerKeep(null)}
-      />
     </AppShell>
   )
 }
