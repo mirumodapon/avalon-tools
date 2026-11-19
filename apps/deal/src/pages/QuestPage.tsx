@@ -2,7 +2,7 @@ import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
 import { IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
-import { QUEST_CARD, QuestCards } from '../components/marks.tsx'
+import { QUEST_CARD, QuestCards, questResultText } from '../components/marks.tsx'
 import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
 import { cardOrder, resultText } from '../quest/quest.ts'
 import { useQuest } from '../quest/store.ts'
@@ -20,11 +20,10 @@ export function QuestPage() {
   const close = () => dispatch({ type: 'reset' })
 
   if (flow.step === 'result') {
-    const ok = flow.fails === 0
     return (
       <AppShell title="任務結果" onBack={close}>
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-8 text-center">
-          <p className={cx('text-4xl font-bold', ok ? 'text-success-fg' : 'text-fail-fg')}>
+          <p className={cx('text-4xl font-bold', questResultText(flow.fails))}>
             {resultText(flow.fails)}
           </p>
           <QuestCards size={flow.size} fails={flow.fails} />

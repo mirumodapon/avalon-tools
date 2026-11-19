@@ -1,39 +1,45 @@
 import { FACTION_LABEL, type Faction } from '@avalon/rules'
-import { cx, FACTION_ICONS } from '@avalon/ui'
-import { IconCheck, IconX, type Icon } from '@tabler/icons-react'
+import { cx } from '@avalon/ui'
+import { IconTrophy, IconTrophyOff, IconUserCheck, IconUserX, type Icon } from '@tabler/icons-react'
 import { playedCards, type QuestCard } from '../quest/quest.ts'
 
-/** How each quest card looks, wherever it is shown (playing, result, history). */
-export const QUEST_CARD: Record<
-  QuestCard,
-  { label: string; icon: Icon; text: string; border: string }
-> = {
-  success: {
-    label: '任務成功',
-    icon: IconCheck,
-    text: 'text-success-fg',
-    border: 'border-success',
-  },
-  fail: { label: '任務失敗', icon: IconX, text: 'text-fail-fg', border: 'border-fail' },
+interface Mark {
+  label: string
+  icon: Icon
+  text: string
+  border: string
 }
 
-/** How each Lady of the Lake answer looks. */
-export const LADY_MARK: Record<
-  Faction,
-  { label: string; icon: Icon; text: string; border: string }
-> = {
+/** How each quest card looks, wherever it is shown: a yellow trophy, or a dark blue one crossed out. */
+export const QUEST_CARD: Record<QuestCard, Mark> = {
+  success: {
+    label: '任務成功',
+    icon: IconTrophy,
+    text: 'text-quest-success-fg',
+    border: 'border-quest-success',
+  },
+  fail: {
+    label: '任務失敗',
+    icon: IconTrophyOff,
+    text: 'text-quest-fail-fg',
+    border: 'border-quest-fail',
+  },
+}
+
+/** How each Lady of the Lake answer looks (same icons as the game record's Lady results). */
+export const LADY_MARK: Record<Faction, Mark> = {
   good: {
     label: FACTION_LABEL.good,
-    icon: FACTION_ICONS.good,
+    icon: IconUserCheck,
     text: 'text-good-fg',
     border: 'border-good',
   },
-  evil: {
-    label: FACTION_LABEL.evil,
-    icon: FACTION_ICONS.evil,
-    text: 'text-evil-fg',
-    border: 'border-evil',
-  },
+  evil: { label: FACTION_LABEL.evil, icon: IconUserX, text: 'text-evil-fg', border: 'border-evil' },
+}
+
+/** Colour for a quest result headline: the success card's, or the fail card's. */
+export function questResultText(fails: number): string {
+  return QUEST_CARD[fails === 0 ? 'success' : 'fail'].text
 }
 
 /** The played quest cards, successes first. `small` for the history list. */
