@@ -1,11 +1,7 @@
 import { FACTION_LABEL, roleDef, visionFor, type SeatRole } from '@avalon/rules'
 import { cx, ROLE_ICONS } from '@avalon/ui'
-import { useEffect, useRef } from 'react'
+import { useDoubleTap } from '../hooks/useDoubleTap.ts'
 import { ABILITY, EXTRA, visionText } from '../roles/text.ts'
-
-/** Taps right after the card turns over are the hold being released, not a tap. */
-export const IGNORE_TAPS_MS = 500
-export const DOUBLE_TAP_MS = 300
 
 /**
  * The face-up card of one player. Double tap to turn it face down. It is a button so
@@ -23,22 +19,7 @@ export function RoleCard({
   const def = roleDef(self.role)
   const Icon = ROLE_ICONS[self.role]
   const good = def.faction === 'good'
-  const shownAt = useRef(0)
-  const lastTap = useRef(0)
-  useEffect(() => {
-    shownAt.current = performance.now()
-  }, [])
-
-  function tap() {
-    const now = performance.now()
-    if (now - shownAt.current < IGNORE_TAPS_MS) return
-    if (now - lastTap.current < DOUBLE_TAP_MS) {
-      lastTap.current = 0
-      onCover()
-    } else {
-      lastTap.current = now
-    }
-  }
+  const tap = useDoubleTap(onCover)
 
   return (
     <div className="flex flex-col items-center gap-4">
