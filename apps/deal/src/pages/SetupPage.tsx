@@ -12,7 +12,13 @@ import {
   Switch,
   cx,
 } from '@avalon/ui'
-import { IconAlertTriangle, IconHistory, IconInfoCircle, IconPlayCard } from '@tabler/icons-react'
+import {
+  IconAlertTriangle,
+  IconFlag,
+  IconHistory,
+  IconInfoCircle,
+  IconPlayCard,
+} from '@tabler/icons-react'
 import { useState } from 'react'
 import { checkConfig, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
 import { navigate } from '../router.ts'
@@ -126,6 +132,13 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
             ))}
           </ul>
         )}
+        <Card>
+          <SectionTitle>其他功能</SectionTitle>
+          <Button className="w-full" onClick={() => navigate({ name: 'quest' })}>
+            <IconFlag size={20} aria-hidden />
+            出任務
+          </Button>
+        </Card>
       </div>
 
       <BottomBar>
