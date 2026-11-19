@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@avalon/registry": "workspace:*",
+    "@avalon/rules": "workspace:*",
     "@avalon/storage": "workspace:*",
     "@avalon/theme": "workspace:*",
     "@avalon/ui": "workspace:*",
     "@tabler/icons-react": "catalog:",
+    "dexie": "catalog:",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "zustand": "catalog:"
   },
   "devDependencies": {
     "@avalon/pwa": "workspace:*",
@@ -25,6 +28,7 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
+    "fake-indexeddb": "catalog:",
     "jsdom": "catalog:",
     "tailwindcss": "catalog:",
     "vite": "catalog:",
