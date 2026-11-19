@@ -96,7 +96,7 @@ export function RecordPage({ id }: { id: string }) {
           <p className={cx('text-4xl font-bold', questResultText(record.fails))}>
             {resultText(record.fails)}
           </p>
-          <QuestCards size={record.size} fails={record.fails} />
+          <QuestCards size={record.size} fails={record.fails} cards={record.cards} />
         </div>
       </AppShell>
     )

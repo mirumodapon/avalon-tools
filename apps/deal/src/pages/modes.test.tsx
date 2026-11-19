@@ -101,7 +101,12 @@ describe('出任務', () => {
     expect(screen.getByText('1 張失敗')).toBeTruthy()
     await act(async () => {})
     expect(await listRecords()).toEqual([
-      expect.objectContaining({ kind: 'quest', size: 3, fails: 1 }),
+      expect.objectContaining({
+        kind: 'quest',
+        size: 3,
+        fails: 1,
+        cards: ['fail', 'success', 'success'],
+      }),
     ])
     const cards = within(screen.getByRole('list', { name: '出的牌' })).getAllByRole('listitem')
     expect(cards.map((c) => c.getAttribute('aria-label'))).toEqual([

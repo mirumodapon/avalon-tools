@@ -54,33 +54,55 @@ export function questResultText(fails: number): string {
   return fails === 0 ? 'text-success-fg' : 'text-fail-fg'
 }
 
-/** The played quest cards, successes first. `small` for the history list. */
+/**
+ * The played quest cards. Successes first by default; with `cards` (the play order, as
+ * saved in the history) they follow that order, numbered by who played them.
+ * `small` for the history list.
+ */
 export function QuestCards({
   size,
   fails,
+  cards,
   small = false,
 }: {
   size: number
   fails: number
+  cards?: readonly QuestCard[]
   small?: boolean
 }) {
+  const ordered = cards !== undefined
   return (
     <ul className={cx('flex flex-wrap gap-2', !small && 'justify-center')} aria-label="出的牌">
-      {playedCards(size, fails).map((card, i) => {
+      {(cards ?? playedCards(size, fails)).map((card, i) => {
         const { label, icon: CardIcon, text, border, tint } = QUEST_CARD[card]
         return (
           <li
             key={i}
-            aria-label={label}
-            className={cx(
-              // Same look as the choice buttons: coloured border, tint and icon.
-              'flex items-center justify-center rounded-xl border-2',
-              small ? 'h-10 w-7 rounded-lg' : 'h-20 w-14',
-              border,
-              tint,
-            )}
+            aria-label={ordered ? `第 ${i + 1} 位：${label}` : label}
+            className="flex flex-col items-center gap-1"
           >
-            <CardIcon size={small ? 16 : 28} className={text} aria-hidden />
+            <span
+              className={cx(
+                // Same look as the choice buttons: coloured border, tint and icon.
+                'flex items-center justify-center rounded-xl border-2',
+                small ? 'h-10 w-7 rounded-lg' : 'h-20 w-14',
+                border,
+                tint,
+              )}
+            >
+              <CardIcon size={small ? 16 : 28} className={text} aria-hidden />
+            </span>
+            {ordered && (
+              <span
+                className={cx(
+                  'text-subtext0 tabular-nums',
+                  small ? 'text-[10px] leading-none' : 'text-sm',
+                )}
+                aria-hidden
+              >
+                {i + 1}
+              </span>
+            )}
           </li>
         )
       })}

@@ -16,7 +16,16 @@ describe('quest result marks', () => {
       '任務成功',
       '任務失敗',
     ])
-    expect(cards[0]!.className).toContain('bg-quest-success/15')
-    expect(cards[2]!.className).toContain('bg-quest-fail/25')
+    expect(cards[0]!.firstElementChild!.className).toContain('bg-quest-success/15')
+    expect(cards[2]!.firstElementChild!.className).toContain('bg-quest-fail/25')
+  })
+
+  it('follows and numbers the play order when given', () => {
+    render(<QuestCards size={3} fails={1} cards={['fail', 'success', 'success']} />)
+    expect(screen.getAllByRole('listitem').map((c) => c.getAttribute('aria-label'))).toEqual([
+      '第 1 位：任務失敗',
+      '第 2 位：任務成功',
+      '第 3 位：任務成功',
+    ])
   })
 })
