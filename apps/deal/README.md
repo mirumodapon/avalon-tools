@@ -20,7 +20,7 @@
 | `packages/ui/src/roleIcons.tsx`       | 角色圖示                                                                                                    |
 | `src/roles/config.ts`                 | 可開關的特殊角色、補位角色、配置驗證 `checkConfig`、`rolesInPlay`                                           |
 | `src/roles/text.ts`                   | 卡片上的能力說明、額外提示、視野文字                                                                        |
-| `src/deal/shuffle.ts`                 | `crypto.getRandomValues` + Fisher–Yates 洗牌與發牌                                                          |
+| `src/deal/shuffle.ts`                 | Fisher–Yates 洗牌與發牌（亂數來源見 `src/random.ts`，舊手機沒有 Web Crypto 時改用 `Math.random`）           |
 | `src/history/records.ts`              | 三種紀錄的型別、舊紀錄讀取 `normalizeRecord`、保留上限 `MAX_RECORDS`（50）與修剪 `recordsToPrune`（純函式） |
 | `src/history/store.ts`                | 儲存模組：IndexedDB（`avalon-deal`），失敗時用 localStorage（`avalon:deal:records`）                        |
 | `src/flow/machine.ts`                 | 發牌與回放共用的流程狀態機（待機 → 翻牌 → 下一位 → 完成）                                                   |

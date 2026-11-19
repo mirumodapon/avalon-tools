@@ -1,3 +1,5 @@
+// oxlint-disable-next-line import/no-unassigned-import -- must run before any other code
+import '@avalon/ui/polyfills'
 // Must run before any store reads localStorage (moves 1.x settings to the 2.x keys).
 // oxlint-disable-next-line import/no-unassigned-import -- evaluated for its side effect, first
 import './migration/boot.ts'
