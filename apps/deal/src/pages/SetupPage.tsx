@@ -1,4 +1,4 @@
-import { PLAYER_COUNTS, roleDef, type Faction, type RoleId } from '@avalon/rules'
+import { PLAYER_COUNTS, roleDef, type Faction, type PlayerCount, type RoleId } from '@avalon/rules'
 import {
   AppShell,
   BottomBar,
@@ -21,13 +21,26 @@ import {
   IconRipple,
 } from '@tabler/icons-react'
 import { useState } from 'react'
+import { ModeTabs, panelId, tabId, type TabOption } from '../components/ModeTabs.tsx'
+import { SeatPicker } from '../components/SeatPicker.tsx'
+import { useLady } from '../lady/store.ts'
+import { checkTeam } from '../quest/quest.ts'
+import { useQuest } from '../quest/store.ts'
 import { checkConfig, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
 import { navigate } from '../router.ts'
-import { useSettings } from '../settings.ts'
+import { useSettings, type DealTab } from '../settings.ts'
 
 const FACTION_TITLE: Record<Faction, string> = { good: '好人陣營', evil: '壞人陣營' }
+const PLAYER_OPTIONS = PLAYER_COUNTS.map((n) => ({ value: String(n), label: `${n}` }))
 
-export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
+const TABS: TabOption<DealTab>[] = [
+  { value: 'roles', label: '發角色' },
+  { value: 'quest', label: '出任務' },
+  { value: 'lady', label: '湖中女神' },
+]
+
+/** 發角色: deal roles to every seat (unchanged). */
+function RolesPanel({ onStart }: { onStart: () => Promise<void> }) {
   const settings = useSettings((s) => s.settings)
   const update = useSettings((s) => s.update)
   const check = checkConfig(settings)
@@ -52,15 +65,8 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
   }
 
   return (
-    <AppShell
-      title="角色發牌"
-      actions={
-        <IconButton label="歷史紀錄" onClick={() => navigate({ name: 'history' })}>
-          <IconHistory size={22} />
-        </IconButton>
-      }
-    >
-      <div className="space-y-4 pt-2">
+    <>
+      <div className="flex-1 space-y-4 pt-2">
         <Card>
           <SectionTitle>玩家人數</SectionTitle>
           <Segmented
@@ -133,21 +139,7 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
             ))}
           </ul>
         )}
-        <Card>
-          <SectionTitle>其他功能</SectionTitle>
-          <div className="grid grid-cols-2 gap-2">
-            <Button onClick={() => navigate({ name: 'quest' })}>
-              <IconFlag size={20} aria-hidden />
-              出任務
-            </Button>
-            <Button onClick={() => navigate({ name: 'lady' })}>
-              <IconRipple size={20} aria-hidden />
-              湖中女神
-            </Button>
-          </div>
-        </Card>
       </div>
-
       <BottomBar>
         {error && <p className="mb-2 text-sm text-fail-fg">{error}</p>}
         <Button
@@ -160,6 +152,122 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
           開始發牌
         </Button>
       </BottomBar>
+    </>
+  )
+}
+
+/** 出任務: only the player count and who goes on the quest. */
+function QuestPanel() {
+  const draft = useQuest((s) => s.draft)
+  const setDraft = useQuest((s) => s.setDraft)
+  const dispatch = useQuest((s) => s.dispatch)
+  const check = checkTeam(draft)
+  const toggle = (seat: number) =>
+    setDraft({
+      team: draft.team.includes(seat)
+        ? draft.team.filter((s) => s !== seat)
+        : [...draft.team, seat].toSorted((a, b) => a - b),
+    })
+
+  return (
+    <>
+      <div className="flex-1 space-y-4 pt-2">
+        <Card>
+          <SectionTitle>玩家人數</SectionTitle>
+          <Segmented
+            label="出任務的玩家人數"
+            value={String(draft.playerCount)}
+            options={PLAYER_OPTIONS}
+            onChange={(v) => {
+              const n = Number(v) as PlayerCount
+              setDraft({ playerCount: n, team: draft.team.filter((s) => s <= n) })
+            }}
+          />
+        </Card>
+        <Card>
+          <SectionTitle>
+            參與任務的號碼
+            <span className="ml-2 font-normal text-subtext0 tabular-nums">
+              {draft.team.length} 人
+            </span>
+          </SectionTitle>
+          <SeatPicker
+            count={draft.playerCount}
+            selected={draft.team}
+            onToggle={toggle}
+            label="隊員"
+          />
+          <p className="mt-3 text-sm text-subtext0">任務人數：{check.sizes.join('、')} 人</p>
+        </Card>
+      </div>
+      <BottomBar>
+        {check.message && <p className="mb-2 text-sm text-subtext0">{check.message}</p>}
+        <Button
+          variant="primary"
+          className="w-full"
+          disabled={!check.ok}
+          onClick={() => dispatch({ type: 'start', setup: draft })}
+        >
+          <IconFlag size={20} aria-hidden />
+          開始出任務
+        </Button>
+      </BottomBar>
+    </>
+  )
+}
+
+/** 湖中女神: nothing to set up. */
+function LadyPanel() {
+  const dispatch = useLady((s) => s.dispatch)
+  return (
+    <>
+      <div className="flex-1 space-y-4 pt-2">
+        <Card>
+          <SectionTitle>使用方式</SectionTitle>
+          <ol className="list-decimal space-y-1.5 pl-5 text-subtext1">
+            <li>把手機交給被查驗的玩家，選擇要亮出的身分</li>
+            <li>交給湖中女神持有者，長按查看</li>
+            <li>看完雙擊蓋上，湖中女神交給被查驗的玩家</li>
+          </ol>
+        </Card>
+      </div>
+      <BottomBar>
+        <Button variant="primary" className="w-full" onClick={() => dispatch({ type: 'start' })}>
+          <IconRipple size={20} aria-hidden />
+          開始湖中女神
+        </Button>
+      </BottomBar>
+    </>
+  )
+}
+
+/** The three independent modes, each with its own settings, behind tabs. */
+export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
+  const tab = useSettings((s) => s.settings.tab)
+  const update = useSettings((s) => s.update)
+
+  return (
+    <AppShell
+      title="角色發牌"
+      actions={
+        <IconButton label="歷史紀錄" onClick={() => navigate({ name: 'history' })}>
+          <IconHistory size={22} />
+        </IconButton>
+      }
+      header={
+        <ModeTabs label="模式" value={tab} options={TABS} onChange={(t) => update({ tab: t })} />
+      }
+    >
+      <div
+        role="tabpanel"
+        id={panelId(tab)}
+        aria-labelledby={tabId(tab)}
+        className="flex flex-1 flex-col"
+      >
+        {tab === 'roles' && <RolesPanel onStart={onStart} />}
+        {tab === 'quest' && <QuestPanel />}
+        {tab === 'lady' && <LadyPanel />}
+      </div>
     </AppShell>
   )
 }
