@@ -1,4 +1,5 @@
 import {
+  IconApps,
   IconBuildingCastle,
   IconCards,
   IconClipboardList,
@@ -11,6 +12,7 @@ import {
  * bundled; `pnpm new:app` adds the new tool's icon here.
  */
 export const TOOL_ICONS: Record<string, Icon> = {
+  IconApps,
   IconBuildingCastle,
   IconCards,
   IconClipboardList,
