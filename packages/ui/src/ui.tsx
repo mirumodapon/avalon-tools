@@ -76,22 +76,27 @@ export function Segmented<T extends string>({
   onChange,
   label,
   className,
+  disabled = false,
 }: {
   value: T
   options: readonly SegmentOption<T>[]
   onChange: (value: T) => void
   label: string
   className?: string
+  disabled?: boolean
 }) {
   const name = useId()
   return (
-    <fieldset className={cx('flex rounded-xl bg-surface0 p-1', className)}>
+    <fieldset
+      disabled={disabled}
+      className={cx('flex rounded-xl bg-surface0 p-1 disabled:opacity-50', className)}
+    >
       <legend className="sr-only">{label}</legend>
       {options.map((o) => (
         <label
           key={o.value}
           className={cx(
-            'flex min-h-9 flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg px-2 text-sm has-focus-visible:outline-2 has-focus-visible:outline-accent',
+            'flex min-h-9 flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg px-2 text-sm has-disabled:cursor-not-allowed has-focus-visible:outline-2 has-focus-visible:outline-accent',
             value === o.value ? 'bg-base font-semibold text-text shadow-sm' : 'text-subtext0',
           )}
         >
@@ -114,14 +119,16 @@ export function Switch({
   onChange,
   label,
   description,
+  disabled = false,
 }: {
   checked: boolean
   onChange: (checked: boolean) => void
   label: ReactNode
   description?: ReactNode
+  disabled?: boolean
 }) {
   return (
-    <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3">
+    <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3 has-disabled:cursor-not-allowed has-disabled:opacity-50">
       <span>
         <span className="block">{label}</span>
         {description && <span className="block text-sm text-subtext0">{description}</span>}
@@ -132,6 +139,7 @@ export function Switch({
         aria-checked={checked}
         className="peer sr-only"
         checked={checked}
+        disabled={disabled}
         onChange={(e) => onChange(e.target.checked)}
       />
       <span
