@@ -8,8 +8,8 @@ interface Mark {
   icon: Icon
   text: string
   border: string
-  /** Tinted background for the choice buttons. */
-  tint: string
+  /** Tinted background for the quest choice buttons and cards. */
+  tint?: string
 }
 
 /** How each quest card looks, wherever it is shown: a yellow trophy, or a dark blue one crossed out. */
@@ -30,21 +30,22 @@ export const QUEST_CARD: Record<QuestCard, Mark> = {
   },
 }
 
-/** How each Lady of the Lake answer looks (same icons as the game record's Lady results). */
+/**
+ * How each Lady of the Lake answer looks: the faction colours of a dealt role card, with
+ * the same icons as the game record's Lady results.
+ */
 export const LADY_MARK: Record<Faction, Mark> = {
   good: {
     label: FACTION_LABEL.good,
     icon: IconUserCheck,
     text: 'text-good-fg',
     border: 'border-good',
-    tint: 'bg-good/15',
   },
   evil: {
     label: FACTION_LABEL.evil,
     icon: IconUserX,
     text: 'text-evil-fg',
     border: 'border-evil',
-    tint: 'bg-evil/15',
   },
 }
 
