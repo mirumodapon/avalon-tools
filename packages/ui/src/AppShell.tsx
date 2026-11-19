@@ -4,9 +4,10 @@ import { canLinkHome } from './standalone.ts'
 import { IconButton } from './ui.tsx'
 
 /**
- * Page frame shared by every tool: sticky header with a link back to the 阿瓦隆工具集
- * home (a full page load, since home is a separate app; hidden when the tool runs as
- * its own installed app), an optional in-app back button, the title and actions.
+ * Page frame shared by every tool: sticky header with either an in-app back button
+ * or, on a tool's top-level screen, a link to the 阿瓦隆工具集 home (a full page load,
+ * since home is a separate app; hidden when the tool runs as its own installed app),
+ * then the title and actions.
  */
 export function AppShell({
   title,
@@ -17,7 +18,7 @@ export function AppShell({
   homeHref = '/',
 }: {
   title: ReactNode
-  /** In-app back navigation; omitted on a tool's top-level screen. */
+  /** In-app back navigation; omitted on a tool's top-level screen, which links home instead. */
   onBack?: () => void
   actions?: ReactNode
   /** Extra sticky content under the title bar. */
@@ -27,7 +28,7 @@ export function AppShell({
   homeHref?: string | null
 }) {
   const [reachable] = useState(canLinkHome)
-  const showHome = homeHref !== null && reachable
+  const showHome = !onBack && homeHref !== null && reachable
   return (
     <div className="mx-auto flex min-h-dvh max-w-xl flex-col">
       <header className="sticky top-0 z-30 bg-base/95 pt-[env(safe-area-inset-top)] backdrop-blur">
