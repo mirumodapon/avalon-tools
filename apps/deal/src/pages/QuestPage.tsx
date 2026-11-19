@@ -86,19 +86,21 @@ export function QuestPage() {
           <div key={`choose-${flow.index}`} className="flex w-full max-w-xs flex-col gap-4">
             <p className="text-center text-lg text-subtext1">請選擇要出的牌</p>
             {flow.order.map((card) => {
-              const { label, icon: Icon, text, border } = QUEST_CARD[card]
+              const { label, icon: Icon, text, border, tint } = QUEST_CARD[card]
               return (
                 <button
                   key={card}
                   type="button"
                   onClick={() => dispatch({ type: 'play', card })}
                   className={cx(
-                    'no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 bg-mantle text-2xl font-bold',
+                    // Colour on the border, icon and tint; the label keeps full contrast so
+                    // neither choice looks disabled.
+                    'no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 text-2xl font-bold text-text',
                     border,
-                    text,
+                    tint,
                   )}
                 >
-                  <Icon size={32} aria-hidden />
+                  <Icon size={32} className={text} aria-hidden />
                   {label}
                 </button>
               )
