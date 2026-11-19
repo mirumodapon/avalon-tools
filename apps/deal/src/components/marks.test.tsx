@@ -17,7 +17,7 @@ describe('quest result marks', () => {
       '任務失敗',
     ])
     expect(cards[0]!.firstElementChild!.className).toContain('bg-quest-success/15')
-    expect(cards[2]!.firstElementChild!.className).toContain('bg-quest-fail/25')
+    expect(cards[2]!.firstElementChild!.className).toContain('bg-quest-fail/15')
   })
 
   it('follows and numbers the play order when given', () => {

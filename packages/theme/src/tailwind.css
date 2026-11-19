@@ -59,11 +59,11 @@
   --color-outside-approve-fg: var(--ctp-yellow-fg);
   --color-inside-reject: var(--ctp-mauve);
   --color-inside-reject-fg: var(--ctp-mauve-fg);
-  /* Quest cards in the deal tool: a yellow trophy for success, a dark blue one for failure. */
+  /* Quest cards in the deal tool: a yellow trophy for success, the good faction's blue for failure. */
   --color-quest-success: var(--ctp-yellow);
   --color-quest-success-fg: var(--ctp-yellow-fg);
-  --color-quest-fail: color-mix(in oklab, var(--ctp-blue-fg) 70%, black);
-  --color-quest-fail-fg: color-mix(in oklab, var(--ctp-blue-fg) 70%, black);
+  --color-quest-fail: var(--color-good);
+  --color-quest-fail-fg: var(--color-good-fg);
   --color-crown: var(--ctp-yellow);
   --color-crown-fg: var(--ctp-yellow-fg);
   --color-forced: var(--ctp-peach);
