@@ -98,19 +98,21 @@ export function LadyPage() {
           <div key="declare" className="flex w-full max-w-xs flex-col gap-4">
             <p className="text-center text-lg text-subtext1">選擇要讓湖中女神持有者看到的身分</p>
             {flow.order.map((loyalty) => {
-              const { label, icon: Icon, text, border } = LADY_MARK[loyalty]
+              const { label, icon: Icon, text, border, tint } = LADY_MARK[loyalty]
               return (
                 <button
                   key={loyalty}
                   type="button"
                   onClick={() => dispatch({ type: 'declare', loyalty })}
                   className={cx(
-                    'no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 bg-mantle text-2xl font-bold',
+                    // Colour on the border, icon and tint; the label keeps full contrast so
+                    // neither choice looks disabled.
+                    'no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 text-2xl font-bold text-text',
                     border,
-                    text,
+                    tint,
                   )}
                 >
-                  <Icon size={32} aria-hidden />
+                  <Icon size={32} className={text} aria-hidden />
                   {label}
                 </button>
               )
