@@ -30,6 +30,8 @@ describe('home', () => {
     expect(seen).toEqual(expected)
     expect(within(list).getAllByRole('listitem')).toHaveLength(listedTools().length)
     expect(within(list).queryByText('阿瓦隆工具集')).toBeNull()
+    expect(within(list).getByText('Beta')).toBeTruthy()
+    expect(within(list).getByText('RC')).toBeTruthy()
   })
 
   it('has no settings, only an info page with the version and the changelog', async () => {

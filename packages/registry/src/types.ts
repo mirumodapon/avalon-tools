@@ -1,6 +1,7 @@
 import type { AccentName } from '@catppuccin/palette'
 
-export type ToolStatus = 'stable' | 'beta' | 'coming-soon'
+/** `rc`: release candidate, feature-complete and being tried out before stable. */
+export type ToolStatus = 'stable' | 'rc' | 'beta' | 'coming-soon'
 
 /** One tool (app) of the 阿瓦隆工具集. */
 export interface ToolMeta {
