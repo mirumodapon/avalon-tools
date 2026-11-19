@@ -45,6 +45,16 @@ export const TOOLS = [
     accent: 'peach',
     status: 'beta',
   },
+  {
+    id: 'assistant',
+    name: '整合遊戲助手',
+    shortName: '遊戲助手',
+    description: '把發牌、夜晚旁白、出任務與遊戲紀錄串成一場完整的遊戲',
+    path: '/assistant/',
+    icon: 'IconApps',
+    accent: 'sapphire',
+    status: 'coming-soon',
+  },
   // new:app inserts here
 ] as const satisfies readonly ToolMeta[]
 

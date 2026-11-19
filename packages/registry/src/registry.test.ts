@@ -19,6 +19,18 @@ const tablerIcons = join(
   'dist/esm/icons',
 )
 
+/** A minimal tool entry for ordering tests. */
+const tool = (id: string, status: ToolMeta['status']): ToolMeta => ({
+  id,
+  name: id,
+  shortName: id,
+  description: '',
+  path: `/${id}/`,
+  icon: 'IconX',
+  accent: 'blue',
+  status,
+})
+
 describe('registry', () => {
   it('is valid: unique ids and paths, well-formed paths', () => {
     expect(validateTools(tools)).toEqual([])
@@ -40,6 +52,19 @@ describe('registry', () => {
 
   it('lists tools for home without home itself', () => {
     expect(listedTools().map((t) => t.id)).not.toContain('home')
+  })
+
+  it('lists coming-soon tools after the usable ones, keeping registry order', () => {
+    const list = [
+      tool('home', 'stable'),
+      tool('a', 'coming-soon'),
+      tool('b', 'stable'),
+      tool('c', 'coming-soon'),
+      tool('d', 'beta'),
+    ]
+    expect(listedTools(list).map((x) => x.id)).toEqual(['b', 'd', 'a', 'c'])
+    const statuses = listedTools().map((x) => x.status === 'coming-soon')
+    expect(statuses).toEqual(statuses.toSorted())
   })
 
   it('names manifests', () => {
