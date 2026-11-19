@@ -7,11 +7,16 @@ export interface Settings {
   playerCount: PlayerCount
   /** Enabled special roles. */
   special: RoleId[]
+  /** How a past deal lists its seats: in seat order, or grouped by faction. */
+  recordView: RecordView
 }
+
+export type RecordView = 'seat' | 'faction'
 
 export const DEFAULT_SETTINGS: Settings = {
   playerCount: 5,
   special: [...DEFAULT_SPECIAL],
+  recordView: 'seat',
 }
 
 export function normalizeSettings(data: unknown): Settings {
@@ -21,6 +26,7 @@ export function normalizeSettings(data: unknown): Settings {
   return {
     playerCount: normalizePlayerCount(d.playerCount),
     special: normalizeSpecial(d.special),
+    recordView: d.recordView === 'faction' ? 'faction' : 'seat',
   }
 }
 

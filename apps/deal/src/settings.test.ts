@@ -3,7 +3,11 @@ import { DEFAULT_SETTINGS, normalizeSettings, SETTINGS_STORE, useSettings } from
 
 describe('settings', () => {
   it('defaults to 5 players with Merlin + Assassin', () => {
-    expect(DEFAULT_SETTINGS).toEqual({ playerCount: 5, special: ['merlin', 'assassin'] })
+    expect(DEFAULT_SETTINGS).toEqual({
+      playerCount: 5,
+      special: ['merlin', 'assassin'],
+      recordView: 'seat',
+    })
   })
 
   it('repairs stored garbage and drops the old keep setting', () => {
@@ -12,6 +16,7 @@ describe('settings', () => {
     ).toEqual({
       playerCount: 5,
       special: ['merlin'],
+      recordView: 'seat',
     })
   })
 
@@ -19,7 +24,7 @@ describe('settings', () => {
     useSettings.getState().update({ playerCount: 8 })
     expect(JSON.parse(localStorage.getItem(SETTINGS_STORE.key)!)).toEqual({
       version: 1,
-      data: { playerCount: 8, special: ['merlin', 'assassin'] },
+      data: { playerCount: 8, special: ['merlin', 'assassin'], recordView: 'seat' },
     })
   })
 })
