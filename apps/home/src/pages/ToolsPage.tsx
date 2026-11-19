@@ -6,6 +6,7 @@ import { TOOL_ICONS } from '../toolIcons.ts'
 import { UpgradeCard } from '../UpgradeCard.tsx'
 
 const STATUS_LABEL: Partial<Record<ToolMeta['status'], string>> = {
+  rc: 'RC',
   beta: 'Beta',
   'coming-soon': '即將推出',
 }

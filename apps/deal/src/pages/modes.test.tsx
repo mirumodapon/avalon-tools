@@ -5,7 +5,7 @@ import { IDLE } from '../flow/machine.ts'
 import { useFlow } from '../flow/store.ts'
 import { IGNORE_TAPS_MS } from '../hooks/useDoubleTap.ts'
 import { HOLD_MS } from '../hooks/useHold.ts'
-import { createLocalStore, setRecordStore } from '../history/store.ts'
+import { createLocalStore, listRecords, setRecordStore } from '../history/store.ts'
 import { LADY_IDLE } from '../lady/lady.ts'
 import { useLady } from '../lady/store.ts'
 import { QUEST_IDLE } from '../quest/quest.ts'
@@ -78,7 +78,7 @@ describe('setup tabs', () => {
 })
 
 describe('出任務', () => {
-  it('only needs how many go, passes the phone in turn and shows successes then fails', () => {
+  it('only needs how many go, passes the phone in turn and shows successes then fails', async () => {
     render(<App />)
     tab('出任務')
     expect(screen.queryByRole('button', { name: /^\d+ 號$/ })).toBeNull()
@@ -99,6 +99,15 @@ describe('出任務', () => {
     }
     hold('長按公布結果')
     expect(screen.getByText('1 張失敗')).toBeTruthy()
+    await act(async () => {})
+    expect(await listRecords()).toEqual([
+      expect.objectContaining({
+        kind: 'quest',
+        size: 3,
+        fails: 1,
+        cards: ['fail', 'success', 'success'],
+      }),
+    ])
     const cards = within(screen.getByRole('list', { name: '出的牌' })).getAllByRole('listitem')
     expect(cards.map((c) => c.getAttribute('aria-label'))).toEqual([
       '任務成功',
@@ -136,7 +145,7 @@ describe('出任務', () => {
 })
 
 describe('湖中女神', () => {
-  it('starts straight away: the inspected player chooses, the holder looks', () => {
+  it('starts straight away: the inspected player chooses, the holder looks', async () => {
     useSettings.getState().update({ tab: 'lady' })
     render(<App />)
     fireEvent.click(screen.getByRole('button', { name: /開始湖中女神/ }))
@@ -149,6 +158,8 @@ describe('湖中女神', () => {
     expect(screen.getByRole('button', { name: /亮出壞人/ })).toBeTruthy()
     doubleTap(/雙擊蓋上/)
     expect(screen.getByText('湖中女神交給被查驗的玩家')).toBeTruthy()
+    await act(async () => {})
+    expect(await listRecords()).toEqual([expect.objectContaining({ kind: 'lady', shown: 'evil' })])
     fireEvent.click(screen.getByRole('button', { name: '再查驗一次' }))
     expect(screen.getByText('被查驗的玩家')).toBeTruthy()
   })
@@ -160,5 +171,27 @@ describe('湖中女神', () => {
     act(() => void document.dispatchEvent(new Event('visibilitychange')))
     expect(screen.queryByRole('button', { name: '好人' })).toBeNull()
     expect(useLady.getState().flow).toEqual({ step: 'toTarget' })
+  })
+})
+
+describe('history of every mode', () => {
+  it('lists quests openly and keeps Lady results covered until held', async () => {
+    const store = createLocalStore()
+    setRecordStore(store)
+    await store.save({ id: 'q', createdAt: 2, kind: 'quest', size: 3, fails: 0 })
+    await store.save({ id: 'l', createdAt: 1, kind: 'lady', shown: 'good' })
+    window.location.hash = '#/history'
+    render(<App />)
+    await act(async () => {})
+    expect(screen.getByText('3 人出任務')).toBeTruthy()
+    expect(screen.getByText('任務成功')).toBeTruthy()
+    expect(screen.queryByText('好人')).toBeNull()
+
+    act(() => fireEvent.click(screen.getByRole('button', { name: /檢視/ })))
+    await act(async () => {})
+    expect(window.location.hash).toBe('#/history/l')
+    expect(screen.queryByText('好人')).toBeNull()
+    hold('長按查看湖中女神的結果')
+    expect(screen.getByText('好人')).toBeTruthy()
   })
 })

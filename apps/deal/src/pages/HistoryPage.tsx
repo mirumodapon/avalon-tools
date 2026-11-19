@@ -1,35 +1,41 @@
 import { roleDef } from '@avalon/rules'
 import { AppShell, Button, ConfirmSheet, EmptyState, IconButton, RoleIcon, cx } from '@avalon/ui'
-import { IconEye, IconHistory, IconPlayerPlay, IconTrash, IconUsers } from '@tabler/icons-react'
+import {
+  IconEye,
+  IconFlag,
+  IconHistory,
+  IconPlayCard,
+  IconPlayerPlay,
+  IconRipple,
+  IconTrash,
+  type Icon,
+} from '@tabler/icons-react'
 import { useCallback, useEffect, useState } from 'react'
 import { startReplay } from '../flow/start.ts'
-import { MAX_RECORDS, type GameRecord } from '../history/records.ts'
+import { QuestCards, questResultText } from '../components/marks.tsx'
+import {
+  MAX_RECORDS,
+  type GameRecord,
+  type LadyRecord,
+  type QuestRecord,
+  type RolesRecord,
+} from '../history/records.ts'
 import { clearRecords, deleteRecord, listRecords } from '../history/store.ts'
 import { formatDate, formatWhen } from '../history/summary.ts'
+import { resultText } from '../quest/quest.ts'
 import { navigate } from '../router.ts'
 
 const toSetup = () => navigate({ name: 'setup' })
 
-function RecordItem({ record, onDelete }: { record: GameRecord; onDelete: () => void }) {
-  const { day, time } = formatWhen(record.createdAt)
-  return (
-    <li className="rounded-2xl bg-mantle p-4">
-      <div className="flex items-start gap-2">
-        <div className="min-w-0 flex-1">
-          <p className="text-lg font-semibold">
-            {day}
-            <span className="ml-2 font-normal text-subtext1 tabular-nums">{time}</span>
-          </p>
-          <p className="mt-0.5 flex items-center gap-1 text-sm text-subtext0">
-            <IconUsers size={16} aria-hidden />
-            {record.playerCount} 人
-          </p>
-        </div>
-        <IconButton label="刪除這筆紀錄" onClick={onDelete}>
-          <IconTrash size={20} className="text-overlay1" />
-        </IconButton>
-      </div>
+const KIND: Record<GameRecord['kind'], { label: string; icon: Icon }> = {
+  roles: { label: '發角色', icon: IconPlayCard },
+  quest: { label: '出任務', icon: IconFlag },
+  lady: { label: '湖中女神', icon: IconRipple },
+}
 
+function RolesBody({ record }: { record: RolesRecord }) {
+  return (
+    <>
       <ul className="mt-3 flex flex-wrap gap-1.5" aria-label="特殊角色">
         {record.config.length === 0 ? (
           <li className="rounded-full bg-surface0 px-2.5 py-1 text-xs text-subtext1">
@@ -49,7 +55,6 @@ function RecordItem({ record, onDelete }: { record: GameRecord; onDelete: () => 
           ))
         )}
       </ul>
-
       <div className="mt-4 grid grid-cols-2 gap-2">
         <Button onClick={() => navigate({ name: 'record', id: record.id })}>
           <IconEye size={20} aria-hidden />
@@ -60,11 +65,77 @@ function RecordItem({ record, onDelete }: { record: GameRecord; onDelete: () => 
           回放
         </Button>
       </div>
+    </>
+  )
+}
+
+function QuestBody({ record }: { record: QuestRecord }) {
+  return (
+    <div className="mt-3 flex items-center justify-between gap-3">
+      <QuestCards size={record.size} fails={record.fails} cards={record.cards} small />
+      <span className={cx('font-semibold', questResultText(record.fails))}>
+        {resultText(record.fails)}
+      </span>
+    </div>
+  )
+}
+
+function LadyBody({ record }: { record: LadyRecord }) {
+  return (
+    <Button className="mt-4 w-full" onClick={() => navigate({ name: 'record', id: record.id })}>
+      <IconEye size={20} aria-hidden />
+      檢視
+    </Button>
+  )
+}
+
+function subtitle(record: GameRecord): string {
+  switch (record.kind) {
+    case 'roles':
+      return `${record.playerCount} 人`
+    case 'quest':
+      return `${record.size} 人出任務`
+    case 'lady':
+      return '只有持有者看過結果'
+  }
+}
+
+function RecordItem({ record, onDelete }: { record: GameRecord; onDelete: () => void }) {
+  const { day, time } = formatWhen(record.createdAt)
+  const { label, icon: KindIcon } = KIND[record.kind]
+  return (
+    <li className="rounded-2xl bg-mantle p-4">
+      <div className="flex items-start gap-3">
+        <span
+          className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-surface0 text-subtext1"
+          aria-hidden
+        >
+          <KindIcon size={20} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold">
+            {label}
+            <span className="ml-2 font-normal text-subtext1 tabular-nums">
+              {day} {time}
+            </span>
+          </p>
+          <p className="mt-0.5 text-sm text-subtext0">{subtitle(record)}</p>
+        </div>
+        <IconButton label="刪除這筆紀錄" onClick={onDelete}>
+          <IconTrash size={20} className="text-overlay1" />
+        </IconButton>
+      </div>
+      {record.kind === 'roles' && <RolesBody record={record} />}
+      {record.kind === 'quest' && <QuestBody record={record} />}
+      {record.kind === 'lady' && <LadyBody record={record} />}
     </li>
   )
 }
 
-/** Saved deals: 檢視 shows every seat at once, 回放 passes the phone around again. */
+/**
+ * Everything the three modes saved, newest first. A deal can be shown (檢視) or passed
+ * around again (回放); a quest shows its result; a Lady result stays covered until held.
+ */
 export function HistoryPage() {
   const [records, setRecords] = useState<GameRecord[] | null>(null)
   const [confirm, setConfirm] = useState<GameRecord | 'all' | null>(null)
@@ -75,7 +146,7 @@ export function HistoryPage() {
     <AppShell title="歷史紀錄" onBack={toSetup}>
       {records?.length === 0 ? (
         <EmptyState icon={<IconHistory size={48} />}>
-          <p>還沒有發牌紀錄</p>
+          <p>還沒有任何紀錄</p>
         </EmptyState>
       ) : (
         <div className="space-y-3 pt-2">
@@ -101,7 +172,7 @@ export function HistoryPage() {
         title={confirm === 'all' ? '清除全部紀錄？' : '刪除這筆紀錄？'}
         message={
           confirm === 'all'
-            ? `將刪除全部 ${records?.length ?? 0} 筆發牌紀錄，無法復原。`
+            ? `將刪除全部 ${records?.length ?? 0} 筆紀錄，無法復原。`
             : confirm && `${formatDate(confirm.createdAt)} 的紀錄將被刪除，無法復原。`
         }
         confirmLabel="刪除"

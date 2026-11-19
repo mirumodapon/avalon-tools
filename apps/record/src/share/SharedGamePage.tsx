@@ -1,5 +1,5 @@
 import { deriveState, dateKey, formatTime, type Game } from '@avalon/record-core'
-import { IconDownload, IconLinkOff } from '@tabler/icons-react'
+import { IconDownload, IconFileExport, IconLinkOff } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { HistoryTable } from '../components/HistoryTable.tsx'
@@ -7,6 +7,7 @@ import { Page } from '../components/Layout.tsx'
 import { ProgressOverview } from '../components/ProgressOverview.tsx'
 import { BottomBar, Button, Card, EmptyState, Segmented } from '@avalon/ui'
 import { ViewModeToggle } from '../components/ViewModeToggle.tsx'
+import { ExportSheet } from '../export/ExportSheet.tsx'
 import type { ConflictChoice } from '../db/repository.ts'
 import { newId, useGames } from '../games/store.ts'
 import { useDisplayName } from '../naming/useDisplayName.ts'
@@ -68,6 +69,7 @@ function SharedPreview({ game, onClose }: { game: Game; onClose: () => void }) {
   const [choice, setChoice] = useState<ConflictChoice>('copy')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const [exporting, setExporting] = useState(false)
   const s = deriveState(game)
   const created = new Date(game.createdAt)
 
@@ -123,11 +125,24 @@ function SharedPreview({ game, onClose }: { game: Game; onClose: () => void }) {
             {error}
           </p>
         )}
-        <Button variant="primary" className="w-full" disabled={busy} onClick={() => void save()}>
-          <IconDownload size={20} aria-hidden />
-          匯入到本機
-        </Button>
+        <div className="flex gap-2">
+          {/* Exports straight from the link: nothing is added to this device's records. */}
+          <Button onClick={() => setExporting(true)}>
+            <IconFileExport size={20} aria-hidden />
+            匯出
+          </Button>
+          <Button variant="primary" className="flex-1" disabled={busy} onClick={() => void save()}>
+            <IconDownload size={20} aria-hidden />
+            匯入到本機
+          </Button>
+        </div>
       </BottomBar>
+      <ExportSheet
+        game={game}
+        open={exporting}
+        onClose={() => setExporting(false)}
+        defaultIncludeRoles={showRoles}
+      />
     </Page>
   )
 }

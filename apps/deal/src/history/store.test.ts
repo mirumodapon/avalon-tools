@@ -13,6 +13,7 @@ import {
 const rec = (id: string, createdAt: number): GameRecord => ({
   id,
   createdAt,
+  kind: 'roles',
   playerCount: 5,
   config: ['merlin', 'assassin'],
   assignments: [

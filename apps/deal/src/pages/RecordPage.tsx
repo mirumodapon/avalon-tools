@@ -3,9 +3,11 @@ import { AppShell, EmptyState, ROLE_ICONS, Segmented, cx, type SegmentOption } f
 import { IconFileOff } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
+import { LADY_MARK, QuestCards, questResultText } from '../components/marks.tsx'
 import type { GameRecord } from '../history/records.ts'
 import { getRecord } from '../history/store.ts'
 import { configSummary, formatDate } from '../history/summary.ts'
+import { resultText } from '../quest/quest.ts'
 import { navigate } from '../router.ts'
 import { useSettings, type RecordView } from '../settings.ts'
 
@@ -82,6 +84,39 @@ export function RecordPage({ id }: { id: string }) {
         <EmptyState icon={<IconFileOff size={48} />}>
           <p>找不到這筆紀錄</p>
         </EmptyState>
+      </AppShell>
+    )
+  }
+
+  if (record.kind === 'quest') {
+    return (
+      <AppShell title={formatDate(record.createdAt)} onBack={back}>
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 py-8 text-center">
+          <p className="text-subtext1">{record.size} 人出任務</p>
+          <p className={cx('text-4xl font-bold', questResultText(record.fails))}>
+            {resultText(record.fails)}
+          </p>
+          <QuestCards size={record.size} fails={record.fails} cards={record.cards} />
+        </div>
+      </AppShell>
+    )
+  }
+
+  if (record.kind === 'lady') {
+    const { label, icon: Icon, text } = LADY_MARK[record.shown]
+    return (
+      <AppShell title={formatDate(record.createdAt)} onBack={back}>
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 py-8 text-center">
+          {shown ? (
+            <>
+              <p className="text-subtext1">湖中女神：被查驗的玩家亮出</p>
+              <Icon size={64} className={text} aria-hidden />
+              <p className={cx('text-4xl font-bold', text)}>{label}</p>
+            </>
+          ) : (
+            <CardBack onReveal={() => setShown(true)} label="長按查看湖中女神的結果" />
+          )}
+        </div>
       </AppShell>
     )
   }

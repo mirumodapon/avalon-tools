@@ -12,6 +12,7 @@ import { IconChevronDown, IconQuestionMark } from '@tabler/icons-react'
 import { useState } from 'react'
 import { cx } from '@avalon/ui'
 import { RoleIcon } from '@avalon/ui'
+import { SeatNo } from '../play/ProposalForm.tsx'
 
 /** Assign roles to players; partial assignment is fine. Used-up roles are disabled. */
 export function RoleAssignmentEditor({
@@ -39,20 +40,20 @@ export function RoleAssignmentEditor({
 
   return (
     <div>
-      <ul className="space-y-1">
+      <ol className="divide-y divide-surface0">
         {players.map((p, i) => {
           const role = assignment[p.id]
           const expanded = open === p.id
           return (
-            <li key={p.id} className="rounded-xl bg-surface0/60">
+            <li key={p.id} className="py-1.5">
               <button
                 type="button"
                 aria-expanded={expanded}
                 onClick={() => setOpen(expanded ? null : p.id)}
-                className="flex min-h-11 w-full items-center gap-2 px-3 text-left"
+                className="flex min-h-11 w-full items-center gap-2 text-left"
               >
-                <span className="w-5 text-sm text-subtext0">{i + 1}</span>
-                <span className="min-w-0 flex-1 truncate">{p.name}</span>
+                <SeatNo n={i + 1} />
+                <span className="ml-1 min-w-0 flex-1 truncate">{p.name}</span>
                 {role ? (
                   <RoleIcon role={role} size={18} showName className="text-sm" />
                 ) : (
@@ -68,7 +69,7 @@ export function RoleAssignmentEditor({
                 />
               </button>
               {expanded && (
-                <fieldset className="grid grid-cols-2 gap-2 p-2">
+                <fieldset className="grid grid-cols-2 gap-2 pt-1 pb-1.5">
                   <legend className="sr-only">{p.name}的角色</legend>
                   {roles.map((r) => {
                     const left = remainingFor(r.id, p.id, assignment, config, players.length)
@@ -105,7 +106,7 @@ export function RoleAssignmentEditor({
             </li>
           )
         })}
-      </ul>
+      </ol>
       {errors.length > 0 && (
         <ul role="alert" className="mt-2 text-sm text-fail-fg">
           {errors.map((e) => (

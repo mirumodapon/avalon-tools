@@ -5,7 +5,13 @@
  */
 import { appDatabaseName, readStore, storageKey, writeStore, type StoreSpec } from '@avalon/storage'
 import { Dexie, type Table } from 'dexie'
-import { newestFirst, recordsToPrune, type GameRecord } from './records.ts'
+import {
+  newestFirst,
+  normalizeRecord,
+  readRecords,
+  recordsToPrune,
+  type GameRecord,
+} from './records.ts'
 
 export interface RecordStore {
   save(record: GameRecord): Promise<void>
@@ -33,8 +39,8 @@ export async function openIndexedDbStore(name = DB_NAME): Promise<RecordStore> {
   await db.open()
   return {
     save: async (r) => void (await db.records.put(r)),
-    list: async () => newestFirst(await db.records.toArray()),
-    get: (id) => db.records.get(id),
+    list: async () => newestFirst(readRecords(await db.records.toArray())),
+    get: async (id) => normalizeRecord(await db.records.get(id)) ?? undefined,
     delete: (id) => db.records.delete(id),
     clear: () => db.records.clear(),
     prune: async (limit) => {
@@ -45,17 +51,10 @@ export async function openIndexedDbStore(name = DB_NAME): Promise<RecordStore> {
   }
 }
 
-const isRecord = (r: unknown): r is GameRecord =>
-  typeof r === 'object' &&
-  r !== null &&
-  typeof (r as GameRecord).id === 'string' &&
-  typeof (r as GameRecord).createdAt === 'number' &&
-  Array.isArray((r as GameRecord).assignments)
-
 export const RECORDS_STORE: StoreSpec<GameRecord[]> = {
   key: storageKey('deal', 'records'),
   version: 1,
-  parse: (data) => (Array.isArray(data) ? data.filter(isRecord) : []),
+  parse: (data) => (Array.isArray(data) ? readRecords(data) : []),
   fallback: () => [],
 }
 

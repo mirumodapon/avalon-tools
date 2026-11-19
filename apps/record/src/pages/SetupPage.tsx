@@ -22,7 +22,6 @@ import {
   IconArrowUp,
   IconCrown,
   IconEraser,
-  IconEye,
   IconHistory,
   IconPlayerPlay,
 } from '@tabler/icons-react'
@@ -328,25 +327,24 @@ export function SetupPage({ from }: { from?: string }) {
             </div>
           )}
           <div className="mt-3 border-t border-surface0 pt-3">
-            {showAssign ? (
-              <RoleAssignmentEditor
-                players={players}
-                assignment={assignment}
-                config={roleConfig}
-                onChange={setAssignment}
-              />
-            ) : (
-              <Button
-                variant="ghost"
-                className="w-full text-sm"
-                onClick={() => setShowAssign(true)}
-              >
-                <IconEye size={18} aria-hidden />
-                <span className="flex flex-col items-start leading-tight">
-                  <span>現在指派角色</span>
-                  <span className="text-xs text-subtext0">也可在遊戲中或結算時再填</span>
-                </span>
-              </Button>
+            <Switch
+              label="現在指派角色"
+              description="也可在遊戲中或結算時再填"
+              checked={showAssign}
+              onChange={(on) => {
+                setShowAssign(on)
+                if (!on) setAssignment({})
+              }}
+            />
+            {showAssign && (
+              <div className="mt-2">
+                <RoleAssignmentEditor
+                  players={players}
+                  assignment={assignment}
+                  config={roleConfig}
+                  onChange={setAssignment}
+                />
+              </div>
             )}
           </div>
         </Card>

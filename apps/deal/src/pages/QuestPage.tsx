@@ -1,13 +1,11 @@
 import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
-import { IconCheck, IconX } from '@tabler/icons-react'
+import { IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
+import { QUEST_CARD, QuestCards, questResultText } from '../components/marks.tsx'
 import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
-import { cardOrder, playedCards, resultText, type QuestCard } from '../quest/quest.ts'
+import { cardOrder, resultText } from '../quest/quest.ts'
 import { useQuest } from '../quest/store.ts'
-
-const CARD_LABEL: Record<QuestCard, string> = { success: '任務成功', fail: '任務失敗' }
-const CARD_ICON = { success: IconCheck, fail: IconX }
 
 /** A quest in progress: each member plays a card in private, then the result. */
 export function QuestPage() {
@@ -22,32 +20,13 @@ export function QuestPage() {
   const close = () => dispatch({ type: 'reset' })
 
   if (flow.step === 'result') {
-    const ok = flow.fails === 0
     return (
       <AppShell title="任務結果" onBack={close}>
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-8 text-center">
-          <p className={cx('text-4xl font-bold', ok ? 'text-success-fg' : 'text-fail-fg')}>
+          <p className={cx('text-4xl font-bold', questResultText(flow.fails))}>
             {resultText(flow.fails)}
           </p>
-          <ul className="flex flex-wrap justify-center gap-2" aria-label="出的牌">
-            {playedCards(flow.size, flow.fails).map((card, i) => {
-              const Icon = CARD_ICON[card]
-              return (
-                <li
-                  key={i}
-                  aria-label={CARD_LABEL[card]}
-                  className={cx(
-                    'flex h-20 w-14 items-center justify-center rounded-xl border-2 bg-mantle',
-                    card === 'success'
-                      ? 'border-success text-success-fg'
-                      : 'border-fail text-fail-fg',
-                  )}
-                >
-                  <Icon size={28} aria-hidden />
-                </li>
-              )
-            })}
-          </ul>
+          <QuestCards size={flow.size} fails={flow.fails} />
           <div className="flex w-full max-w-xs flex-col gap-3">
             <Button variant="primary" onClick={() => dispatch({ type: 'start', size: flow.size })}>
               再出一次任務
@@ -107,16 +86,22 @@ export function QuestPage() {
           <div key={`choose-${flow.index}`} className="flex w-full max-w-xs flex-col gap-4">
             <p className="text-center text-lg text-subtext1">請選擇要出的牌</p>
             {flow.order.map((card) => {
-              const Icon = CARD_ICON[card]
+              const { label, icon: Icon, text, border, tint } = QUEST_CARD[card]
               return (
                 <button
                   key={card}
                   type="button"
                   onClick={() => dispatch({ type: 'play', card })}
-                  className="no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 border-surface2 bg-mantle text-2xl font-bold"
+                  className={cx(
+                    // Colour on the border, icon and tint; the label keeps full contrast so
+                    // neither choice looks disabled.
+                    'no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 text-2xl font-bold text-text',
+                    border,
+                    tint,
+                  )}
                 >
-                  <Icon size={32} aria-hidden />
-                  {CARD_LABEL[card]}
+                  <Icon size={32} className={text} aria-hidden />
+                  {label}
                 </button>
               )
             })}

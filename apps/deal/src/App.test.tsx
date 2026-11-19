@@ -88,6 +88,9 @@ describe('deal app', () => {
     }
     expect(screen.getByText('所有玩家已確認身分，遊戲開始！')).toBeTruthy()
     for (const name of ROLE_NAMES) expect(domText()).not.toContain(name)
+    // straight back to the setup, no confirmation
+    fireEvent.click(screen.getByRole('button', { name: '回到設定' }))
+    expect(screen.getByRole('button', { name: /開始發牌/ })).toBeTruthy()
   })
 
   it('ignores the tap that ends the hold', async () => {
@@ -135,6 +138,22 @@ describe('deal app', () => {
     expect(screen.getByText('1 號玩家')).toBeTruthy()
   })
 
+  it('switches on the usual roles when the player count changes', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('radio', { name: '6' }))
+    expect(useSettings.getState().settings.special).toEqual([
+      'merlin',
+      'percival',
+      'assassin',
+      'morgana',
+    ])
+    expect(screen.getByRole('switch', { name: /莫甘娜/ })).toHaveProperty('checked', true)
+    fireEvent.click(screen.getByRole('switch', { name: /莫甘娜/ }))
+    expect(useSettings.getState().settings.special).not.toContain('morgana')
+    fireEvent.click(screen.getByRole('radio', { name: '10' }))
+    expect(useSettings.getState().settings.special).toHaveLength(6)
+  })
+
   it('will not deal an impossible setup and says why', () => {
     useSettings.getState().update({ special: ['merlin', 'assassin', 'morgana', 'oberon'] })
     render(<App />)
@@ -142,15 +161,23 @@ describe('deal app', () => {
     expect(screen.getByText('特殊壞人有 3 位，但 5 人只有 2 位壞人')).toBeTruthy()
   })
 
-  it('keeps only the newest 10 deals', async () => {
-    for (let i = 0; i < 10; i++) {
-      await saveRecord({ id: `old${i}`, createdAt: i, playerCount: 5, config: [], assignments: [] })
+  it('keeps only the newest 50 records', async () => {
+    for (let i = 0; i < 50; i++) {
+      await saveRecord({
+        id: `old${i}`,
+        createdAt: i,
+        kind: 'roles' as const,
+        playerCount: 5,
+        config: [],
+        assignments: [],
+      })
     }
     render(<App />)
     await startDeal()
     const ids = (await listRecords()).map((r) => r.id)
-    expect(ids).toHaveLength(10)
+    expect(ids).toHaveLength(50)
     expect(ids).not.toContain('old0')
+    expect(ids).toContain('old1')
     expect(screen.queryByText(/保留筆數/)).toBeNull()
   })
 
@@ -165,6 +192,7 @@ describe('deal app', () => {
     await saveRecord({
       id: 'past',
       createdAt: Date.now(),
+      kind: 'roles' as const,
       playerCount: 5,
       config: ['merlin', 'assassin'],
       assignments,
@@ -200,6 +228,7 @@ describe('deal app', () => {
     await saveRecord({
       id: 'past',
       createdAt: Date.now(),
+      kind: 'roles' as const,
       playerCount: 5,
       config: [],
       assignments: [],

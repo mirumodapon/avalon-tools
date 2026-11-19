@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { recordResult } from '../history/save.ts'
 import {
   QUEST_IDLE,
   questReducer,
@@ -7,7 +8,10 @@ import {
   type QuestSize,
 } from './quest.ts'
 
-/** Quest voting lives only in memory; nothing about the cards is stored. */
+/**
+ * Quest voting lives in memory; once every card is in, the result is saved to the
+ * history with the cards in the order they were played.
+ */
 export const useQuest = create<{
   flow: QuestFlow
   /** How many people go on the next quest. */
@@ -17,6 +21,13 @@ export const useQuest = create<{
 }>()((set) => ({
   flow: QUEST_IDLE,
   size: 2,
-  dispatch: (action) => set((s) => ({ flow: questReducer(s.flow, action) })),
+  dispatch: (action) =>
+    set((s) => {
+      const flow = questReducer(s.flow, action)
+      if (s.flow.step === 'choose' && flow.step === 'collected') {
+        void recordResult({ kind: 'quest', size: flow.size, fails: flow.fails, cards: flow.played })
+      }
+      return { flow }
+    }),
   setSize: (size) => set({ size }),
 }))

@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { newestFirst, recordsToPrune, type GameRecord } from './records.ts'
+import { newestFirst, normalizeRecord, recordsToPrune, type GameRecord } from './records.ts'
 
 const rec = (id: string, createdAt: number): GameRecord => ({
   id,
   createdAt,
+  kind: 'roles',
   playerCount: 5,
   config: ['merlin', 'assassin'],
   assignments: [],
@@ -30,5 +31,44 @@ describe('records', () => {
     expect(recordsToPrune(twenty, 10).toSorted()).toEqual(['r0', 'r1'])
     expect(recordsToPrune(twenty, 3)).toHaveLength(9)
     expect(recordsToPrune(twenty, 3)).not.toContain('r11')
+  })
+})
+
+describe('normalizeRecord', () => {
+  it('reads records saved before the other modes existed as 發角色', () => {
+    const old = { id: 'o', createdAt: 1, playerCount: 5, config: ['merlin'], assignments: [] }
+    expect(normalizeRecord(old)).toEqual({ ...old, kind: 'roles' })
+  })
+
+  it('reads quest and Lady records', () => {
+    expect(normalizeRecord({ id: 'q', createdAt: 1, kind: 'quest', size: 3, fails: 1 })).toEqual({
+      id: 'q',
+      createdAt: 1,
+      kind: 'quest',
+      size: 3,
+      fails: 1,
+    })
+    expect(normalizeRecord({ id: 'l', createdAt: 1, kind: 'lady', shown: 'evil' })).toMatchObject({
+      kind: 'lady',
+      shown: 'evil',
+    })
+  })
+
+  it('keeps the play order of a quest only when it matches the result', () => {
+    const q = { id: 'q', createdAt: 1, kind: 'quest', size: 3, fails: 1 }
+    expect(normalizeRecord({ ...q, cards: ['success', 'fail', 'success'] })).toMatchObject({
+      cards: ['success', 'fail', 'success'],
+    })
+    expect(normalizeRecord({ ...q, cards: ['fail', 'fail', 'success'] })).not.toHaveProperty(
+      'cards',
+    )
+    expect(normalizeRecord(q)).not.toHaveProperty('cards')
+  })
+
+  it('drops what cannot be read', () => {
+    expect(normalizeRecord({ id: 'q', createdAt: 1, kind: 'quest', size: 2, fails: 3 })).toBeNull()
+    expect(normalizeRecord({ id: 'l', createdAt: 1, kind: 'lady', shown: 'maybe' })).toBeNull()
+    expect(normalizeRecord({ id: 'x', createdAt: 1, kind: 'other' })).toBeNull()
+    expect(normalizeRecord(null)).toBeNull()
   })
 })

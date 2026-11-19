@@ -17,7 +17,21 @@ export const ALL_SPECIAL_ROLES: readonly RoleId[] = [...SPECIAL_ROLES.good, ...S
 /** Fills the seats no special role takes. */
 export const FILLER: Record<Faction, RoleId> = { good: 'loyal', evil: 'minion' }
 
-export const DEFAULT_SPECIAL: readonly RoleId[] = ['merlin', 'assassin']
+/** Special roles switched on by default for each player count. */
+export const DEFAULT_SPECIAL_BY_COUNT: Record<PlayerCount, readonly RoleId[]> = {
+  5: ['merlin', 'assassin'],
+  6: ['merlin', 'percival', 'assassin', 'morgana'],
+  7: ['merlin', 'percival', 'assassin', 'morgana', 'mordred'],
+  8: ['merlin', 'percival', 'assassin', 'morgana', 'mordred'],
+  9: ['merlin', 'percival', 'assassin', 'morgana', 'mordred'],
+  10: ['merlin', 'percival', 'assassin', 'morgana', 'mordred', 'oberon'],
+}
+
+export function defaultSpecialFor(playerCount: PlayerCount): RoleId[] {
+  return [...DEFAULT_SPECIAL_BY_COUNT[playerCount]]
+}
+
+export const DEFAULT_SPECIAL: readonly RoleId[] = DEFAULT_SPECIAL_BY_COUNT[5]
 
 export interface DealConfig {
   playerCount: PlayerCount

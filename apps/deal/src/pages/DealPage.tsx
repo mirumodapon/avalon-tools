@@ -16,7 +16,7 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
   const flow = useFlow((s) => s.flow)
   const dispatch = useFlow((s) => s.dispatch)
   const dealing = isDealing(flow)
-  const [confirm, setConfirm] = useState<'stop' | 'redeal' | 'setup' | null>(null)
+  const [confirm, setConfirm] = useState<'stop' | 'redeal' | null>(null)
 
   const hide = useCallback(() => dispatch({ type: 'hide' }), [dispatch])
   usePrivacyGuard(dealing, hide)
@@ -57,7 +57,7 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
             <Button variant="primary" onClick={() => setConfirm('redeal')}>
               重新發牌
             </Button>
-            <Button onClick={() => setConfirm('setup')}>回到設定</Button>
+            <Button onClick={toSetup}>回到設定</Button>
             <Button variant="ghost" onClick={toHistory}>
               查看歷史紀錄
             </Button>
@@ -69,14 +69,6 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
           message="將用相同設定重新分配所有角色，大家需要重新查看身分。這一局的結果仍保存在歷史紀錄。"
           confirmLabel="重新發牌"
           onConfirm={onRedeal}
-          onClose={() => setConfirm(null)}
-        />
-        <ConfirmSheet
-          open={confirm === 'setup'}
-          title="回到設定？"
-          message="這一局的結果仍保存在歷史紀錄。"
-          confirmLabel="回到設定"
-          onConfirm={toSetup}
           onClose={() => setConfirm(null)}
         />
       </AppShell>
