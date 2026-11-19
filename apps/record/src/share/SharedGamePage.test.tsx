@@ -58,6 +58,19 @@ describe('shared link', () => {
     expect(window.location.hash).toBe(`#/game/${shared().id}`)
   })
 
+  it('exports straight from the link without saving the game', async () => {
+    await open(await encodeGame(shared()))
+    fireEvent.click(screen.getByRole('button', { name: /^匯出$/ }))
+    expect(screen.getByRole('heading', { name: '匯出' })).toBeTruthy()
+    fireEvent.click(screen.getByRole('radio', { name: 'Markdown' }))
+    expect((screen.getByRole('textbox', { name: '預覽' }) as HTMLTextAreaElement).value).toContain(
+      '朋友的局',
+    )
+    expect(repo.data.size).toBe(0)
+    expect(useGames.getState().games).toEqual([])
+    expect(window.location.search).toContain('s=')
+  })
+
   it('asks what to do when the game already exists', async () => {
     useGames.setState({ games: [shared()] })
     await repo.put(shared())
