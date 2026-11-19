@@ -1,35 +1,32 @@
-import { failsRequired, questSucceeded, teamSize, type PlayerCount } from '@avalon/rules'
+import { teamSizes, type PlayerCount } from '@avalon/rules'
 import { shuffle } from '../deal/shuffle.ts'
 
 export type QuestCard = 'success' | 'fail'
 
 export interface QuestSetup {
   playerCount: PlayerCount
-  /** 0-based quest number. */
-  questIndex: number
   /** Team seats, ascending. */
   team: number[]
 }
 
 export interface TeamCheck {
   ok: boolean
-  size: number
-  failsRequired: number
+  /** Team sizes the rules allow for this player count, ascending. */
+  sizes: number[]
   /** Why the quest cannot start yet. */
   message: string | null
 }
 
-export function checkTeam({ playerCount, questIndex, team }: QuestSetup): TeamCheck {
-  const size = teamSize(playerCount, questIndex)
-  const fails = failsRequired(playerCount, questIndex)
-  const missing = size - team.length
-  const message =
-    missing > 0
-      ? `還要選 ${missing} 位隊員`
-      : missing < 0
-        ? `多選了 ${-missing} 位，這個任務是 ${size} 人`
-        : null
-  return { ok: missing === 0, size, failsRequired: fails, message }
+/** A team must have one of the sizes a quest can have at this table. */
+export function checkTeam({ playerCount, team }: QuestSetup): TeamCheck {
+  const sizes = [...new Set(teamSizes(playerCount))].toSorted((a, b) => a - b)
+  const ok = sizes.includes(team.length)
+  const message = ok
+    ? null
+    : team.length === 0
+      ? '點選參與任務的號碼'
+      : `${playerCount} 人局的任務人數為 ${sizes.join('、')} 人（目前 ${team.length} 人）`
+  return { ok, sizes, message }
 }
 
 /** The two buttons in a random order, so where someone taps gives nothing away. */
@@ -100,9 +97,7 @@ export function playedCards(size: number, fails: number): QuestCard[] {
   ]
 }
 
-export function questOutcome(setup: QuestSetup, fails: number) {
-  return {
-    succeeded: questSucceeded(setup.playerCount, setup.questIndex, fails),
-    failsRequired: failsRequired(setup.playerCount, setup.questIndex),
-  }
+/** 「任務成功」 when no one failed it, otherwise how many fail cards were played. */
+export function resultText(fails: number): string {
+  return fails === 0 ? '任務成功' : `${fails} 張失敗`
 }

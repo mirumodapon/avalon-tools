@@ -4,14 +4,14 @@ import {
   checkTeam,
   playedCards,
   QUEST_IDLE,
-  questOutcome,
   questReducer,
+  resultText,
   type QuestAction,
   type QuestFlow,
   type QuestSetup,
 } from './quest.ts'
 
-const setup: QuestSetup = { playerCount: 7, questIndex: 3, team: [1, 3, 4, 6] }
+const setup: QuestSetup = { playerCount: 7, team: [1, 3, 4, 6] }
 const run = (...actions: QuestAction[]) => actions.reduce<QuestFlow>(questReducer, QUEST_IDLE)
 const vote = (card: 'success' | 'fail'): QuestAction[] => [
   { type: 'reveal', order: ['fail', 'success'] },
@@ -19,24 +19,21 @@ const vote = (card: 'success' | 'fail'): QuestAction[] => [
 ]
 
 describe('checkTeam', () => {
-  it('uses the official team sizes', () => {
-    expect(checkTeam({ playerCount: 5, questIndex: 0, team: [1, 2] })).toMatchObject({
+  it('accepts any team size a quest can have at the table', () => {
+    expect(checkTeam({ playerCount: 7, team: [1, 2] })).toMatchObject({
       ok: true,
-      size: 2,
+      sizes: [2, 3, 4],
     })
-    expect(checkTeam({ playerCount: 10, questIndex: 4, team: [1, 2] })).toMatchObject({
-      ok: false,
-      size: 5,
-      message: '還要選 3 位隊員',
-    })
-    expect(checkTeam({ playerCount: 5, questIndex: 0, team: [1, 2, 3] }).message).toBe(
-      '多選了 1 位，這個任務是 2 人',
-    )
+    expect(checkTeam({ playerCount: 7, team: [1, 2, 3, 4] }).ok).toBe(true)
+    expect(checkTeam({ playerCount: 10, team: [1, 2, 3, 4, 5] }).ok).toBe(true)
   })
 
-  it('knows the fourth quest needs two fails from 7 players', () => {
-    expect(checkTeam(setup).failsRequired).toBe(2)
-    expect(checkTeam({ playerCount: 6, questIndex: 3, team: [] }).failsRequired).toBe(1)
+  it('explains what is missing', () => {
+    expect(checkTeam({ playerCount: 7, team: [] }).message).toBe('點選參與任務的號碼')
+    expect(checkTeam({ playerCount: 7, team: [5] }).message).toBe(
+      '7 人局的任務人數為 2、3、4 人（目前 1 人）',
+    )
+    expect(checkTeam({ playerCount: 5, team: [1, 2, 3, 4] }).ok).toBe(false)
   })
 })
 
@@ -52,8 +49,8 @@ describe('questReducer', () => {
     expect(flow).toEqual({ step: 'collected', setup, fails: 2 })
   })
 
-  it('will not start with the wrong team size', () => {
-    expect(run({ type: 'start', setup: { ...setup, team: [1, 2] } })).toEqual(QUEST_IDLE)
+  it('will not start with a team no quest has', () => {
+    expect(run({ type: 'start', setup: { ...setup, team: [1] } })).toEqual(QUEST_IDLE)
   })
 
   it('lets the same player start over when hidden', () => {
@@ -82,11 +79,10 @@ describe('questReducer', () => {
   })
 })
 
-describe('outcome', () => {
-  it('needs two fails on the fourth quest from 7 players', () => {
-    expect(questOutcome(setup, 1)).toEqual({ succeeded: true, failsRequired: 2 })
-    expect(questOutcome(setup, 2)).toEqual({ succeeded: false, failsRequired: 2 })
-    expect(questOutcome({ ...setup, questIndex: 0 }, 1).succeeded).toBe(false)
+describe('result', () => {
+  it('says success or how many failed', () => {
+    expect(resultText(0)).toBe('任務成功')
+    expect(resultText(2)).toBe('2 張失敗')
   })
 
   it('lays out the played cards', () => {
