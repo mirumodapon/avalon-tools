@@ -3,16 +3,22 @@ import type { ReactNode } from 'react'
 import { navigate, type Route } from '../router.ts'
 import { AppShell, IconButton } from '@avalon/ui'
 
-/** A record screen: the shared AppShell (with the home link) plus record's back navigation. */
+/**
+ * A record screen on the shared AppShell. Inner screens get a back button (to `back`, or
+ * `onBack`); only the top-level list links to the 阿瓦隆工具集 home.
+ */
 export function Page({
   title,
   back,
+  onBack,
   actions,
   children,
   header,
 }: {
   title: ReactNode
   back?: Route
+  /** Custom back action, for screens whose way back is more than a route change. */
+  onBack?: () => void
   actions?: ReactNode
   children: ReactNode
   /** Extra sticky content under the title bar (e.g. game progress). */
@@ -21,7 +27,7 @@ export function Page({
   return (
     <AppShell
       title={title}
-      onBack={back ? () => navigate(back) : undefined}
+      onBack={onBack ?? (back ? () => navigate(back) : undefined)}
       actions={actions}
       header={header}
     >

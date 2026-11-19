@@ -1,5 +1,5 @@
 import { deriveState, dateKey, formatTime, type Game } from '@avalon/record-core'
-import { IconDownload, IconLinkOff, IconX } from '@tabler/icons-react'
+import { IconDownload, IconLinkOff } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
 import { DisplaySettingsButton } from '../components/DisplaySettings.tsx'
 import { HistoryTable } from '../components/HistoryTable.tsx'
@@ -46,7 +46,7 @@ export function SharedGamePage({ param }: { param: string }) {
   }
   if (state.status === 'error') {
     return (
-      <Page title="分享的紀錄">
+      <Page title="分享的紀錄" onBack={close}>
         <EmptyState icon={<IconLinkOff size={48} />}>
           <p>無法開啟這個分享連結</p>
           <p className="text-sm">{state.message}</p>
@@ -84,20 +84,7 @@ function SharedPreview({ game, onClose }: { game: Game; onClose: () => void }) {
   }
 
   return (
-    <Page
-      title={title}
-      actions={
-        <button
-          type="button"
-          aria-label="關閉"
-          onClick={onClose}
-          className="inline-flex size-11 items-center justify-center rounded-xl text-subtext1 hover:bg-surface0"
-        >
-          <IconX size={22} />
-        </button>
-      }
-      header={<ProgressOverview game={game} />}
-    >
+    <Page title={title} onBack={onClose} header={<ProgressOverview game={game} />}>
       <div className="space-y-4 pt-2">
         <Card className="text-sm">
           <p className="font-semibold">別人分享給你的紀錄</p>

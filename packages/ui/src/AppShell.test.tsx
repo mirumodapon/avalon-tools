@@ -4,19 +4,20 @@ import { AppShell } from './AppShell.tsx'
 import { markHomeWindow } from './standalone.ts'
 
 describe('AppShell', () => {
-  it('always offers a full-page link back to the tool home', () => {
+  it('links to the tool home from a top-level screen', () => {
     render(<AppShell title="遊戲紀錄">內容</AppShell>)
     expect(screen.getByRole('link', { name: '回到阿瓦隆工具集' }).getAttribute('href')).toBe('/')
     expect(screen.queryByRole('button', { name: '返回' })).toBeNull()
   })
 
-  it('adds the in-app back button when given', () => {
+  it('shows only the back button on inner screens', () => {
     const onBack = vi.fn<() => void>()
     render(
       <AppShell title="設定" onBack={onBack}>
         內容
       </AppShell>,
     )
+    expect(screen.queryByRole('link', { name: '回到阿瓦隆工具集' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: '返回' }))
     expect(onBack).toHaveBeenCalledOnce()
   })
