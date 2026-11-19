@@ -74,7 +74,9 @@ export function RecordPage({ id }: { id: string }) {
                         faction === 'good' ? 'border-good' : 'border-evil',
                       )}
                     >
-                      <span className="w-12 font-mono text-lg font-bold">{a.seat} 號</span>
+                      <span className="w-16 shrink-0 font-mono text-lg font-bold whitespace-nowrap">
+                        {a.seat} 號
+                      </span>
                       <RoleIcon role={a.role} size={20} showName />
                     </li>
                   ))}
