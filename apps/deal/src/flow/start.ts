@@ -1,3 +1,4 @@
+import { newId } from '../random.ts'
 import { dealRoles } from '../deal/shuffle.ts'
 import { MAX_RECORDS, type RolesRecord } from '../history/records.ts'
 import { saveAndPrune } from '../history/store.ts'
@@ -9,7 +10,7 @@ import { useFlow } from './store.ts'
 export async function startDeal(settings: Settings): Promise<void> {
   const table = dealRoles(rolesInPlay(settings))
   const record: RolesRecord = {
-    id: crypto.randomUUID(),
+    id: newId(),
     createdAt: Date.now(),
     kind: 'roles',
     playerCount: settings.playerCount,
