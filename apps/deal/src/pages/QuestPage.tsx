@@ -2,7 +2,6 @@ import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
 import { IconCheck, IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
-import { shuffle } from '../deal/shuffle.ts'
 import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
 import { cardOrder, playedCards, resultText, type QuestCard } from '../quest/quest.ts'
 import { useQuest } from '../quest/store.ts'
@@ -14,14 +13,12 @@ const CARD_ICON = { success: IconCheck, fail: IconX }
 export function QuestPage() {
   const flow = useQuest((s) => s.flow)
   const dispatch = useQuest((s) => s.dispatch)
-  const setDraft = useQuest((s) => s.setDraft)
   const [confirmStop, setConfirmStop] = useState(false)
   const voting = flow.step === 'handoff' || flow.step === 'choose' || flow.step === 'collected'
   const hide = useCallback(() => dispatch({ type: 'hide' }), [dispatch])
   usePrivacyGuard(voting, hide)
 
   if (flow.step === 'setup') return null
-  const { setup } = flow
   const close = () => dispatch({ type: 'reset' })
 
   if (flow.step === 'result') {
@@ -33,7 +30,7 @@ export function QuestPage() {
             {resultText(flow.fails)}
           </p>
           <ul className="flex flex-wrap justify-center gap-2" aria-label="出的牌">
-            {flow.cards.map((card, i) => {
+            {playedCards(flow.size, flow.fails).map((card, i) => {
               const Icon = CARD_ICON[card]
               return (
                 <li
@@ -52,13 +49,7 @@ export function QuestPage() {
             })}
           </ul>
           <div className="flex w-full max-w-xs flex-col gap-3">
-            <Button
-              variant="primary"
-              onClick={() => {
-                setDraft({ team: [] })
-                close()
-              }}
-            >
+            <Button variant="primary" onClick={() => dispatch({ type: 'start', size: flow.size })}>
               再出一次任務
             </Button>
             <Button onClick={close}>回到設定</Button>
@@ -90,30 +81,22 @@ export function QuestPage() {
       <AppShell title="出任務" homeHref={null} actions={stop}>
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
           <p className="text-center text-2xl">所有隊員已出牌</p>
-          <CardBack
-            label="長按公布結果"
-            onReveal={() =>
-              dispatch({ type: 'show', cards: shuffle(playedCards(setup.team.length, flow.fails)) })
-            }
-          />
+          <CardBack label="長按公布結果" onReveal={() => dispatch({ type: 'show' })} />
         </div>
         {stopSheet}
       </AppShell>
     )
   }
 
-  const seat = setup.team[flow.index]!
+  const nth = flow.index + 1
   return (
-    <AppShell
-      title={`出任務・第 ${flow.index + 1} / ${setup.team.length} 位`}
-      homeHref={null}
-      actions={stop}
-    >
+    <AppShell title={`出任務・第 ${nth} / ${flow.size} 位`} homeHref={null} actions={stop}>
       <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
         {flow.step === 'handoff' ? (
           <div key={`handoff-${flow.index}`} className="flex flex-col items-center gap-6">
             <p className="text-center text-2xl">
-              請將手機交給 <strong className="text-accent-fg">{seat} 號玩家</strong>
+              請將手機交給
+              <strong className="mt-1 block text-accent-fg">第 {nth} 位出任務的玩家</strong>
             </p>
             <CardBack
               label="長按出牌"
@@ -122,7 +105,7 @@ export function QuestPage() {
           </div>
         ) : (
           <div key={`choose-${flow.index}`} className="flex w-full max-w-xs flex-col gap-4">
-            <p className="text-center text-lg text-subtext1">{seat} 號，請選擇要出的牌</p>
+            <p className="text-center text-lg text-subtext1">請選擇要出的牌</p>
             {flow.order.map((card) => {
               const Icon = CARD_ICON[card]
               return (

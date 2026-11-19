@@ -1,21 +1,22 @@
-import type { PlayerCount } from '@avalon/rules'
 import { create } from 'zustand'
-import { QUEST_IDLE, questReducer, type QuestAction, type QuestFlow } from './quest.ts'
-
-export interface QuestDraft {
-  playerCount: PlayerCount
-  team: number[]
-}
+import {
+  QUEST_IDLE,
+  questReducer,
+  type QuestAction,
+  type QuestFlow,
+  type QuestSize,
+} from './quest.ts'
 
 /** Quest voting lives only in memory; nothing about the cards is stored. */
 export const useQuest = create<{
   flow: QuestFlow
-  draft: QuestDraft
+  /** How many people go on the next quest. */
+  size: QuestSize
   dispatch: (a: QuestAction) => void
-  setDraft: (patch: Partial<QuestDraft>) => void
+  setSize: (size: QuestSize) => void
 }>()((set) => ({
   flow: QUEST_IDLE,
-  draft: { playerCount: 5, team: [] },
+  size: 2,
   dispatch: (action) => set((s) => ({ flow: questReducer(s.flow, action) })),
-  setDraft: (patch) => set((s) => ({ draft: { ...s.draft, ...patch } })),
+  setSize: (size) => set({ size }),
 }))
