@@ -64,6 +64,13 @@ export function ExportSheet({
   const savesToPhotos = format === 'png' && toPhotos
   /** PNG rendered ahead of time on phones: sharing must start right after the tap. */
   const [readyPng, setReadyPng] = useState<Blob | null>(null)
+  /** The phone pre-render is in progress. */
+  const [rendering, setRendering] = useState(false)
+  /**
+   * While the image is being generated, nothing that changes its look may change:
+   * the format, the view mode and whether roles are shown are locked.
+   */
+  const locked = format === 'png' && (rendering || busy !== null)
 
   async function renderPng(): Promise<Blob> {
     const node = pngRef.current
@@ -77,13 +84,17 @@ export function ExportSheet({
 
   useEffect(() => {
     setReadyPng(null)
+    setRendering(false)
     if (!open || !savesToPhotos) return
     let alive = true
+    setRendering(true)
     const frame = requestAnimationFrame(() => {
-      renderPng().then(
-        (b) => alive && setReadyPng(b),
-        (e: unknown) => alive && setStatus(e instanceof Error ? e.message : String(e)),
-      )
+      renderPng()
+        .then(
+          (b) => alive && setReadyPng(b),
+          (e: unknown) => alive && setStatus(e instanceof Error ? e.message : String(e)),
+        )
+        .finally(() => alive && setRendering(false))
     })
     return () => {
       alive = false
@@ -198,14 +209,14 @@ export function ExportSheet({
       }
     >
       <div className="space-y-4">
-        <fieldset>
+        <fieldset disabled={locked}>
           <legend className="mb-2 text-sm text-subtext0">格式</legend>
           <div className="grid grid-cols-3 gap-2">
             {FORMATS.map((f) => (
               <label
                 key={f}
                 className={cx(
-                  'flex min-h-11 cursor-pointer items-center justify-center rounded-xl border text-sm has-focus-visible:outline-2 has-focus-visible:outline-accent',
+                  'flex min-h-11 cursor-pointer items-center justify-center rounded-xl border text-sm has-disabled:cursor-not-allowed has-disabled:opacity-50 has-focus-visible:outline-2 has-focus-visible:outline-accent',
                   format === f ? 'border-accent bg-accent/15 font-semibold' : 'border-overlay0',
                 )}
               >
@@ -230,9 +241,18 @@ export function ExportSheet({
               value={viewMode}
               options={VIEW_MODE_OPTIONS}
               onChange={setViewMode}
+              disabled={locked}
             />
-            <Switch label="包含角色" checked={includeRoles} onChange={setIncludeRoles} />
+            <Switch
+              label="包含角色"
+              checked={includeRoles}
+              onChange={setIncludeRoles}
+              disabled={locked}
+            />
           </div>
+        )}
+        {locked && (
+          <p className="text-xs text-subtext0">圖片產生中，完成後才能調整格式與呈現方式</p>
         )}
 
         <p className="truncate text-sm text-subtext0">檔名：{filename}</p>

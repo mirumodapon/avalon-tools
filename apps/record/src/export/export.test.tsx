@@ -32,6 +32,14 @@ const game = (id: string, note = '') =>
     roleAssignment: { p1: 'merlin' },
   })
 
+/** Everything that changes how the exported image looks. */
+function styleControls(): HTMLInputElement[] {
+  return [
+    ...screen.getAllByRole('radio'),
+    screen.getByRole('switch', { name: '包含角色' }),
+  ] as HTMLInputElement[]
+}
+
 let repo: MemoryGameRepository
 beforeEach(() => {
   repo = new MemoryGameRepository()
@@ -106,8 +114,16 @@ describe('ExportSheet busy state', () => {
     const busy = await screen.findByRole('button', { name: /產生中/ })
     expect(busy).toHaveProperty('disabled', true)
     expect(screen.getByRole('button', { name: '複製到剪貼簿' })).toHaveProperty('disabled', true)
+    expect(styleControls().every((c) => c.matches(':disabled'))).toBe(true)
     await act(async () => png.resolve(new Blob(['x'], { type: 'image/png' })))
     expect(await screen.findByRole('button', { name: /^下載$/ })).toHaveProperty('disabled', false)
+    expect(styleControls().some((c) => c.matches(':disabled'))).toBe(false)
+  })
+
+  it('leaves the options free while exporting text', () => {
+    render(<ExportSheet game={game('a')} open onClose={() => {}} />)
+    fireEvent.click(screen.getByRole('radio', { name: 'CSV' }))
+    expect(styleControls().some((c) => c.matches(':disabled'))).toBe(false)
   })
 })
 
@@ -121,10 +137,12 @@ describe('ExportSheet on phones', () => {
       const rendersBefore = png.pending.started
       fireEvent.click(screen.getByRole('radio', { name: 'PNG' }))
       expect(await screen.findByRole('button', { name: /產生中/ })).toHaveProperty('disabled', true)
+      expect(styleControls().every((c) => c.matches(':disabled'))).toBe(true)
       // the PNG starts rendering on the next animation frame
       await vi.waitFor(() => expect(png.pending.started).toBeGreaterThan(rendersBefore))
       await act(async () => png.resolve(new Blob(['x'], { type: 'image/png' })))
       const save = await screen.findByRole('button', { name: /儲存到相簿/ })
+      expect(styleControls().some((c) => c.matches(':disabled'))).toBe(false)
       expect(screen.queryByRole('button', { name: '分享' })).toBeNull()
       await act(async () => fireEvent.click(save))
       expect(share).toHaveBeenCalledTimes(1)
