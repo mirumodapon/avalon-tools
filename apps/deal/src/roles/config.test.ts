@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { checkConfig, rolesInPlay } from './config.ts'
+import { PLAYER_COUNTS } from '@avalon/rules'
+import { checkConfig, defaultSpecialFor, rolesInPlay } from './config.ts'
 
 describe('checkConfig', () => {
   it('accepts the default Merlin + Assassin', () => {
@@ -60,5 +61,31 @@ describe('rolesInPlay', () => {
         special: ['merlin', 'percival', 'assassin', 'morgana', 'mordred'],
       }),
     ).toThrow(/壞人/)
+  })
+})
+
+describe('defaultSpecialFor', () => {
+  it('turns on the usual roles for each table size', () => {
+    expect(defaultSpecialFor(5)).toEqual(['merlin', 'assassin'])
+    expect(defaultSpecialFor(6)).toEqual(['merlin', 'percival', 'assassin', 'morgana'])
+    for (const n of [7, 8, 9] as const) {
+      expect(defaultSpecialFor(n)).toEqual(['merlin', 'percival', 'assassin', 'morgana', 'mordred'])
+    }
+    expect(defaultSpecialFor(10)).toEqual([
+      'merlin',
+      'percival',
+      'assassin',
+      'morgana',
+      'mordred',
+      'oberon',
+    ])
+  })
+
+  it('is always a valid setup', () => {
+    for (const playerCount of PLAYER_COUNTS) {
+      expect(checkConfig({ playerCount, special: defaultSpecialFor(playerCount) }).errors).toEqual(
+        [],
+      )
+    }
   })
 })

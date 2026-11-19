@@ -135,6 +135,22 @@ describe('deal app', () => {
     expect(screen.getByText('1 號玩家')).toBeTruthy()
   })
 
+  it('switches on the usual roles when the player count changes', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('radio', { name: '6' }))
+    expect(useSettings.getState().settings.special).toEqual([
+      'merlin',
+      'percival',
+      'assassin',
+      'morgana',
+    ])
+    expect(screen.getByRole('switch', { name: /莫甘娜/ })).toHaveProperty('checked', true)
+    fireEvent.click(screen.getByRole('switch', { name: /莫甘娜/ }))
+    expect(useSettings.getState().settings.special).not.toContain('morgana')
+    fireEvent.click(screen.getByRole('radio', { name: '10' }))
+    expect(useSettings.getState().settings.special).toHaveLength(6)
+  })
+
   it('will not deal an impossible setup and says why', () => {
     useSettings.getState().update({ special: ['merlin', 'assassin', 'morgana', 'oberon'] })
     render(<App />)

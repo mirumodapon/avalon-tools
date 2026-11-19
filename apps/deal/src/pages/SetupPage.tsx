@@ -25,7 +25,7 @@ import { ModeTabs, panelId, tabId, type TabOption } from '../components/ModeTabs
 import { useLady } from '../lady/store.ts'
 import { QUEST_SIZES, type QuestSize } from '../quest/quest.ts'
 import { useQuest } from '../quest/store.ts'
-import { checkConfig, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
+import { checkConfig, defaultSpecialFor, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
 import { navigate } from '../router.ts'
 import { useSettings, type DealTab } from '../settings.ts'
 
@@ -72,7 +72,11 @@ function RolesPanel({ onStart }: { onStart: () => Promise<void> }) {
             label="玩家人數"
             value={String(settings.playerCount)}
             options={PLAYER_COUNTS.map((n) => ({ value: String(n), label: `${n}` }))}
-            onChange={(v) => update({ playerCount: Number(v) as typeof settings.playerCount })}
+            onChange={(v) => {
+              const playerCount = Number(v) as typeof settings.playerCount
+              // A new table size starts from its usual roles; they can still be changed.
+              update({ playerCount, special: defaultSpecialFor(playerCount) })
+            }}
           />
           <p className="mt-3 flex gap-4 text-sm">
             <span className="text-good-fg">好人 {check.required.good}</span>
