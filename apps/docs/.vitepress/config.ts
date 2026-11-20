@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { toolById } from '@avalon/registry'
 import { themeBootstrapScript } from '@avalon/theme'
 import { THEME_STORE } from '@avalon/ui/theme-store'
@@ -142,5 +143,14 @@ export default defineConfig({
   vite: {
     // Workspace packages ship TypeScript sources: bundle them instead of loading them in Node.
     ssr: { noExternal: [/^@avalon\//] },
+    resolve: {
+      // mermaid's optional ELK layout (elkjs, EPL-2.0 / GPL-3.0) is not used: keep it out.
+      alias: [
+        {
+          find: /^elkjs(\/.*)?$/,
+          replacement: fileURLToPath(new URL('./theme/elkStub.ts', import.meta.url)),
+        },
+      ],
+    },
   },
 })
