@@ -63,7 +63,7 @@ describe('App', () => {
       expect(useSession.getState().session?.stage).toBe('play')
     })
 
-    it('starts again from seat 1 after a reload', () => {
+    it('resumes the deal at the next seat after a reload, card face down', () => {
       const { unmount } = render(<App />)
       act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))
       hold()
@@ -71,7 +71,8 @@ describe('App', () => {
       expect(screen.getByText('2 號')).toBeTruthy()
       unmount()
       render(<App />)
-      expect(screen.getByText('1 號・小明')).toBeTruthy()
+      expect(screen.getByText('2 號')).toBeTruthy()
+      expect(screen.getByRole('button', { name: '長按查看身分' })).toBeTruthy()
     })
   })
 

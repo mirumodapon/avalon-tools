@@ -60,7 +60,7 @@ export function reject(game: Game, count: number): Game {
 }
 
 export function startSession(game: Game, voteMode: VoteMode = 'leader') {
-  useSession.getState().start({ game, voteMode, stage: 'play' })
+  useSession.getState().start({ game, voteMode, stage: 'play', progress: null })
 }
 
 /** The derived leader's team goes (everyone approves) and the quest ends with `failCount`. */

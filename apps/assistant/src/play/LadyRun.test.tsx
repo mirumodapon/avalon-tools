@@ -52,7 +52,7 @@ describe('Lady of the Lake', () => {
     expect(screen.getByText('好人')).toBeTruthy()
   })
 
-  it('goes back to choosing the target after a reload', () => {
+  it('comes back to the chosen target, card face down, after a reload', () => {
     startSession(ladyTime())
     const { unmount } = render(<App />)
     click('3 號')
@@ -60,7 +60,19 @@ describe('Lady of the Lake', () => {
     hold('長按查看 3 號的陣營')
     unmount()
     render(<App />)
-    expect(screen.getByText('湖中女神持有者：7 號')).toBeTruthy()
+    expect(screen.getByRole('button', { name: '長按查看 3 號的陣營' })).toBeTruthy()
     expect(useSession.getState().session!.game.lady!.uses).toHaveLength(0)
+  })
+
+  it('comes back to the declaration after a reload', () => {
+    startSession(ladyTime())
+    const { unmount } = render(<App />)
+    click('3 號')
+    click('查驗')
+    hold('長按查看 3 號的陣營')
+    doubleTap(/雙擊蓋上/)
+    unmount()
+    render(<App />)
+    expect(screen.getByText('請 7 號 公開宣告')).toBeTruthy()
   })
 })
