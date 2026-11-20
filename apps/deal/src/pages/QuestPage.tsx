@@ -1,10 +1,13 @@
 import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
 import { IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
-import { CardBack } from '../components/CardBack.tsx'
-import { QUEST_CARD, QuestCards, questResultText } from '../components/marks.tsx'
-import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
-import { cardOrder, resultText } from '../quest/quest.ts'
+import {
+  QuestCards,
+  QuestSteps,
+  questResultText,
+  resultText,
+  usePrivacyGuard,
+} from '@avalon/pass-play'
 import { useQuest } from '../quest/store.ts'
 
 /** A quest in progress: each member plays a card in private, then the result. */
@@ -55,58 +58,12 @@ export function QuestPage() {
     />
   )
 
-  if (flow.step === 'collected') {
-    return (
-      <AppShell title="出任務" homeHref={null} actions={stop}>
-        <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-          <p className="text-center text-2xl">所有隊員已出牌</p>
-          <CardBack label="長按公布結果" onReveal={() => dispatch({ type: 'show' })} />
-        </div>
-        {stopSheet}
-      </AppShell>
-    )
-  }
-
-  const nth = flow.index + 1
+  const title =
+    flow.step === 'collected' ? '出任務' : `出任務・第 ${flow.index + 1} / ${flow.size} 位`
   return (
-    <AppShell title={`出任務・第 ${nth} / ${flow.size} 位`} homeHref={null} actions={stop}>
+    <AppShell title={title} homeHref={null} actions={stop}>
       <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-        {flow.step === 'handoff' ? (
-          <div key={`handoff-${flow.index}`} className="flex flex-col items-center gap-6">
-            <p className="text-center text-2xl">
-              請將手機交給
-              <strong className="mt-1 block text-accent-fg">第 {nth} 位出任務的玩家</strong>
-            </p>
-            <CardBack
-              label="長按出牌"
-              onReveal={() => dispatch({ type: 'reveal', order: cardOrder() })}
-            />
-          </div>
-        ) : (
-          <div key={`choose-${flow.index}`} className="flex w-full max-w-xs flex-col gap-4">
-            <p className="text-center text-lg text-subtext1">請選擇要出的牌</p>
-            {flow.order.map((card) => {
-              const { label, icon: Icon, text, border, tint } = QUEST_CARD[card]
-              return (
-                <button
-                  key={card}
-                  type="button"
-                  onClick={() => dispatch({ type: 'play', card })}
-                  className={cx(
-                    // Colour on the border, icon and tint; the label keeps full contrast so
-                    // neither choice looks disabled.
-                    'no-select flex h-28 items-center justify-center gap-3 rounded-3xl border-2 text-2xl font-bold text-text',
-                    border,
-                    tint,
-                  )}
-                >
-                  <Icon size={32} className={text} aria-hidden />
-                  {label}
-                </button>
-              )
-            })}
-          </div>
-        )}
+        <QuestSteps flow={flow} dispatch={dispatch} who={(i) => `第 ${i + 1} 位出任務的玩家`} />
       </div>
       {stopSheet}
     </AppShell>

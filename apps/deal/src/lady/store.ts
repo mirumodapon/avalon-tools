@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { recordResult } from '../history/save.ts'
-import { LADY_IDLE, ladyReducer, type LadyAction, type LadyFlow } from './lady.ts'
+import { LADY_IDLE, ladyReducer, type LadyAction, type LadyFlow } from '@avalon/pass-play'
 
 /** The Lady lives in memory; once the holder has looked, what was shown is saved to the history. */
 export const useLady = create<{ flow: LadyFlow; dispatch: (a: LadyAction) => void }>()((set) => ({

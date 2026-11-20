@@ -2,12 +2,10 @@ import { FACTION_LABEL, roleDef, type Faction, type SeatRole } from '@avalon/rul
 import { AppShell, EmptyState, ROLE_ICONS, Segmented, cx, type SegmentOption } from '@avalon/ui'
 import { IconFileOff } from '@tabler/icons-react'
 import { useEffect, useState } from 'react'
-import { CardBack } from '../components/CardBack.tsx'
-import { LADY_MARK, QuestCards, questResultText } from '../components/marks.tsx'
+import { CardBack, LADY_MARK, QuestCards, questResultText, resultText } from '@avalon/pass-play'
 import type { GameRecord } from '../history/records.ts'
 import { getRecord } from '../history/store.ts'
 import { configSummary, formatDate } from '../history/summary.ts'
-import { resultText } from '../quest/quest.ts'
 import { navigate } from '../router.ts'
 import { useSettings, type RecordView } from '../settings.ts'
 

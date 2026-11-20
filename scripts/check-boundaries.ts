@@ -5,6 +5,8 @@
  * - pure packages (avalon-rules, record-core) stay free of React, the DOM and icon sets
  * - links into the docs (`docsHref(…)`) go through DocsLink, which always opens a new tab,
  *   never a plain <a> that would navigate an installed app's window to the docs
+ * - an app using @avalon/pass-play imports its stylesheet, or Tailwind never sees the
+ *   shared cards' classes and they render unstyled
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'
@@ -70,6 +72,23 @@ for (const [kind, name] of [
     if (PLAIN_DOCS_LINK.test(text)) {
       problems.push(`${relative(root, file)}: links the docs with a plain <a>; use DocsLink`)
     }
+  }
+}
+
+const PASS_PLAY_CSS = "@import '@avalon/pass-play/pass-play.css'"
+for (const app of apps) {
+  const pkg = JSON.parse(readFileSync(join(root, 'apps', app, 'package.json'), 'utf8')) as {
+    dependencies?: Record<string, string>
+  }
+  if (!pkg.dependencies?.['@avalon/pass-play']) continue
+  let css = ''
+  try {
+    css = readFileSync(join(root, 'apps', app, 'src/index.css'), 'utf8')
+  } catch {
+    // no stylesheet: reported below like a missing import
+  }
+  if (!css.includes(PASS_PLAY_CSS)) {
+    problems.push(`apps/${app}/src/index.css: uses @avalon/pass-play but lacks ${PASS_PLAY_CSS}`)
   }
 }
 

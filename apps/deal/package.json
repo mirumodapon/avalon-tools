@@ -9,6 +9,7 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@avalon/pass-play": "workspace:*",
     "@avalon/registry": "workspace:*",
     "@avalon/rules": "workspace:*",
     "@avalon/storage": "workspace:*",

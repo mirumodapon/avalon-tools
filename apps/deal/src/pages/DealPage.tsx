@@ -1,10 +1,7 @@
 import { AppShell, Button, ConfirmSheet, IconButton } from '@avalon/ui'
 import { IconCircleCheck, IconConfetti, IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
-import { CardBack } from '../components/CardBack.tsx'
-import { RoleCard } from '../components/RoleCard.tsx'
-import { isDealing } from '../flow/machine.ts'
-import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
+import { DealSteps, isDealing, usePrivacyGuard } from '@avalon/pass-play'
 import { useFlow } from '../flow/store.ts'
 import { navigate } from '../router.ts'
 
@@ -75,7 +72,6 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
     )
   }
 
-  const self = flow.table[flow.index]!
   const total = flow.table.length
   const replay = flow.mode === 'replay'
   return (
@@ -89,22 +85,7 @@ export function DealPage({ onRedeal }: { onRedeal: () => void }) {
       }
     >
       <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-        {flow.step === 'handoff' ? (
-          // key: a fresh card for every player, nothing carried over.
-          <div key={`handoff-${flow.index}`} className="flex flex-col items-center gap-6">
-            <p className="text-center text-2xl">
-              請將手機交給 <strong className="text-accent-fg">{self.seat} 號玩家</strong>
-            </p>
-            <CardBack onReveal={() => dispatch({ type: 'reveal' })} />
-          </div>
-        ) : (
-          <RoleCard
-            key={`reveal-${flow.index}`}
-            self={self}
-            table={flow.table}
-            onCover={() => dispatch({ type: 'confirm' })}
-          />
-        )}
+        <DealSteps flow={flow} dispatch={dispatch} who={(i) => `${flow.table[i]!.seat} 號玩家`} />
       </div>
       <ConfirmSheet
         open={confirm === 'stop'}

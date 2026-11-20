@@ -5,10 +5,10 @@
 | 工具                 | 路徑          | 狀態                                                              |
 | -------------------- | ------------- | ----------------------------------------------------------------- |
 | 阿瓦隆工具集（首頁） | `/`           | 工具列表、資訊頁（版本、空間用量、更新紀錄）                      |
-| 遊戲紀錄             | `/record/`    | beta                                                              |
+| 遊戲紀錄             | `/record/`    | 依序記錄組隊、投票、任務與湖中女神，賽後回顧、匯出與分享          |
 | 夜晚旁白             | `/narrator/`  | 即將推出                                                          |
-| 整合遊戲助手         | `/assistant/` | 即將推出                                                          |
-| 角色發牌             | `/deal/`      | rc：一支手機輪流查看角色（見 [apps/deal](apps/deal/README.md)）   |
+| 單機遊戲助手         | `/assistant/` | beta：一支手機帶完一整場遊戲，結束後交給遊戲紀錄                  |
+| 角色發牌             | `/deal/`      | 一支手機輪流查看角色（見 [apps/deal](apps/deal/README.md)）       |
 | 使用說明             | `/docs/`      | VitePress 文件站，不是 PWA（見 [apps/docs](apps/docs/README.md)） |
 
 從 1.x（阿瓦隆紀錄）升級請見使用說明的[更新紀錄](apps/docs/changelog.md)，更新內容見 [CHANGELOG.md](CHANGELOG.md)。
@@ -111,12 +111,14 @@
 apps/home/               阿瓦隆工具集首頁（/）
 apps/record/             遊戲紀錄（/record/）
 apps/deal/               角色發牌（/deal/）
+apps/assistant/          單機遊戲助手（/assistant/）
 apps/docs/               使用說明（/docs/，VitePress，不是 PWA）
 packages/avalon-rules/   純 TS：阿瓦隆規則與角色（不依賴 React／DOM）
 packages/record-core/    純 TS：遊戲紀錄的型別、reducer、schema、匯出與分享格式
 packages/registry/       工具清單（名稱、路徑、圖示、顏色、狀態）
 packages/storage/        localStorage 命名空間與 IndexedDB 名稱
 packages/theme/          Catppuccin 色票 → CSS token、防閃爍腳本
+packages/pass-play/      傳手機流程：洗牌、狀態機、角色設定與卡片文字
 packages/ui/             共用元件（AppShell、Sheet、主題選擇、更新、空間用量）
 packages/pwa/            createPwaConfig、service worker 快取清理、圖示產生
 packages/licenses/       建置時產生第三方授權聲明 licenses.txt
