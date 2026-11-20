@@ -171,3 +171,7 @@ pnpm --filter @avalon/record add <pkg>   # catalogMode: strict 會自動寫入 c
 ## 部署
 
 `.github/workflows/deploy.yml` 在推送到 `main` 時執行檢查、建置所有工具，並把 `dist/` 部署到 GitHub Pages（Settings → Pages 的 Source 需設為 GitHub Actions）。網站必須部署在網域根目錄（自訂網域），否則工作流程會失敗。其他平台（Netlify、Vercel、nginx）的設定見使用說明的[部署](apps/docs/dev/deploy.md)。
+
+## 授權
+
+本專案以 [MIT 授權](LICENSE)釋出。網站中使用的第三方套件與其授權條款，建置時會產生在每個 app 的 `licenses.txt`（例如 `/record/licenses.txt`），首頁「資訊 → 授權」有連結。「阿瓦隆／The Resistance: Avalon」為其出版商的商標，本專案與出版商無關。
