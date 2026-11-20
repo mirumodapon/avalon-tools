@@ -23,6 +23,7 @@
     "zustand": "catalog:"
   },
   "devDependencies": {
+    "@avalon/licenses": "workspace:*",
     "@avalon/pwa": "workspace:*",
     "@avalon/registry": "workspace:*",
     "@avalon/tsconfig": "workspace:*",

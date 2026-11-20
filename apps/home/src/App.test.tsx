@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { App } from './App.tsx'
 import { parseRoute } from './router.ts'
 import { TOOL_ICONS } from './toolIcons.ts'
-import { listedTools, tools } from '@avalon/registry'
+import { builtTools, listedTools, tools } from '@avalon/registry'
 
 function at(path: string) {
   act(() => {
@@ -41,6 +41,11 @@ describe('home', () => {
     expect(await screen.findByRole('heading', { name: '資訊' })).toBeTruthy()
     expect(screen.getByText('0.0.0-test')).toBeTruthy()
     expect(screen.getByRole('heading', { name: '更新紀錄' })).toBeTruthy()
+    const notices = within(screen.getByRole('list', { name: '第三方授權' })).getAllByRole('link')
+    expect(notices.map((l) => l.getAttribute('href'))).toEqual(
+      builtTools().map((t) => `${t.path}licenses.txt`),
+    )
+    expect(notices.every((l) => l.getAttribute('target') === '_blank')).toBe(true)
     const more = screen.getByRole('link', { name: '更多更新紀錄' })
     expect(more.getAttribute('href')).toBe('/docs/changelog')
     expect(more.getAttribute('target')).toBe('_blank')

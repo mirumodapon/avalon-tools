@@ -1,5 +1,6 @@
+import { thirdPartyLicensesPlugin } from '@avalon/licenses'
 import { avalonPwa, buildVersion } from '@avalon/pwa'
-import { toolById } from '@avalon/registry'
+import { manifestName, toolById } from '@avalon/registry'
 import { catppuccinThemePlugin } from '@avalon/theme/vite'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
@@ -30,5 +31,6 @@ export default defineConfig({
     react(),
     tailwindcss(),
     avalonPwa(HOME),
+    thirdPartyLicensesPlugin(manifestName(HOME)),
   ],
 })

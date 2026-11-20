@@ -21,6 +21,7 @@
     "zustand": "catalog:"
   },
   "devDependencies": {
+    "@avalon/licenses": "workspace:*",
     "@avalon/pwa": "workspace:*",
     "@avalon/tsconfig": "workspace:*",
     "@tailwindcss/vite": "catalog:",
