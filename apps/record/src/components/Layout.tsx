@@ -14,6 +14,7 @@ export function Page({
   actions,
   children,
   header,
+  helpHref,
 }: {
   title: ReactNode
   back?: Route
@@ -23,6 +24,8 @@ export function Page({
   children: ReactNode
   /** Extra sticky content under the title bar (e.g. game progress). */
   header?: ReactNode
+  /** The docs page for this screen (see AppShell). */
+  helpHref?: string
 }) {
   return (
     <AppShell
@@ -30,6 +33,7 @@ export function Page({
       onBack={onBack ?? (back ? () => navigate(back) : undefined)}
       actions={actions}
       header={header}
+      helpHref={helpHref}
     >
       {children}
     </AppShell>

@@ -2,6 +2,7 @@
  * Builds every app and assembles one site in dist/:
  *   dist/            ← apps/home/dist
  *   dist/record/     ← apps/record/dist   (each tool at its registry path)
+ *   dist/docs/       ← apps/docs/dist     (the VitePress docs: no manifest, no service worker)
  *   dist/404.html    ← home's index.html  (GitHub Pages serves it for unknown paths)
  *
  *   node scripts/build-all.ts [--skip-build]
@@ -9,6 +10,7 @@
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, cpSync, existsSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
+import { isPwa } from '../packages/registry/src/index.ts'
 import { appDir, apps, distDir, packageName, root } from './lib/apps.ts'
 
 const list = apps()
@@ -21,23 +23,33 @@ if (!process.argv.includes('--skip-build')) {
 
 rmSync(distDir, { recursive: true, force: true })
 const problems: string[] = []
+const PWA_FILES = ['manifest.webmanifest', 'sw.js']
 for (const tool of list) {
   const from = join(appDir(tool), 'dist')
   const to = join(distDir, tool.path)
-  for (const f of ['index.html', 'manifest.webmanifest', 'sw.js']) {
-    if (!existsSync(join(from, f))) problems.push(`${tool.id}: dist/${f} is missing`)
+  if (!existsSync(join(from, 'index.html'))) problems.push(`${tool.id}: dist/index.html is missing`)
+  for (const f of PWA_FILES) {
+    const present = existsSync(join(from, f))
+    if (isPwa(tool) && !present) problems.push(`${tool.id}: dist/${f} is missing`)
+    // The docs are never installable or cached by a worker of their own.
+    if (!isPwa(tool) && present) problems.push(`${tool.id}: dist/${f} must not exist`)
   }
   cpSync(from, to, { recursive: true })
   console.warn(`dist${tool.path} ← apps/${tool.id}/dist`)
 }
 copyFileSync(join(distDir, 'index.html'), join(distDir, '404.html'))
 
-// A worker must never precache another app's files.
-for (const tool of list) {
+// A worker must never precache another app's files, nor answer its navigations (home's
+// scope `/` covers `/record/`, `/docs/`, …; the docs must always come from the network).
+for (const tool of list.filter(isPwa)) {
   const sw = readFileSync(join(distDir, tool.path, 'sw.js'), 'utf8')
   for (const other of list.filter((o) => o.path !== tool.path && o.path.startsWith(tool.path))) {
     const nested = other.path.slice(tool.path.length)
     if (sw.includes(`url:"${nested}`)) problems.push(`${tool.id}: sw.js precaches ${other.path}`)
+    // Ids are lowercase letters, digits and dashes, so the pattern needs no escaping.
+    const deny = `/^\\/${other.id}(\\/|$)/`
+    if (!sw.includes(deny))
+      problems.push(`${tool.id}: sw.js does not deny navigations to ${other.path}`)
   }
 }
 

@@ -1,0 +1,97 @@
+/*
+ * The tools' Catppuccin tokens (`--ctp-*`, from @avalon/theme) mapped onto VitePress's
+ * variables. `<html data-flavor>` follows the light/dark toggle (Latte / Macchiato) and
+ * `data-accent` is the accent picked in the tools, so the docs look like the tools.
+ */
+:root,
+.dark {
+  --vp-c-bg: var(--ctp-base);
+  --vp-c-bg-alt: var(--ctp-mantle);
+  --vp-c-bg-elv: var(--ctp-mantle);
+  --vp-c-bg-soft: var(--ctp-surface0);
+
+  --vp-c-text-1: var(--ctp-text);
+  --vp-c-text-2: var(--ctp-subtext1);
+  --vp-c-text-3: var(--ctp-overlay1);
+
+  --vp-c-border: var(--ctp-surface2);
+  --vp-c-divider: var(--ctp-surface1);
+  --vp-c-gutter: var(--ctp-crust);
+
+  --vp-c-gray-1: var(--ctp-overlay2);
+  --vp-c-gray-2: var(--ctp-overlay1);
+  --vp-c-gray-3: var(--ctp-overlay0);
+  --vp-c-gray-soft: color-mix(in srgb, var(--ctp-overlay0) 16%, transparent);
+
+  --vp-c-indigo-1: var(--ctp-accent-fg);
+  --vp-c-indigo-2: var(--ctp-accent-fg);
+  --vp-c-indigo-3: var(--ctp-accent);
+  --vp-c-indigo-soft: color-mix(in srgb, var(--ctp-accent) 16%, transparent);
+
+  --vp-c-purple-1: var(--ctp-mauve-fg);
+  --vp-c-purple-2: var(--ctp-mauve-fg);
+  --vp-c-purple-3: var(--ctp-mauve);
+  --vp-c-purple-soft: color-mix(in srgb, var(--ctp-mauve) 16%, transparent);
+
+  --vp-c-green-1: var(--ctp-green-fg);
+  --vp-c-green-2: var(--ctp-green-fg);
+  --vp-c-green-3: var(--ctp-green);
+  --vp-c-green-soft: color-mix(in srgb, var(--ctp-green) 16%, transparent);
+
+  --vp-c-yellow-1: var(--ctp-yellow-fg);
+  --vp-c-yellow-2: var(--ctp-yellow-fg);
+  --vp-c-yellow-3: var(--ctp-yellow);
+  --vp-c-yellow-soft: color-mix(in srgb, var(--ctp-yellow) 16%, transparent);
+
+  --vp-c-red-1: var(--ctp-red-fg);
+  --vp-c-red-2: var(--ctp-red-fg);
+  --vp-c-red-3: var(--ctp-red);
+  --vp-c-red-soft: color-mix(in srgb, var(--ctp-red) 16%, transparent);
+
+  /* The brand is the accent chosen in the tools; buttons carry text that contrasts with it. */
+  --vp-c-brand-1: var(--ctp-accent-fg);
+  --vp-c-brand-2: var(--ctp-accent-fg);
+  --vp-c-brand-3: var(--ctp-accent);
+  --vp-c-brand-soft: color-mix(in srgb, var(--ctp-accent) 16%, transparent);
+  --vp-button-brand-text: var(--ctp-on-accent);
+  --vp-button-brand-hover-text: var(--ctp-on-accent);
+  --vp-button-brand-active-text: var(--ctp-on-accent);
+
+  --vp-code-bg: var(--ctp-surface0);
+  --vp-code-block-bg: var(--ctp-mantle);
+
+  --vp-font-family-base:
+    system-ui, -apple-system, 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+}
+
+/* Good / evil, as on the tools' role cards. */
+.faction-good,
+.faction-evil {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.faction-good {
+  color: var(--ctp-blue-fg);
+}
+.faction-evil {
+  color: var(--ctp-red-fg);
+}
+
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+
+.two-fails {
+  color: var(--ctp-red-fg);
+}
+.table-note {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc td.nowrap {
+  white-space: nowrap;
+}

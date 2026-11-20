@@ -1,20 +1,9 @@
-import {
-  applyTheme,
-  DEFAULT_THEME,
-  normalizeTheme,
-  PREFERS_DARK_QUERY,
-  type ThemeSettings,
-} from '@avalon/theme'
-import { globalKey, onStoreChange, readStore, writeStore, type StoreSpec } from '@avalon/storage'
+import { applyTheme, PREFERS_DARK_QUERY, type ThemeSettings } from '@avalon/theme'
+import { onStoreChange, readStore, writeStore } from '@avalon/storage'
 import { useEffect, useSyncExternalStore } from 'react'
+import { THEME_STORE } from './themeStore.ts'
 
-/** The theme shared by every tool: `avalon:global:theme`. */
-export const THEME_STORE: StoreSpec<ThemeSettings> = {
-  key: globalKey('theme'),
-  version: 1,
-  parse: normalizeTheme,
-  fallback: () => DEFAULT_THEME,
-}
+export { THEME_STORE }
 
 let current: ThemeSettings = readStore(THEME_STORE)
 const listeners = new Set<() => void>()

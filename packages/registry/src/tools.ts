@@ -55,6 +55,17 @@ export const TOOLS = [
     accent: 'sapphire',
     status: 'coming-soon',
   },
+  {
+    id: 'docs',
+    name: '使用說明',
+    shortName: '使用說明',
+    description: '各工具的操作說明、遊戲規則與開發者文件',
+    path: '/docs/',
+    icon: 'IconHelpCircle',
+    accent: 'blue',
+    status: 'stable',
+    kind: 'docs',
+  },
   // new:app inserts here
 ] as const satisfies readonly ToolMeta[]
 

@@ -5,7 +5,7 @@
  *
  *   node packages/pwa/scripts/icons.ts [id...]
  */
-import { tools } from '@avalon/registry'
+import { isPwa, tools } from '@avalon/registry'
 import * as TablerIcons from '@tabler/icons-react'
 import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
@@ -27,7 +27,9 @@ const cli = join(
 const only = process.argv.slice(2)
 const targets = tools.filter(
   (t) =>
-    existsSync(join(root, 'apps', t.id, 'package.json')) && (!only.length || only.includes(t.id)),
+    isPwa(t) &&
+    existsSync(join(root, 'apps', t.id, 'package.json')) &&
+    (!only.length || only.includes(t.id)),
 )
 
 for (const tool of targets) {

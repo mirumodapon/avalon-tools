@@ -1,3 +1,4 @@
+import { docsHref } from '@avalon/registry'
 import { dateKey, deriveState, formatTime, type Game } from '@avalon/record-core'
 import {
   IconCards,
@@ -68,6 +69,7 @@ export function HomePage() {
   return (
     <Page
       title="阿瓦隆紀錄"
+      helpHref={docsHref('guide/record/')}
       actions={
         <>
           <ScanButton />

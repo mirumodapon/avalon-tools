@@ -1,3 +1,4 @@
+import { docsHref } from '@avalon/registry'
 import { PLAYER_COUNTS, roleDef, type Faction, type RoleId } from '@avalon/rules'
 import {
   AppShell,
@@ -225,6 +226,7 @@ export function SetupPage({ onStart }: { onStart: () => Promise<void> }) {
   return (
     <AppShell
       title="角色發牌"
+      helpHref={docsHref('guide/dealer/')}
       actions={
         <IconButton label="歷史紀錄" onClick={() => navigate({ name: 'history' })}>
           <IconHistory size={22} />

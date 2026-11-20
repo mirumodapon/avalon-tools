@@ -24,7 +24,7 @@ const UI_ONLY = [/^react(-dom)?(\/|$)/, /^@tabler\//, /^zustand/, /^dexie/]
 function files(dir: string): string[] {
   return readdirSync(dir).flatMap((n) => {
     const p = join(dir, n)
-    if (n === 'node_modules' || n === 'dist') return []
+    if (n === 'node_modules' || n === 'dist' || n === 'cache') return []
     return statSync(p).isDirectory() ? files(p) : /\.(ts|tsx)$/.test(n) ? [p] : []
   })
 }
@@ -37,13 +37,14 @@ for (const [kind, name] of [
   ...dirs('packages').map((p) => ['packages', p]),
 ]) {
   const base = join(root, kind!, name!)
-  const src = join(base, 'src')
-  let list: string[]
-  try {
-    list = files(src)
-  } catch {
-    continue
-  }
+  // Sources: src/, plus .vitepress/ for the docs site.
+  const list = ['src', '.vitepress'].flatMap((d) => {
+    try {
+      return files(join(base, d))
+    } catch {
+      return []
+    }
+  })
   for (const file of list) {
     const text = readFileSync(file, 'utf8')
     for (const m of text.matchAll(IMPORT)) {

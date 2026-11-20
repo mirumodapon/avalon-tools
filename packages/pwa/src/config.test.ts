@@ -40,6 +40,8 @@ describe('createPwaConfig', () => {
     expect(denied('/record/index.html')).toBe(true)
     expect(denied('/recordings/')).toBe(false)
     expect(denied('/')).toBe(false)
+    expect(denied('/docs/')).toBe(true)
+    expect(denied('/docs/guide/record/setup')).toBe(true)
     for (const t of tools.filter((x) => x.id !== 'home')) expect(denied(t.path)).toBe(true)
   })
 
