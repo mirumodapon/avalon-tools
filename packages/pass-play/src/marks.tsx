@@ -1,6 +1,14 @@
-import { FACTION_LABEL, type Faction } from '@avalon/rules'
+import { FACTION_LABEL, type Faction, type Vote } from '@avalon/rules'
 import { cx } from '@avalon/ui'
-import { IconTrophy, IconTrophyOff, IconUserCheck, IconUserX, type Icon } from '@tabler/icons-react'
+import {
+  IconThumbDown,
+  IconThumbUp,
+  IconTrophy,
+  IconTrophyOff,
+  IconUserCheck,
+  IconUserX,
+  type Icon,
+} from '@tabler/icons-react'
 import { playedCards, type QuestCard } from './quest.ts'
 
 interface Mark {
@@ -46,6 +54,24 @@ export const LADY_MARK: Record<Faction, Mark> = {
     icon: IconUserX,
     text: 'text-evil-fg',
     border: 'border-evil',
+  },
+}
+
+/** How each team vote looks: the game record's approve green and reject grey. */
+export const VOTE_MARK: Record<Vote, Mark> = {
+  approve: {
+    label: '同意',
+    icon: IconThumbUp,
+    text: 'text-approve-fg',
+    border: 'border-approve',
+    tint: 'bg-approve/15',
+  },
+  reject: {
+    label: '反對',
+    icon: IconThumbDown,
+    text: 'text-reject-fg',
+    border: 'border-reject',
+    tint: 'bg-reject/15',
   },
 }
 

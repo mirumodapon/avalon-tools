@@ -1,10 +1,13 @@
-import { deriveState, type PlayerId } from '@avalon/record-core'
+import { deriveState, type PlayerId, type Votes } from '@avalon/record-core'
 import { docsHref } from '@avalon/registry'
 import { AppShell } from '@avalon/ui'
 import { useEffect, useState } from 'react'
 import { AbandonButton } from '../play/AbandonButton.tsx'
+import { LeaderVote } from '../play/LeaderVote.tsx'
+import { PassVote } from '../play/PassVote.tsx'
 import { Scoreboard } from '../play/Scoreboard.tsx'
 import { TeamPicker } from '../play/TeamPicker.tsx'
+import { VoteResult } from '../play/VoteResult.tsx'
 import { useSession } from '../session/store.ts'
 import type { Session } from '../session/types.ts'
 
@@ -15,19 +18,42 @@ import type { Session } from '../session/types.ts'
 export function PlayPage({ session }: { session: Session }) {
   const { game } = session
   const setStage = useSession((s) => s.setStage)
+  const apply = useSession((s) => s.apply)
   const state = deriveState(game)
-  // The team waiting for its vote; dropped whenever a proposal is recorded.
-  const [team, setTeam] = useState<{ at: number; ids: PlayerId[] } | null>(null)
+  // The team and votes not yet recorded, tagged with the proposal count they belong to so
+  // they are dropped once anything is recorded.
   const proposals = game.rounds.reduce((n, r) => n + r.proposals.length, 0)
-  const pendingTeam = team?.at === proposals ? team.ids : null
+  const [pending, setPending] = useState<{ at: number; team: PlayerId[]; votes?: Votes } | null>(
+    null,
+  )
+  const current = pending?.at === proposals ? pending : null
 
   useEffect(() => {
     if (state.phase === 'finished') setStage('finished')
   }, [state.phase, setStage])
 
   let body = null
-  if (state.phase === 'proposal' && !pendingTeam) {
-    body = <TeamPicker game={game} onSubmit={(ids) => setTeam({ at: proposals, ids })} />
+  if (state.phase === 'proposal') {
+    if (!current) {
+      body = <TeamPicker game={game} onSubmit={(team) => setPending({ at: proposals, team })} />
+    } else if (!current.votes) {
+      const done = (votes: Votes) => setPending({ ...current, votes })
+      body =
+        session.voteMode === 'pass' ? (
+          <PassVote game={game} leaderId={state.leaderId} onDone={done} />
+        ) : (
+          <LeaderVote game={game} onDone={done} />
+        )
+    } else {
+      const { team, votes } = current
+      body = (
+        <VoteResult
+          game={game}
+          votes={votes}
+          onContinue={() => apply({ type: 'propose', team, votes, inputMode: 'approvals' })}
+        />
+      )
+    }
   }
 
   return (
