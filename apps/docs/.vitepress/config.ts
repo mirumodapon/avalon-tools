@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'node:url'
-import { toolById } from '@avalon/registry'
+import { thirdPartyLicensesPlugin } from '@avalon/licenses'
+import { manifestName, toolById } from '@avalon/registry'
 import { themeBootstrapScript } from '@avalon/theme'
 import { THEME_STORE } from '@avalon/ui/theme-store'
 import { defineConfig, type DefaultTheme } from 'vitepress'
@@ -116,6 +117,10 @@ export default defineConfig({
       linkLabel: '回到說明首頁',
       linkText: '回到說明首頁',
     },
+    footer: {
+      // Raw HTML: VitePress does not add the base to these links.
+      message: `以 MIT 授權釋出・<a href="${DOCS.path}licenses.txt" target="_blank" rel="noopener">第三方授權</a>`,
+    },
     search: {
       provider: 'local',
       options: {
@@ -141,6 +146,7 @@ export default defineConfig({
     },
   },
   vite: {
+    plugins: [thirdPartyLicensesPlugin(manifestName(DOCS))],
     // Workspace packages ship TypeScript sources: bundle them instead of loading them in Node.
     ssr: { noExternal: [/^@avalon\//] },
     resolve: {

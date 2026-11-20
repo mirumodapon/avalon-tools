@@ -20,6 +20,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@avalon/licenses": "workspace:*",
     "@avalon/tsconfig": "workspace:*",
     "@types/node": "catalog:",
     "vitepress": "catalog:",
