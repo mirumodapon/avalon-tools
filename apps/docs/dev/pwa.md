@@ -51,10 +51,12 @@ Workbox 內建的 `cleanupOutdatedCaches` 會刪除名稱**包含** scope 的快
 
 ### 從工具開啟使用說明
 
-工具裡的說明按鈕一律用新分頁開啟（`target="_blank" rel="noopener"`），所以：
+任何開啟使用說明的地方（各工具的 ? 按鈕、首頁 404 頁的「開啟使用說明」）都一律用**新分頁**開啟，不論是在瀏覽器還是已安裝的 App 中：
 
 - 進行中的遊戲不會被換掉；
-- 從已安裝的工具 App（例如 scope `/record/`）開啟時，說明在 App 的 scope 之外，會交給瀏覽器開啟，而不是在 App 視窗裡跳轉。
+- 已安裝的 App 不會把自己的視窗換成說明頁；從工具 App（例如 scope `/record/`）開啟時，說明在 App 的 scope 之外，會交給瀏覽器開啟。
+
+實作上一律使用 `@avalon/ui` 的 `DocsLink`（固定 `target="_blank" rel="noopener"`，無法覆寫），連結網址用 `@avalon/registry` 的 `docsHref()` 產生；`AppShell` 的 `helpHref` 也是用它。`pnpm lint`（`scripts/check-boundaries.ts`）會擋下用一般 `<a href={docsHref(…)}>` 連到說明的寫法。
 
 ::: warning 待確認
 從已安裝的**首頁** App 開啟 `/docs/` 時，因為 `/docs/` 在首頁的 scope 內，各平台（iOS、Android、桌面版 Chrome）是開在 App 視窗、新視窗還是瀏覽器，需要實機測試確認。
