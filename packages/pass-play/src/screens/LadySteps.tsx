@@ -13,7 +13,15 @@ function Handoff({ who }: { who: string }) {
 }
 
 /** What the inspected player showed, for the holder's eyes only. Double tap to cover. */
-function LoyaltyCard({ shown, onCover }: { shown: Loyalty; onCover: () => void }) {
+function LoyaltyCard({
+  shown,
+  caption,
+  onCover,
+}: {
+  shown: Loyalty
+  caption: string
+  onCover: () => void
+}) {
   const tap = useDoubleTap(onCover)
   const { label, icon: Icon, text, border } = LADY_MARK[shown]
   return (
@@ -28,7 +36,7 @@ function LoyaltyCard({ shown, onCover }: { shown: Loyalty; onCover: () => void }
           border,
         )}
       >
-        <span className="text-lg text-subtext1">對方亮出</span>
+        <span className="text-lg text-subtext1">{caption}</span>
         <Icon size={64} className={text} aria-hidden />
         <span className={cx('text-4xl font-bold', text)}>{label}</span>
       </button>
@@ -40,17 +48,22 @@ function LoyaltyCard({ shown, onCover }: { shown: Loyalty; onCover: () => void }
 /**
  * One use of the Lady in private: the inspected player (`target`) chooses what to show, then
  * the holder (`holder`) holds the card back to look and double-taps it closed.
+ * `revealLabel` and `caption` reword the holder's card, e.g. when it shows the real faction.
  */
 export function LadySteps({
   flow,
   dispatch,
   target,
   holder,
+  revealLabel = '長按查看對方的身分',
+  caption = '對方亮出',
 }: {
   flow: Extract<LadyFlow, { step: 'toTarget' | 'declare' | 'toHolder' | 'reveal' }>
   dispatch: (action: LadyAction) => void
   target: string
   holder: string
+  revealLabel?: string
+  caption?: string
 }) {
   switch (flow.step) {
     case 'toTarget':
@@ -92,7 +105,7 @@ export function LadySteps({
       return (
         <div key="toHolder" className="flex flex-col items-center gap-6">
           <Handoff who={holder} />
-          <CardBack label="長按查看對方的身分" onReveal={() => dispatch({ type: 'reveal' })} />
+          <CardBack label={revealLabel} onReveal={() => dispatch({ type: 'reveal' })} />
         </div>
       )
     case 'reveal':
@@ -100,6 +113,7 @@ export function LadySteps({
         <LoyaltyCard
           key="reveal"
           shown={flow.shown}
+          caption={caption}
           onCover={() => dispatch({ type: 'confirm' })}
         />
       )

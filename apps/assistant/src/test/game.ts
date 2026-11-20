@@ -20,14 +20,25 @@ export const ROLES_5: RoleAssignment = {
   p5: 'loyal',
 }
 
-export function newGame(players = 5, lady = false): Game {
+/** 7 players: seat 1 Merlin, seat 2 Assassin, seats 3–4 Minions, the rest Loyal. */
+export const ROLES_7: RoleAssignment = {
+  ...ROLES_5,
+  p4: 'minion',
+  p6: 'loyal',
+  p7: 'loyal',
+}
+
+export function newGame(players: 5 | 7 = 5, lady = false): Game {
   const list = makePlayers(defaultPlayerNames(players))
   return createGame({
     id: 'game-1',
     now: '2026-11-20T12:00:00.000Z',
     players: list,
-    roleConfig: { merlin: 1, assassin: 1, minion: 1, loyal: 2 },
-    roleAssignment: players === 5 ? ROLES_5 : {},
+    roleConfig:
+      players === 5
+        ? { merlin: 1, assassin: 1, minion: 1, loyal: 2 }
+        : { merlin: 1, assassin: 1, minion: 2, loyal: 3 },
+    roleAssignment: players === 5 ? ROLES_5 : ROLES_7,
     lady: lady ? { initialHolderId: list.at(-1)!.id } : null,
   })
 }
