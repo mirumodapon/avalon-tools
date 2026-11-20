@@ -41,6 +41,9 @@ describe('home', () => {
     expect(await screen.findByRole('heading', { name: '資訊' })).toBeTruthy()
     expect(screen.getByText('0.0.0-test')).toBeTruthy()
     expect(screen.getByRole('heading', { name: '更新紀錄' })).toBeTruthy()
+    const more = screen.getByRole('link', { name: '更多更新紀錄' })
+    expect(more.getAttribute('href')).toBe('/docs/changelog')
+    expect(more.getAttribute('target')).toBe('_blank')
     expect(screen.getByRole('heading', { name: '儲存空間' })).toBeTruthy()
   })
 
