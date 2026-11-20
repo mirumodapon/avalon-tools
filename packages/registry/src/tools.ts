@@ -23,7 +23,7 @@ export const TOOLS = [
     path: '/record/',
     icon: 'IconClipboardList',
     accent: 'green',
-    status: 'beta',
+    status: 'stable',
   },
   {
     id: 'narrator',
@@ -43,7 +43,7 @@ export const TOOLS = [
     path: '/deal/',
     icon: 'IconCards',
     accent: 'peach',
-    status: 'rc',
+    status: 'stable',
   },
   {
     id: 'assistant',
