@@ -3,6 +3,7 @@ import { docsHref } from '@avalon/registry'
 import { AppShell } from '@avalon/ui'
 import { useEffect, useState } from 'react'
 import { AbandonButton } from '../play/AbandonButton.tsx'
+import { Assassinate } from '../play/Assassinate.tsx'
 import { LadyRun } from '../play/LadyRun.tsx'
 import { LeaderVote } from '../play/LeaderVote.tsx'
 import { PassVote } from '../play/PassVote.tsx'
@@ -79,6 +80,15 @@ export function PlayPage({ session }: { session: Session }) {
         game={game}
         holderId={state.ladyHolderId}
         onDone={(targetId, declared) => apply({ type: 'useLady', targetId, declared })}
+      />
+    )
+  }
+
+  if (state.phase === 'assassination') {
+    body = (
+      <Assassinate
+        game={game}
+        onDone={(targetId) => apply({ type: 'assassinate', targetId, manualHit: null })}
       />
     )
   }
