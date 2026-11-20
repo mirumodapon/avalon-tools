@@ -6,12 +6,12 @@ import {
   ladyText,
   ladyUsesAfter,
   playerLabel,
+  questDots,
   startedText,
   winnerText,
   type ExportOptions,
 } from './common.ts'
 import type { HistoryRow } from '../history.ts'
-import { questDots } from './markdown.ts'
 
 function names(game: Game, ids: readonly PlayerId[]): string {
   return ids.length ? ids.map((id) => playerName(game, id)).join('、') : '無'

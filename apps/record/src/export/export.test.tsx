@@ -52,17 +52,50 @@ afterEach(() => {
 })
 
 describe('ExportSheet', () => {
+  it('offers JSON, plain text, PNG, a link and a QR code; no CSV or Markdown', () => {
+    render(<ExportSheet game={game('a')} open onClose={() => {}} />)
+    expect(screen.getAllByRole('radio').map((r) => r.closest('label')!.textContent)).toEqual([
+      'JSON',
+      '純文字',
+      'PNG',
+      '連結',
+      'QR code',
+    ])
+  })
+
   it('previews formats using the naming template for the file name', () => {
     render(<ExportSheet game={game('a', '備註內容')} open onClose={() => {}} />)
     expect(screen.getByText(/檔名：.*第3場\.json/)).toBeTruthy()
-    fireEvent.click(screen.getByRole('radio', { name: 'Markdown' }))
+    fireEvent.click(screen.getByRole('radio', { name: '純文字' }))
     const preview = screen.getByRole<HTMLTextAreaElement>('textbox', { name: '預覽' })
-    expect(preview.value).toMatch(/^# .*第3場\n\n> 備註內容/)
+    expect(preview.value).toMatch(/^【.*第3場】/)
     expect(preview.value).not.toContain('梅林')
     fireEvent.click(screen.getByRole('switch', { name: '包含角色' }))
     expect(screen.getByRole<HTMLTextAreaElement>('textbox', { name: '預覽' }).value).toContain(
       '梅林',
     )
+  })
+
+  it('shows the share link, and copies it', async () => {
+    const writeText = vi.fn<(t: string) => Promise<void>>(() => Promise.resolve())
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText }, configurable: true })
+    render(<ExportSheet game={game('a')} open onClose={() => {}} />)
+    fireEvent.click(screen.getByRole('radio', { name: '連結' }))
+    const link = await screen.findByRole<HTMLTextAreaElement>('textbox', { name: '分享連結' })
+    expect(link.value).toMatch(/\?s=[zj]/)
+    expect(screen.queryByRole('switch', { name: '包含角色' })).toBeNull()
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /複製連結/ }))
+    })
+    expect(writeText).toHaveBeenCalledWith(link.value)
+  })
+
+  it('draws the share link as a QR code that can be downloaded', async () => {
+    render(<ExportSheet game={game('a')} open onClose={() => {}} />)
+    fireEvent.click(screen.getByRole('radio', { name: 'QR code' }))
+    expect(await screen.findByRole('img', { name: /QR code/ })).toBeTruthy()
+    expect(screen.getByText(/檔名：.*第3場-QR\.png/)).toBeTruthy()
+    expect(screen.getByRole('button', { name: /下載/ })).toBeTruthy()
   })
 })
 
@@ -122,7 +155,7 @@ describe('ExportSheet busy state', () => {
 
   it('leaves the options free while exporting text', () => {
     render(<ExportSheet game={game('a')} open onClose={() => {}} />)
-    fireEvent.click(screen.getByRole('radio', { name: 'CSV' }))
+    fireEvent.click(screen.getByRole('radio', { name: '純文字' }))
     expect(styleControls().some((c) => c.matches(':disabled'))).toBe(false)
   })
 })
