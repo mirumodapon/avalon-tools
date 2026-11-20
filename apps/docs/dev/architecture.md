@@ -57,7 +57,7 @@ flowchart TD
 | `apps/home`      | 工具清單、資訊頁（版本、空間用量、更新紀錄）、1.x 舊網址導向、404 頁       |
 | `apps/record`    | 遊戲紀錄：開局、派票、任務、湖中女神、結算、匯出入、分享                   |
 | `apps/deal`      | 角色發牌：發角色、出任務、湖中女神、歷史紀錄                               |
-| `apps/assistant` | 整合遊戲助手：開局、發角色、組隊投票、出任務、湖中女神、刺殺、交給遊戲紀錄 |
+| `apps/assistant` | 單機遊戲助手：開局、發角色、組隊投票、出任務、湖中女神、刺殺、交給遊戲紀錄 |
 | `apps/docs`      | 使用說明（VitePress），沒有 manifest 與 service worker                     |
 
 ## Packages

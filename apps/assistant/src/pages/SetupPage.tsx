@@ -35,7 +35,7 @@ export function SetupPage() {
   }
 
   return (
-    <AppShell title="整合遊戲助手" helpHref={docsHref('guide/assistant/')}>
+    <AppShell title="單機遊戲助手" helpHref={docsHref('guide/assistant/')}>
       <div className="flex-1 space-y-4 pt-2">
         <RoleSetup
           playerCount={settings.playerCount}

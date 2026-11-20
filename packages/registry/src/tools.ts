@@ -47,7 +47,7 @@ export const TOOLS = [
   },
   {
     id: 'assistant',
-    name: '整合遊戲助手',
+    name: '單機遊戲助手',
     shortName: '遊戲助手',
     description: '把發牌、夜晚旁白、出任務與遊戲紀錄串成一場完整的遊戲',
     path: '/assistant/',
