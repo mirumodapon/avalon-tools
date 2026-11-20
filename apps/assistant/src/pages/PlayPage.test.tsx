@@ -39,7 +39,7 @@ describe('voting', () => {
     startSession(newGame(), 'leader')
     render(<App />)
     proposeTeam('1 號', '2 號')
-    for (const s of ['1 號', '2 號', '3 號']) click(s)
+    for (const s of [/^1 號/, /^2 號/, /^3 號/]) click(s)
     click('送出投票')
     click('確定')
     expect(screen.getByText('通過')).toBeTruthy()
