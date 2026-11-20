@@ -30,8 +30,11 @@ describe('home', () => {
     expect(seen).toEqual(expected)
     expect(within(list).getAllByRole('listitem')).toHaveLength(listedTools().length)
     expect(within(list).queryByText('阿瓦隆工具集')).toBeNull()
-    expect(within(list).getAllByText('Beta').length).toBeGreaterThan(0)
-    expect(within(list).getByText('RC')).toBeTruthy()
+    // Only tools still in testing carry a badge; stable ones (record, deal) have none.
+    expect(within(list).getAllByText('Beta')).toHaveLength(
+      listedTools().filter((t) => t.status === 'beta').length,
+    )
+    expect(within(list).queryByText('RC')).toBeNull()
   })
 
   it('has no settings, only an info page with the version and the changelog', async () => {
