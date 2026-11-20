@@ -175,19 +175,43 @@ describe('湖中女神', () => {
 })
 
 describe('history of every mode', () => {
-  it('lists quests openly and keeps Lady results covered until held', async () => {
+  it('keeps quest and Lady results covered until held', async () => {
     const store = createLocalStore()
     setRecordStore(store)
-    await store.save({ id: 'q', createdAt: 2, kind: 'quest', size: 3, fails: 0 })
+    await store.save({
+      id: 'q',
+      createdAt: 2,
+      kind: 'quest',
+      size: 3,
+      fails: 1,
+      cards: ['success', 'fail', 'success'],
+    })
     await store.save({ id: 'l', createdAt: 1, kind: 'lady', shown: 'good' })
     window.location.hash = '#/history'
     render(<App />)
     await act(async () => {})
     expect(screen.getByText('3 人出任務')).toBeTruthy()
-    expect(screen.getByText('任務成功')).toBeTruthy()
+    expect(screen.queryByText('1 張失敗')).toBeNull()
+    expect(screen.queryByRole('list', { name: '出的牌' })).toBeNull()
     expect(screen.queryByText('好人')).toBeNull()
 
-    act(() => fireEvent.click(screen.getByRole('button', { name: /檢視/ })))
+    act(() => fireEvent.click(screen.getAllByRole('button', { name: /檢視/ })[0]!))
+    await act(async () => {})
+    expect(window.location.hash).toBe('#/history/q')
+    expect(screen.queryByText('1 張失敗')).toBeNull()
+    hold('長按查看任務結果')
+    expect(screen.getByText('1 張失敗')).toBeTruthy()
+    expect(screen.getAllByRole('listitem').map((c) => c.getAttribute('aria-label'))).toEqual([
+      '第 1 位：任務成功',
+      '第 2 位：任務失敗',
+      '第 3 位：任務成功',
+    ])
+
+    act(() => {
+      window.location.hash = '#/history'
+    })
+    await act(async () => {})
+    act(() => fireEvent.click(screen.getAllByRole('button', { name: /檢視/ })[1]!))
     await act(async () => {})
     expect(window.location.hash).toBe('#/history/l')
     expect(screen.queryByText('好人')).toBeNull()
