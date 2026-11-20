@@ -5,7 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./vite": "./src/vite.ts",
-    "./tailwind.css": "./src/tailwind.css"
+    "./tailwind.css": "./src/tailwind.css",
+    "./flavors.css": "./src/flavors.generated.css"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

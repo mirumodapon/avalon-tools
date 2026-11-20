@@ -5,7 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./base.css": "./src/base.css",
-    "./polyfills": "./src/polyfills.ts"
+    "./polyfills": "./src/polyfills.ts",
+    "./theme-store": "./src/themeStore.ts"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
