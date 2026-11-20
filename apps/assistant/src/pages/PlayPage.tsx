@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { AbandonButton } from '../play/AbandonButton.tsx'
 import { LeaderVote } from '../play/LeaderVote.tsx'
 import { PassVote } from '../play/PassVote.tsx'
+import { QuestRun } from '../play/QuestRun.tsx'
 import { Scoreboard } from '../play/Scoreboard.tsx'
 import { TeamPicker } from '../play/TeamPicker.tsx'
 import { VoteResult } from '../play/VoteResult.tsx'
@@ -54,6 +55,20 @@ export function PlayPage({ session }: { session: Session }) {
         />
       )
     }
+  }
+
+  if (state.phase === 'quest') {
+    const round = game.rounds[state.questIndex]!
+    const approved = round.proposals.at(-1)!
+    body = (
+      <QuestRun
+        // A fresh quest whenever the approved proposal changes.
+        key={approved.id}
+        game={game}
+        team={approved.team}
+        onDone={(failCount) => apply({ type: 'recordQuest', failCount })}
+      />
+    )
   }
 
   return (
