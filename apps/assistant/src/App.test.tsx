@@ -1,4 +1,4 @@
-import { decodeGame, deriveState } from '@avalon/record-core'
+import { decodeGame, deriveState, playerFaction } from '@avalon/record-core'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
@@ -90,7 +90,10 @@ describe('App', () => {
       }
       const game = useSession.getState().session!.game
       const merlin = Object.entries(game.roleAssignment).find(([, r]) => r === 'merlin')![0]
-      const miss = game.players.find((p) => p.id !== merlin)!
+      // A good player who isn't Merlin (evil teammates can't be picked).
+      const miss = game.players.find(
+        (p) => p.id !== merlin && playerFaction(game, p.id) === 'good',
+      )!
       click(seatLabelOf(miss.name, miss.id))
       click('刺殺')
       click('確定')

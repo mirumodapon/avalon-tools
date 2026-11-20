@@ -30,6 +30,15 @@ describe('end of the game', () => {
     expect(screen.getByText('梅林')).toBeTruthy()
   })
 
+  it('does not let the assassin pick an evil teammate', () => {
+    // Seat 2 is the Assassin, seat 3 a Minion (ROLES_5).
+    startSession(goodWon())
+    render(<App />)
+    expect(screen.getByRole('button', { name: /^2 號/ }).hasAttribute('disabled')).toBe(true)
+    expect(screen.getByRole('button', { name: /^3 號/ }).hasAttribute('disabled')).toBe(true)
+    expect(screen.getByRole('button', { name: '1 號' }).hasAttribute('disabled')).toBe(false)
+  })
+
   it('shows good winning when the assassin misses', () => {
     startSession(goodWon())
     render(<App />)

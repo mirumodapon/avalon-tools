@@ -1,12 +1,12 @@
-import type { Game, PlayerId } from '@avalon/record-core'
+import { playerFaction, type Game, type PlayerId } from '@avalon/record-core'
 import { BottomBar, Button, ConfirmSheet } from '@avalon/ui'
 import { useState } from 'react'
 import { seatLabel } from '../seat.ts'
 import { SeatGrid } from './SeatGrid.tsx'
 
 /**
- * 刺客指認, in public: every seat can be picked (the screen gives no faction away), and the
- * choice is confirmed before it settles the game.
+ * 刺客指認, in public: the assassin picks a good player (evil teammates, the assassin
+ * included, can't be picked), and the choice is confirmed before it settles the game.
  */
 export function Assassinate({
   game,
@@ -25,6 +25,7 @@ export function Assassinate({
         game={game}
         selected={target ? [target] : []}
         onToggle={(id) => setTarget(id === target ? null : id)}
+        disabled={(id) => (playerFaction(game, id) === 'evil' ? '壞人隊友' : null)}
       />
       <BottomBar>
         <Button
