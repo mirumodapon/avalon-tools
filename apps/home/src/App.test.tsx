@@ -62,7 +62,9 @@ describe('home', () => {
     at('/docs/guide/nope')
     render(<App />)
     expect(screen.getByText('找不到這個說明頁面')).toBeTruthy()
-    expect(screen.getByRole('link', { name: '回到使用說明' }).getAttribute('href')).toBe('/docs/')
+    const docs = screen.getByRole('link', { name: '開啟使用說明' })
+    expect(docs.getAttribute('href')).toBe('/docs/')
+    expect(docs.getAttribute('target')).toBe('_blank')
   })
 
   it('has an icon for every registry tool', () => {

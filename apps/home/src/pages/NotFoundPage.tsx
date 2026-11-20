@@ -1,5 +1,5 @@
 import { docsHref } from '@avalon/registry'
-import { AppShell, EmptyState } from '@avalon/ui'
+import { AppShell, DocsLink, EmptyState } from '@avalon/ui'
 import { IconFileUnknown } from '@tabler/icons-react'
 
 const BUTTON =
@@ -16,9 +16,16 @@ export function NotFoundPage({ pathname = window.location.pathname }: { pathname
     <AppShell title="找不到頁面" homeHref={null}>
       <EmptyState icon={<IconFileUnknown size={48} />}>
         <p>{inDocs ? '找不到這個說明頁面' : '找不到這個頁面'}</p>
-        <a href={inDocs ? docs : '/'} className={BUTTON}>
-          {inDocs ? '回到使用說明' : '回到阿瓦隆工具集'}
-        </a>
+        {inDocs ? (
+          // Like every way into the docs, in a new tab (home may be running as an app).
+          <DocsLink href={docs} className={BUTTON}>
+            開啟使用說明
+          </DocsLink>
+        ) : (
+          <a href="/" className={BUTTON}>
+            回到阿瓦隆工具集
+          </a>
+        )}
       </EmptyState>
     </AppShell>
   )

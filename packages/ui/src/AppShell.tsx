@@ -1,5 +1,6 @@
 import { IconArrowLeft, IconBuildingCastle, IconHelpCircle } from '@tabler/icons-react'
 import { useState, type ReactNode } from 'react'
+import { DocsLink } from './DocsLink.tsx'
 import { canLinkHome } from './standalone.ts'
 import { IconButton } from './ui.tsx'
 
@@ -28,9 +29,8 @@ export function AppShell({
   /** Where the home link points; `null` hides it (for the home app itself). */
   homeHref?: string | null
   /**
-   * The docs page for this screen, shown as a ? at the right of the title bar. Always opens
-   * in a new tab, so a game in progress stays put and an installed app hands the docs
-   * (outside its scope) to the browser.
+   * The docs page for this screen, shown as a ? at the right of the title bar. Opens in a
+   * new tab (see DocsLink).
    */
   helpHref?: string
 }) {
@@ -60,16 +60,14 @@ export function AppShell({
           <h1 className="min-w-0 flex-1 truncate text-lg font-bold">{title}</h1>
           {actions}
           {helpHref && (
-            <a
+            <DocsLink
               href={helpHref}
-              target="_blank"
-              rel="noopener"
               aria-label="使用說明"
               title="使用說明"
               className="inline-flex size-11 shrink-0 items-center justify-center rounded-xl text-subtext1 hover:bg-surface0"
             >
               <IconHelpCircle size={22} aria-hidden />
-            </a>
+            </DocsLink>
           )}
         </div>
         {header}
