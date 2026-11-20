@@ -32,6 +32,16 @@ export function docsSite(list: readonly ToolMeta[] = tools): ToolMeta | undefine
   return list.find((t) => t.kind === 'docs')
 }
 
+/**
+ * A page of the docs site, e.g. `docsHref('guide/record/')` → `/docs/guide/record/`.
+ * Tools link their help buttons here.
+ */
+export function docsHref(page = '', list: readonly ToolMeta[] = tools): string {
+  const docs = docsSite(list)
+  if (!docs) throw new Error('No docs site in the registry')
+  return `${docs.path}${page}`
+}
+
 /** Tools listed on the home page (home itself and the docs site excluded). */
 export function listedTools(list: readonly ToolMeta[] = tools): ToolMeta[] {
   // Usable tools first; coming-soon ones go last, each group keeping registry order.
