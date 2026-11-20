@@ -31,7 +31,7 @@ export function SetupPage() {
 
   function begin() {
     const { game } = startGame(settings, new Date().toISOString())
-    start({ game, voteMode: settings.voteMode, stage: 'deal' })
+    start({ game, voteMode: settings.voteMode, stage: 'deal', progress: null })
   }
 
   return (

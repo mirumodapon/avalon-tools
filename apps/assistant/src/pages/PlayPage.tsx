@@ -1,7 +1,7 @@
-import { deriveState, type InputMode, type PlayerId, type Votes } from '@avalon/record-core'
+import { deriveState, type InputMode, type Votes } from '@avalon/record-core'
 import { docsHref } from '@avalon/registry'
 import { AppShell } from '@avalon/ui'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { AbandonButton } from '../play/AbandonButton.tsx'
 import { Assassinate } from '../play/Assassinate.tsx'
 import { LadyRun } from '../play/LadyRun.tsx'
@@ -15,49 +15,53 @@ import { useSession } from '../session/store.ts'
 import type { Session } from '../session/types.ts'
 
 /**
- * The rounds. Which screen shows follows `deriveState(game).phase`; a step that is under way
- * but not yet settled (the team being voted on) is kept in memory only.
+ * The rounds. Which screen shows follows `deriveState(game).phase`; the step under way but
+ * not yet recorded (team, votes, quest cards, the Lady's look) is saved as the session's
+ * progress, so leaving and coming back lands on the same step.
  */
 export function PlayPage({ session }: { session: Session }) {
   const { game } = session
   const setStage = useSession((s) => s.setStage)
   const apply = useSession((s) => s.apply)
   const state = deriveState(game)
-  // The team and votes not yet recorded, tagged with the proposal count they belong to so
-  // they are dropped once anything is recorded.
-  const proposals = game.rounds.reduce((n, r) => n + r.proposals.length, 0)
-  const [pending, setPending] = useState<{
-    at: number
-    team: PlayerId[]
-    votes?: Votes
-    inputMode?: InputMode
-  } | null>(null)
-  const current = pending?.at === proposals ? pending : null
-
+  const setProgress = useSession((s) => s.setProgress)
+  const progress = session.progress
   useEffect(() => {
     if (state.phase === 'finished') setStage('finished')
   }, [state.phase, setStage])
 
   let body = null
   if (state.phase === 'proposal') {
-    if (!current) {
-      body = <TeamPicker game={game} onSubmit={(team) => setPending({ at: proposals, team })} />
-    } else if (!current.votes) {
-      const done = (votes: Votes, inputMode: InputMode = 'approvals') =>
-        setPending({ ...current, votes, inputMode })
-      body =
-        session.voteMode === 'pass' ? (
-          <PassVote game={game} leaderId={state.leaderId} onDone={done} />
-        ) : (
-          <LeaderVote game={game} team={current.team} onDone={done} />
-        )
-    } else {
-      const { team, votes, inputMode = 'approvals' } = current
+    if (progress?.kind === 'voted') {
+      const { team, votes, inputMode } = progress
       body = (
         <VoteResult
           game={game}
           votes={votes}
           onContinue={() => apply({ type: 'propose', team, votes, inputMode })}
+        />
+      )
+    } else if (progress?.kind === 'team') {
+      const { team } = progress
+      const done = (votes: Votes, inputMode: InputMode = 'approvals') =>
+        setProgress({ kind: 'voted', team, votes, inputMode })
+      body =
+        session.voteMode === 'pass' ? (
+          <PassVote
+            game={game}
+            leaderId={state.leaderId}
+            cast={progress.cast}
+            onCast={(cast) => setProgress({ kind: 'team', team, cast })}
+            onDone={done}
+          />
+        ) : (
+          <LeaderVote game={game} team={team} onDone={done} />
+        )
+    } else {
+      body = (
+        <TeamPicker
+          game={game}
+          onSubmit={(team) => setProgress({ kind: 'team', team, cast: [] })}
         />
       )
     }
@@ -72,6 +76,8 @@ export function PlayPage({ session }: { session: Session }) {
         key={approved.id}
         game={game}
         team={approved.team}
+        progress={progress?.kind === 'quest' ? progress : null}
+        onProgress={(played, revealed) => setProgress({ kind: 'quest', played, revealed })}
         onDone={(failCount) => apply({ type: 'recordQuest', failCount })}
       />
     )
@@ -83,6 +89,8 @@ export function PlayPage({ session }: { session: Session }) {
         key={game.lady?.uses.length ?? 0}
         game={game}
         holderId={state.ladyHolderId}
+        progress={progress?.kind === 'lady' ? progress : null}
+        onProgress={(target, seen) => setProgress({ kind: 'lady', target, seen })}
         onDone={(targetId, declared) => apply({ type: 'useLady', targetId, declared })}
       />
     )

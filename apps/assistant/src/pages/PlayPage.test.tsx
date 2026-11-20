@@ -74,17 +74,50 @@ describe('voting', () => {
       expect(useSession.getState().session!.game.rounds[0]!.proposals[0]!.votes.p5).toBe('reject')
     })
 
-    it('drops a half-finished vote after a reload', () => {
+    it('resumes a pass vote with the next voter after a reload', () => {
       startSession(newGame(), 'pass')
       const { unmount } = render(<App />)
       proposeTeam('1 號', '2 號')
       hold('長按投票')
-      click('同意')
+      click('反對')
       unmount()
       render(<App />)
-      expect(screen.getByRole('button', { name: '送出組隊' })).toBeTruthy()
-      expect(useSession.getState().session!.game.rounds).toHaveLength(0)
-      expect(localStorage.getItem('avalon:assistant:session')).not.toContain('approve')
+      expect(screen.getByText('2 號')).toBeTruthy()
+      for (let i = 0; i < 4; i++) {
+        hold('長按投票')
+        click('同意')
+      }
+      hold('長按公布投票結果')
+      click('繼續')
+      const votes = useSession.getState().session!.game.rounds[0]!.proposals[0]!.votes
+      expect(votes).toEqual({
+        p1: 'reject',
+        p2: 'approve',
+        p3: 'approve',
+        p4: 'approve',
+        p5: 'approve',
+      })
     })
+  })
+
+  it('comes back to the vote after a reload once the team is chosen', () => {
+    startSession(newGame(), 'leader')
+    const { unmount } = render(<App />)
+    proposeTeam('1 號', '2 號')
+    unmount()
+    render(<App />)
+    expect(screen.getByRole('button', { name: '送出投票' })).toBeTruthy()
+  })
+
+  it('comes back to the vote result after a reload', () => {
+    startSession(newGame(), 'leader')
+    const { unmount } = render(<App />)
+    proposeTeam('1 號', '2 號')
+    for (const s of [/^1 號/, /^2 號/, /^3 號/]) click(s)
+    click('送出投票')
+    click('確定')
+    unmount()
+    render(<App />)
+    expect(screen.getByText('通過')).toBeTruthy()
   })
 })

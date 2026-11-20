@@ -44,14 +44,31 @@ describe('quest', () => {
     expect(useSession.getState().session!.game.rounds[0]!.result).toEqual({ failCount: 1 })
   })
 
-  it('starts the quest over after a reload', () => {
+  it('resumes with the next team member after a reload', () => {
     startSession(onQuest())
     const { unmount } = render(<App />)
     hold('長按出牌')
     click('任務失敗')
     unmount()
     render(<App />)
-    expect(screen.getByText('2 號')).toBeTruthy()
+    expect(screen.getByText('4 號')).toBeTruthy()
+    hold('長按出牌')
+    act(() => fireEvent.click(screen.getAllByRole('button', { name: '任務成功' })[0]!))
+    hold('長按公布結果')
+    expect(screen.getByText('1 張失敗')).toBeTruthy()
+  })
+
+  it('comes back to the revealed result after a reload', () => {
+    startSession(onQuest())
+    const { unmount } = render(<App />)
+    hold('長按出牌')
+    click('任務失敗')
+    hold('長按出牌')
+    act(() => fireEvent.click(screen.getAllByRole('button', { name: '任務成功' })[0]!))
+    hold('長按公布結果')
+    unmount()
+    render(<App />)
+    expect(screen.getByText('1 張失敗')).toBeTruthy()
     expect(useSession.getState().session!.game.rounds[0]!.result).toBeNull()
   })
 

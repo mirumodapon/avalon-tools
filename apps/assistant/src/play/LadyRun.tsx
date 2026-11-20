@@ -60,22 +60,29 @@ function TrueFaction({
 /**
  * The Lady after a quest: the holder picks whom to inspect, holds the card to see that
  * player's real faction, then announces something in public. Only the announcement is
- * recorded; a reload goes back to picking the target.
+ * recorded in the game; the target and the look are saved progress, so a reload comes back
+ * to the same step (the card face down).
  */
 export function LadyRun({
   game,
   holderId,
+  progress,
+  onProgress,
   onDone,
 }: {
   game: Game
   holderId: PlayerId
+  /** The confirmed target and whether the holder has looked (saved by the caller). */
+  progress: { target: PlayerId; seen: boolean } | null
+  onProgress: (target: PlayerId, seen: boolean) => void
   onDone: (targetId: PlayerId, declared: LadyDeclaration) => void
 }) {
-  const [target, setTarget] = useState<PlayerId | null>(null)
-  const [step, setStep] = useState<'pick' | 'look' | 'declare'>('pick')
+  // The seat being picked; it becomes the saved target once 查驗 is pressed.
+  const [picked, setPicked] = useState<PlayerId | null>(null)
   const holder = seatLabel(game, holderId)
 
-  if (step === 'pick' || !target) {
+  if (!progress) {
+    const target = picked
     const options = ladyTargetOptions(game, game.lady?.uses.length ?? 0, holderId)
     return (
       <>
@@ -84,7 +91,7 @@ export function LadyRun({
         <SeatGrid
           game={game}
           selected={target ? [target] : []}
-          onToggle={(id) => setTarget(id === target ? null : id)}
+          onToggle={(id) => setPicked(id === target ? null : id)}
           disabled={(id) => options.find((o) => o.playerId === id)?.disabledReason ?? null}
         />
         <BottomBar>
@@ -92,7 +99,7 @@ export function LadyRun({
             variant="primary"
             className="w-full"
             disabled={!target}
-            onClick={() => setStep('look')}
+            onClick={() => target && onProgress(target, false)}
           >
             查驗
           </Button>
@@ -101,14 +108,15 @@ export function LadyRun({
     )
   }
 
-  if (step === 'look') {
+  const { target, seen } = progress
+  if (!seen) {
     return (
       <TrueFaction
         game={game}
         target={target}
         holder={holder}
         faction={playerFaction(game, target) ?? 'good'}
-        onSeen={() => setStep('declare')}
+        onSeen={() => onProgress(target, true)}
       />
     )
   }
