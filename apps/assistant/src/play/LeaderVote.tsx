@@ -8,6 +8,7 @@ import {
 } from '@avalon/record-core'
 import { VOTE_MARK } from '@avalon/pass-play'
 import { BottomBar, Button, ConfirmSheet, cx, Segmented } from '@avalon/ui'
+import { IconFlag } from '@tabler/icons-react'
 import { useState } from 'react'
 import { seatLabel } from '../seat.ts'
 import { useSetup } from '../setup/settings.ts'
@@ -71,19 +72,26 @@ export function LeaderVote({
                 aria-pressed={flags.includes(p.id)}
                 onClick={() => toggle(p.id)}
                 className={cx(
-                  'flex min-h-12 w-full items-center justify-between gap-2 rounded-xl border-2 px-3 py-2 text-left',
-                  vote === 'approve'
-                    ? 'border-approve bg-approve/15'
-                    : 'border-transparent bg-surface0',
-                  anomaly &&
-                    (inTeam
+                  // A fixed height: every seat button is the same size, team member or not.
+                  'flex h-14 w-full items-center justify-between gap-2 rounded-xl border-2 px-3 text-left',
+                  // One colour set only: the anomaly colours replace the vote's.
+                  anomaly
+                    ? inTeam
                       ? 'border-inside-reject bg-inside-reject/15'
-                      : 'border-outside-approve bg-outside-approve/15'),
+                      : 'border-outside-approve bg-outside-approve/15'
+                    : vote === 'approve'
+                      ? 'border-approve bg-approve/15'
+                      : 'border-transparent bg-surface0',
                 )}
               >
-                <span className="min-w-0">
-                  <span className="block truncate font-bold">{seatLabel(game, p.id)}</span>
-                  {inTeam && <span className="text-xs text-subtext0">隊員</span>}
+                <span className="flex min-w-0 items-center gap-1">
+                  <span className="truncate font-bold">{seatLabel(game, p.id)}</span>
+                  {inTeam && (
+                    <span className="inline-flex shrink-0 text-accent-fg" title="隊員">
+                      <IconFlag size={16} aria-hidden />
+                      <span className="sr-only">隊員</span>
+                    </span>
+                  )}
                 </span>
                 {anomaly ? (
                   <span
