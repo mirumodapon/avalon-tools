@@ -83,7 +83,8 @@ describe('App', () => {
         click('繼續')
         for (let i = 0; i < teamSize; i++) {
           hold('長按出牌')
-          click('任務成功')
+          // Good players see two 任務成功 buttons; either one plays it.
+          act(() => fireEvent.click(screen.getAllByRole('button', { name: '任務成功' })[0]!))
         }
         hold('長按公布結果')
         click('繼續')

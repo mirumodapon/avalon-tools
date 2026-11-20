@@ -7,15 +7,21 @@ import { cardOrder, type QuestAction, type QuestFlow } from '../quest.ts'
  * Quest cards in private: the member whose turn it is holds the card back, picks a card (the
  * two buttons in a random order), then the phone moves on. Once everyone has played, holding
  * the card back reveals the result.
+ *
+ * `successOnly(index)` marks a player who may not fail the quest (good players, when the roles
+ * are known): both buttons then read 任務成功 and play it, but keep their usual colours and
+ * places, so nobody looking on can tell from the screen.
  */
 export function QuestSteps({
   flow,
   dispatch,
   who,
+  successOnly,
 }: {
   flow: Extract<QuestFlow, { step: 'handoff' | 'choose' | 'collected' }>
   dispatch: (action: QuestAction) => void
   who: (index: number) => string
+  successOnly?: (index: number) => boolean
 }) {
   if (flow.step === 'collected') {
     return (
@@ -43,12 +49,14 @@ export function QuestSteps({
     <div key={`choose-${flow.index}`} className="flex w-full max-w-xs flex-col gap-4">
       <p className="text-center text-lg text-subtext1">請選擇要出的牌</p>
       {flow.order.map((card) => {
-        const { label, icon: Icon, text, border, tint } = QUEST_CARD[card]
+        const { text, border, tint } = QUEST_CARD[card]
+        const played = successOnly?.(flow.index) ? 'success' : card
+        const { label, icon: Icon } = QUEST_CARD[played]
         return (
           <button
             key={card}
             type="button"
-            onClick={() => dispatch({ type: 'play', card })}
+            onClick={() => dispatch({ type: 'play', card: played })}
             className={cx(
               // Colour on the border, icon and tint; the label keeps full contrast so
               // neither choice looks disabled.

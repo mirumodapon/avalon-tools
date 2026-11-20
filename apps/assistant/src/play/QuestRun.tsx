@@ -8,14 +8,15 @@ import {
   resultText,
   usePrivacyGuard,
 } from '@avalon/pass-play'
-import type { Game, PlayerId } from '@avalon/record-core'
+import { playerFaction, type Game, type PlayerId } from '@avalon/record-core'
 import { BottomBar, Button, cx } from '@avalon/ui'
 import { useCallback, useEffect, useReducer } from 'react'
 import { seatLabel } from '../seat.ts'
 
 /**
  * The quest: the phone goes to each team member in seat order, then the result is revealed
- * (successes first). The cards live only here, so a reload starts the quest over.
+ * (successes first). The cards live only here, so a reload starts the quest over. Good
+ * players get two 任務成功 buttons (see QuestSteps).
  */
 export function QuestRun({
   game,
@@ -56,7 +57,13 @@ export function QuestRun({
   }
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-6 py-6">
-      <QuestSteps flow={flow} dispatch={dispatch} who={(i) => seatLabel(game, members[i]!)} />
+      <QuestSteps
+        flow={flow}
+        dispatch={dispatch}
+        who={(i) => seatLabel(game, members[i]!)}
+        // Good players can only succeed; their screen still looks like everyone else's.
+        successOnly={(i) => playerFaction(game, members[i]!) === 'good'}
+      />
     </div>
   )
 }
