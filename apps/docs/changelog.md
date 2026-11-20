@@ -35,7 +35,32 @@
 ### 開發者
 
 - `apps/web` 改名為 `apps/record`，`packages/core` 改名為 `packages/record-core`；新增 `avalon-rules`、`registry`、`storage`、`ui`、`pwa` 等套件，見[架構](./dev/architecture)。
-- 儲存的 key 與資料庫改名（例如 `avalon-recorder:settings` → `avalon:record:<欄位>`、IndexedDB `avalon-recorder` → `avalon-record`），見[資料儲存](./dev/storage)。
-- 每個工具有自己的 service worker 與快取，見 [PWA 與快取](./dev/pwa)。完整的搬移對照見 repo 中的 `docs/upgrade-2.0.md`。
+- 部署改為上傳整個 `dist/`（`pnpm build` 組合），見[部署](./dev/deploy)。
+
+#### 資料搬移對照
+
+遊戲紀錄每次啟動時執行 `apps/record/src/migration/fromV1.ts`：
+
+| 1.x                                                | 2.0                                        |
+| -------------------------------------------------- | ------------------------------------------ |
+| localStorage `avalon-recorder:settings` 的 `theme` | `avalon:global:theme`（所有工具共用）      |
+| `avalon-recorder:settings` 的其他欄位              | `avalon:record:<欄位>`（每個設定一個 key） |
+| `avalon-recorder:session`                          | `avalon:record:session`                    |
+| `avalon-recorder:ui:*`（記錄到一半的內容）         | `avalon:record:ui:*`                       |
+| IndexedDB `avalon-recorder`                        | IndexedDB `avalon-record`                  |
+
+- 新位置已有值時不覆蓋，所以可以重複執行；遊戲複製後逐筆確認都在新資料庫中才算完成。
+- 完成後寫入 `avalon:global:migratedFrom = 1.9.1` 與 `avalon:global:legacyCleanupAfter = 2.1.0`。失敗時不寫入完成標記，下次開啟再試。
+- 主題的防閃爍腳本在新 key 不存在時讀 `avalon-recorder:settings`，升級後第一次開啟也不會閃色。
+
+儲存的命名規則見[資料儲存](./dev/storage)。
+
+#### Service worker 與快取
+
+- 1.x 的 service worker 在 `/sw.js`，2.0 的首頁沿用同一路徑與 manifest id（`/`），所以已安裝的 App 原地更新；1.x 的自動更新會立即套用新版。
+- 每個工具的 service worker 只在自己的 scope 內，快取名稱以 `avalon-<id>` 開頭；首頁不處理其他工具路徑的導覽，也不預先快取它們的檔案。
+- 各工具啟動時只刪除「剛好在自己 scope」的舊 precache，因此會清掉 1.x 的 `workbox-precache-v2-<網站>/`，但不會碰到 `/record/` 的快取。首頁頁面也會直接刪除 1.x 快取。
+
+詳見 [PWA 與快取](./dev/pwa)。
 
 <!--@include: ../../CHANGELOG.md{3,}-->
