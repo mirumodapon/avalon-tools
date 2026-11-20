@@ -3,6 +3,8 @@
  * - apps/* never import another app (by package name or by a relative path out of the app)
  * - packages/* never import an app
  * - pure packages (avalon-rules, record-core) stay free of React, the DOM and icon sets
+ * - links into the docs (`docsHref(…)`) go through DocsLink, which always opens a new tab,
+ *   never a plain <a> that would navigate an installed app's window to the docs
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, resolve, sep } from 'node:path'
@@ -28,6 +30,9 @@ function files(dir: string): string[] {
     return statSync(p).isDirectory() ? files(p) : /\.(ts|tsx)$/.test(n) ? [p] : []
   })
 }
+
+/** `<a … href={docsHref(…)}`: a docs link that would open in the same tab. */
+const PLAIN_DOCS_LINK = /<a\b[^>]*\bhref=\{\s*docsHref\(/
 
 const IMPORT = /(?:import|export)\s[^'"]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g
 const problems: string[] = []
@@ -61,6 +66,9 @@ for (const [kind, name] of [
       if (kind === 'packages' && PURE.has(name!) && UI_ONLY.some((re) => re.test(spec))) {
         problems.push(`${where}: pure package imports ${spec}`)
       }
+    }
+    if (PLAIN_DOCS_LINK.test(text)) {
+      problems.push(`${relative(root, file)}: links the docs with a plain <a>; use DocsLink`)
     }
   }
 }
