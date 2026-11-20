@@ -65,6 +65,7 @@ jobs:
             for f in $(find dist -name manifest.webmanifest | sort); do
               node -e "const m=JSON.parse(require('fs').readFileSync('$f','utf8'));console.log('| \`' + m.scope + '\` | ' + m.name + ' |')"
             done
+            if [ -f dist/docs/index.html ]; then echo '| `/docs/` | 使用說明（不是 PWA） |'; fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-pages-artifact@v5
