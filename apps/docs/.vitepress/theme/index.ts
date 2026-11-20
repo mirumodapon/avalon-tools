@@ -11,6 +11,7 @@ import {
   RoleTable,
   VisionTable,
 } from './components/RulesTables.ts'
+import { ToolTable } from './components/ToolTable.ts'
 import { Mermaid } from './Mermaid.ts'
 import '@avalon/theme/flavors.css'
 import './custom.css'
@@ -59,6 +60,7 @@ export default {
     app.component('VisionTable', VisionTable)
     app.component('DefaultConfigTable', DefaultConfigTable)
     app.component('ExportFieldTable', ExportFieldTable)
+    app.component('ToolTable', ToolTable)
   },
   setup() {
     useSharedTheme()

@@ -23,7 +23,9 @@ export const Mermaid = defineComponent({
         startOnLoad: false,
         securityLevel: 'strict',
         theme: 'base',
-        fontFamily: 'inherit',
+        flowchart: { htmlLabels: false },
+        // Measured and drawn with the same font, so labels are never clipped.
+        fontFamily: getComputedStyle(document.body).fontFamily,
         themeVariables: {
           darkMode: isDark.value,
           background: token('base'),
