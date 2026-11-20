@@ -38,6 +38,9 @@ describe('LeaderVote', () => {
     click(/^2 號/) // a team member who rejected: 場內黑
     click(/^4 號/) // an outsider who approved: 場外白
     expect(screen.getByText('場內黑')).toBeTruthy()
+    const insideReject = screen.getByRole('button', { name: /^2 號/ }).className
+    expect(insideReject).toContain('border-inside-reject')
+    expect(insideReject).not.toContain('border-transparent')
     expect(screen.getByText('場外白')).toBeTruthy()
     submit()
     expect(onDone).toHaveBeenCalledWith(
@@ -63,5 +66,17 @@ describe('LeaderVote', () => {
     render(<LeaderVote game={newGame()} team={TEAM} onDone={() => {}} />)
     act(() => fireEvent.click(screen.getByRole('radio', { name: '派跳（記異常）' })))
     expect(useSetup.getState().settings.leaderInputMode).toBe('anomalies')
+  })
+
+  it('marks team members with a flag only, every seat button the same size', () => {
+    render(<LeaderVote game={newGame()} team={TEAM} onDone={() => {}} />)
+    const seats = screen.getAllByRole('button', { name: /^\d 號/ })
+    expect(seats).toHaveLength(5)
+    expect(seats.every((b) => b.className.includes('h-14'))).toBe(true)
+    const flag = seats[0]!.querySelector('[title="隊員"]')
+    expect(flag?.querySelector('svg')).toBeTruthy()
+    expect(seats[2]!.querySelector('[title="隊員"]')).toBeNull()
+    // No visible 隊員 line under the name.
+    expect(screen.queryAllByText('隊員').every((el) => el.className.includes('sr-only'))).toBe(true)
   })
 })

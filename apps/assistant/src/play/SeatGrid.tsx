@@ -28,7 +28,7 @@ export function SeatGrid({
               title={reason ?? undefined}
               onClick={() => onToggle(p.id)}
               className={cx(
-                'flex min-h-12 w-full flex-col items-start justify-center rounded-xl border-2 px-3 py-2 text-left font-bold',
+                'flex h-14 w-full flex-col items-start justify-center rounded-xl border-2 px-3 text-left font-bold',
                 on
                   ? 'border-accent bg-accent/15 text-text'
                   : 'border-surface1 bg-mantle text-subtext1',
