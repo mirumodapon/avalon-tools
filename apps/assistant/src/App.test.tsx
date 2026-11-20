@@ -1,3 +1,4 @@
+import { decodeGame, deriveState } from '@avalon/record-core'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
@@ -55,4 +56,58 @@ describe('App', () => {
       expect(screen.getByText('1 號・小明')).toBeTruthy()
     })
   })
+
+  describe('a whole game', () => {
+    beforeEach(usePassTimers)
+    afterEach(() => vi.useRealTimers())
+
+    it('plays from setup to the hand-off: good completes three quests, the assassin misses', async () => {
+      useSetup.getState().update({ voteMode: 'leader', lady: false })
+      const click = (name: string | RegExp) =>
+        act(() => fireEvent.click(screen.getByRole('button', { name })))
+      render(<App />)
+      click(/開始遊戲/)
+      for (let seat = 1; seat <= 5; seat++) {
+        hold()
+        doubleTap()
+      }
+      for (let quest = 0; quest < 3; quest++) {
+        const game = useSession.getState().session!.game
+        const { teamSize } = deriveState(game)
+        for (const p of game.players.slice(0, teamSize)) click(seatLabelOf(p.name, p.id))
+        click('送出組隊')
+        click('確定')
+        for (const p of game.players) click(seatLabelOf(p.name, p.id))
+        click('送出投票')
+        click('確定')
+        click('繼續')
+        for (let i = 0; i < teamSize; i++) {
+          hold('長按出牌')
+          click('任務成功')
+        }
+        hold('長按公布結果')
+        click('繼續')
+      }
+      const game = useSession.getState().session!.game
+      const merlin = Object.entries(game.roleAssignment).find(([, r]) => r === 'merlin')![0]
+      const miss = game.players.find((p) => p.id !== merlin)!
+      click(seatLabelOf(miss.name, miss.id))
+      click('刺殺')
+      click('確定')
+      expect(screen.getByText('好人獲勝')).toBeTruthy()
+      // The share link is built asynchronously (compression): wait on real timers.
+      vi.useRealTimers()
+      const link = await screen.findByRole('link', { name: /加入遊戲紀錄/ })
+      const href = link.getAttribute('href')!
+      const back = await decodeGame(new URL(href).searchParams.get('s')!)
+      expect(deriveState(back).winner).toBe('good')
+      expect(back.rounds).toHaveLength(3)
+    })
+  })
 })
+
+/** The seat button text: `1 號・小明` or `2 號`. */
+function seatLabelOf(name: string, id: string): string {
+  const seat = id.slice(1)
+  return name === `${seat}號` ? `${seat} 號` : `${seat} 號・${name}`
+}
