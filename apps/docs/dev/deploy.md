@@ -1,5 +1,7 @@
 # 部署
 
+這一頁說明 `pnpm build` 產生什麼、伺服器需要做到哪些事，以及 GitHub Pages 與其他平台的設定。
+
 `pnpm build` 會把所有 app 組成一個靜態網站放在 `dist/`：
 
 ```
