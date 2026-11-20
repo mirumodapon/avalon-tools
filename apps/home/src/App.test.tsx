@@ -51,6 +51,20 @@ describe('home', () => {
     expect(screen.getByRole('link', { name: '回到阿瓦隆工具集' }).getAttribute('href')).toBe('/')
   })
 
+  it('links to the docs from the top right, in a new tab', () => {
+    render(<App />)
+    const help = screen.getByRole('link', { name: '使用說明' })
+    expect(help.getAttribute('href')).toBe('/docs/')
+    expect(help.getAttribute('target')).toBe('_blank')
+  })
+
+  it('sends broken docs links back to the docs', () => {
+    at('/docs/guide/nope')
+    render(<App />)
+    expect(screen.getByText('找不到這個說明頁面')).toBeTruthy()
+    expect(screen.getByRole('link', { name: '回到使用說明' }).getAttribute('href')).toBe('/docs/')
+  })
+
   it('has an icon for every registry tool', () => {
     expect(tools.filter((t) => !TOOL_ICONS[t.icon]).map((t) => t.icon)).toEqual([])
   })
