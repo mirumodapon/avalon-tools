@@ -39,12 +39,17 @@ for (const tool of list) {
 }
 copyFileSync(join(distDir, 'index.html'), join(distDir, '404.html'))
 
-// A worker must never precache another app's files.
+// A worker must never precache another app's files, nor answer its navigations (home's
+// scope `/` covers `/record/`, `/docs/`, …; the docs must always come from the network).
 for (const tool of list.filter(isPwa)) {
   const sw = readFileSync(join(distDir, tool.path, 'sw.js'), 'utf8')
   for (const other of list.filter((o) => o.path !== tool.path && o.path.startsWith(tool.path))) {
     const nested = other.path.slice(tool.path.length)
     if (sw.includes(`url:"${nested}`)) problems.push(`${tool.id}: sw.js precaches ${other.path}`)
+    // Ids are lowercase letters, digits and dashes, so the pattern needs no escaping.
+    const deny = `/^\\/${other.id}(\\/|$)/`
+    if (!sw.includes(deny))
+      problems.push(`${tool.id}: sw.js does not deny navigations to ${other.path}`)
   }
 }
 
