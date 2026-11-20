@@ -1,4 +1,4 @@
-import { deriveState, type PlayerId, type Votes } from '@avalon/record-core'
+import { deriveState, type InputMode, type PlayerId, type Votes } from '@avalon/record-core'
 import { docsHref } from '@avalon/registry'
 import { AppShell } from '@avalon/ui'
 import { useEffect, useState } from 'react'
@@ -26,9 +26,12 @@ export function PlayPage({ session }: { session: Session }) {
   // The team and votes not yet recorded, tagged with the proposal count they belong to so
   // they are dropped once anything is recorded.
   const proposals = game.rounds.reduce((n, r) => n + r.proposals.length, 0)
-  const [pending, setPending] = useState<{ at: number; team: PlayerId[]; votes?: Votes } | null>(
-    null,
-  )
+  const [pending, setPending] = useState<{
+    at: number
+    team: PlayerId[]
+    votes?: Votes
+    inputMode?: InputMode
+  } | null>(null)
   const current = pending?.at === proposals ? pending : null
 
   useEffect(() => {
@@ -40,20 +43,21 @@ export function PlayPage({ session }: { session: Session }) {
     if (!current) {
       body = <TeamPicker game={game} onSubmit={(team) => setPending({ at: proposals, team })} />
     } else if (!current.votes) {
-      const done = (votes: Votes) => setPending({ ...current, votes })
+      const done = (votes: Votes, inputMode: InputMode = 'approvals') =>
+        setPending({ ...current, votes, inputMode })
       body =
         session.voteMode === 'pass' ? (
           <PassVote game={game} leaderId={state.leaderId} onDone={done} />
         ) : (
-          <LeaderVote game={game} onDone={done} />
+          <LeaderVote game={game} team={current.team} onDone={done} />
         )
     } else {
-      const { team, votes } = current
+      const { team, votes, inputMode = 'approvals' } = current
       body = (
         <VoteResult
           game={game}
           votes={votes}
-          onContinue={() => apply({ type: 'propose', team, votes, inputMode: 'approvals' })}
+          onContinue={() => apply({ type: 'propose', team, votes, inputMode })}
         />
       )
     }

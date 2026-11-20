@@ -1,5 +1,5 @@
 import { defaultSpecialFor, normalizePlayerCount, normalizeSpecial } from '@avalon/pass-play'
-import { ladyEnabledByDefault } from '@avalon/record-core'
+import { ladyEnabledByDefault, type InputMode } from '@avalon/record-core'
 import type { PlayerCount, RoleId } from '@avalon/rules'
 import { readStore, writeStore, type StoreSpec } from '@avalon/storage'
 import { create } from 'zustand'
@@ -15,6 +15,8 @@ export interface SetupSettings {
   /** One per seat; empty means "N 號". */
   names: string[]
   voteMode: VoteMode
+  /** 隊長輸入 only: 派票 (mark approvers) or 派跳 (mark exceptions), as in the record app. */
+  leaderInputMode: InputMode
   lady: boolean
 }
 
@@ -31,6 +33,7 @@ export function normalizeSetup(data: unknown): SetupSettings {
       typeof given[i] === 'string' ? given[i] : '',
     ),
     voteMode: d.voteMode === 'leader' ? 'leader' : 'pass',
+    leaderInputMode: d.leaderInputMode === 'anomalies' ? 'anomalies' : 'approvals',
     lady: typeof d.lady === 'boolean' ? d.lady : ladyEnabledByDefault(playerCount),
   }
 }

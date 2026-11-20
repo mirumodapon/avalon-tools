@@ -63,8 +63,6 @@ describe('App', () => {
 
     it('plays from setup to the hand-off: good completes three quests, the assassin misses', async () => {
       useSetup.getState().update({ voteMode: 'leader', lady: false })
-      const click = (name: string | RegExp) =>
-        act(() => fireEvent.click(screen.getByRole('button', { name })))
       render(<App />)
       click(/開始遊戲/)
       for (let seat = 1; seat <= 5; seat++) {
@@ -77,7 +75,8 @@ describe('App', () => {
         for (const p of game.players.slice(0, teamSize)) click(seatLabelOf(p.name, p.id))
         click('送出組隊')
         click('確定')
-        for (const p of game.players) click(seatLabelOf(p.name, p.id))
+        // 派票: mark everyone as approving.
+        for (const p of game.players) click(new RegExp(`^${seatLabelOf(p.name, p.id)}`))
         click('送出投票')
         click('確定')
         click('繼續')
@@ -106,6 +105,9 @@ describe('App', () => {
     })
   })
 })
+
+const click = (name: string | RegExp) =>
+  act(() => fireEvent.click(screen.getByRole('button', { name })))
 
 /** The seat button text: `1 號・小明` or `2 號`. */
 function seatLabelOf(name: string, id: string): string {
