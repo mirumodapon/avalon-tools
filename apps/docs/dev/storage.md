@@ -68,4 +68,4 @@ interface StoreSpec<T> {
 | IndexedDB 的索引     | 提高 Dexie 的 `version()`，加上新的 `stores()`                                          |
 | 角色發牌的舊紀錄     | `normalizeRecord` 在讀取時補上預設值（例如沒有 `kind` 的舊紀錄視為發角色）              |
 
-1.x（阿瓦隆紀錄）到 2.0 的資料搬移見「更新紀錄」的升級說明。
+1.x（阿瓦隆紀錄）到 2.0 的資料搬移見[更新紀錄](../changelog#從-1-x-升級到-2-0)。
