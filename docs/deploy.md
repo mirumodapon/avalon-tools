@@ -5,6 +5,8 @@
 ```
 dist/            阿瓦隆工具集（apps/home）
 dist/record/     遊戲紀錄（apps/record）
+dist/deal/       角色發牌（apps/deal）
+dist/docs/       使用說明（apps/docs，VitePress；沒有 manifest 與 service worker）
 dist/404.html    = 首頁的 index.html，顯示 404 頁面
 ```
 
@@ -14,8 +16,9 @@ dist/404.html    = 首頁的 index.html，顯示 404 頁面
 
 1. **資料夾導向結尾斜線**：`/record` → `/record/`（301）。
 2. **找不到的路徑回 `/404.html`**（狀態碼 404）。不需要 SPA rewrite：各工具都用 hash 路由。
-3. **`sw.js`、`workbox-*.js`、`sw-cleanup.js`、`*.webmanifest`、`*.html` 不可被長期快取**（`Cache-Control: no-cache`），否則更新不會生效。`assets/` 內的檔名含 hash，可長期快取。
-4. **1.x 的舊網址**（`/#/play/…`、`/?s=…`）由首頁在瀏覽器端轉到 `/record/`；hash 與查詢字串到不了伺服器，所以伺服器不用設定。
+3. **沒有副檔名的路徑找同名 `.html`**：使用說明開啟了 VitePress 的 `cleanUrls`，`/docs/guide/faq` 要回 `/docs/guide/faq.html`（不轉址），重新整理深層頁面才不會 404。
+4. **`sw.js`、`workbox-*.js`、`sw-cleanup.js`、`*.webmanifest`、`*.html` 不可被長期快取**（`Cache-Control: no-cache`），否則更新不會生效。`assets/` 內的檔名含 hash，可長期快取。
+5. **1.x 的舊網址**（`/#/play/…`、`/?s=…`）由首頁在瀏覽器端轉到 `/record/`；hash 與查詢字串到不了伺服器，所以伺服器不用設定。
 
 ## GitHub Pages（預設）
 
@@ -28,9 +31,11 @@ dist/404.html    = 首頁的 index.html，顯示 404 頁面
 
 設定：Settings → Pages 的 Source 選 GitHub Actions，Custom domain 填網域（目前為 `avalon.mirumo.net`），並勾選 Enforce HTTPS（service worker 只能在 HTTPS 下運作）。新增工具不需要改工作流程。
 
-Pages 已內建 1、2，`sw.js` 等檔案的快取時間為 10 分鐘，可接受。
+Pages 已內建 1、2、3，`sw.js` 等檔案的快取時間為 10 分鐘，可接受。
 
 ## Netlify（`dist/_redirects` 與 `dist/_headers`）
+
+Netlify 預設會以 `<路徑>.html` 回應無副檔名的網址（Pretty URLs），使用說明不需額外設定。
 
 ```
 # _redirects
@@ -69,7 +74,7 @@ Pages 已內建 1、2，`sw.js` 等檔案的快取時間為 10 分鐘，可接�
 }
 ```
 
-Vercel 找不到檔案時會自動使用 `404.html`。
+Vercel 找不到檔案時會自動使用 `404.html`。使用說明的無副檔名網址需要在 `vercel.json` 加上 `"cleanUrls": true`。
 
 ## nginx
 
@@ -78,7 +83,7 @@ server {
   root /srv/avalon/dist;
 
   location / {
-    try_files $uri $uri/ =404;   # $uri/ 會自動 301 到結尾斜線
+    try_files $uri $uri.html $uri/ =404;   # $uri.html：使用說明的 cleanUrls；$uri/ 會自動 301 到結尾斜線
   }
   error_page 404 /404.html;
 
