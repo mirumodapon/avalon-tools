@@ -1,4 +1,4 @@
-import { listedTools, type ToolMeta } from '@avalon/registry'
+import { docsHref, listedTools, type ToolMeta } from '@avalon/registry'
 import { AppShell, cx, IconButton } from '@avalon/ui'
 import { IconChevronRight, IconDeviceMobileDown, IconInfoCircle } from '@tabler/icons-react'
 import { isStandalone } from '@avalon/ui'
@@ -57,6 +57,7 @@ export function ToolsPage() {
     <AppShell
       title="阿瓦隆工具集"
       homeHref={null}
+      helpHref={docsHref()}
       actions={
         <IconButton label="資訊" onClick={() => (window.location.hash = '#/info')}>
           <IconInfoCircle size={22} />

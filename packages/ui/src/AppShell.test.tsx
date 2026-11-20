@@ -22,6 +22,23 @@ describe('AppShell', () => {
     expect(onBack).toHaveBeenCalledOnce()
   })
 
+  it('opens its help page in a new tab', () => {
+    render(
+      <AppShell title="遊戲紀錄" helpHref="/docs/guide/record/">
+        內容
+      </AppShell>,
+    )
+    const help = screen.getByRole('link', { name: '使用說明' })
+    expect(help.getAttribute('href')).toBe('/docs/guide/record/')
+    expect(help.getAttribute('target')).toBe('_blank')
+    expect(help.getAttribute('rel')).toBe('noopener')
+  })
+
+  it('has no help link unless given one', () => {
+    render(<AppShell title="遊戲紀錄">內容</AppShell>)
+    expect(screen.queryByRole('link', { name: '使用說明' })).toBeNull()
+  })
+
   it('hides the home link inside the home app', () => {
     render(
       <AppShell title="阿瓦隆工具集" homeHref={null}>

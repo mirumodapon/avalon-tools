@@ -2,13 +2,14 @@
 
 《阿瓦隆（The Resistance: Avalon）》桌遊的輔助工具。首頁（`/`）列出各個工具，每個工具都是可以單獨安裝、離線使用的 PWA，手機優先。
 
-| 工具                 | 路徑          | 狀態                                                            |
-| -------------------- | ------------- | --------------------------------------------------------------- |
-| 阿瓦隆工具集（首頁） | `/`           | 工具列表、資訊頁（版本、空間用量、更新紀錄）                    |
-| 遊戲紀錄             | `/record/`    | beta                                                            |
-| 夜晚旁白             | `/narrator/`  | 即將推出                                                        |
-| 整合遊戲助手         | `/assistant/` | 即將推出                                                        |
-| 角色發牌             | `/deal/`      | rc：一支手機輪流查看角色（見 [apps/deal](apps/deal/README.md)） |
+| 工具                 | 路徑          | 狀態                                                              |
+| -------------------- | ------------- | ----------------------------------------------------------------- |
+| 阿瓦隆工具集（首頁） | `/`           | 工具列表、資訊頁（版本、空間用量、更新紀錄）                      |
+| 遊戲紀錄             | `/record/`    | beta                                                              |
+| 夜晚旁白             | `/narrator/`  | 即將推出                                                          |
+| 整合遊戲助手         | `/assistant/` | 即將推出                                                          |
+| 角色發牌             | `/deal/`      | rc：一支手機輪流查看角色（見 [apps/deal](apps/deal/README.md)）   |
+| 使用說明             | `/docs/`      | VitePress 文件站，不是 PWA（見 [apps/docs](apps/docs/README.md)） |
 
 從 1.x（阿瓦隆紀錄）升級請見 [docs/upgrade-2.0.md](docs/upgrade-2.0.md)，更新內容見 [CHANGELOG.md](CHANGELOG.md)。
 
@@ -110,6 +111,7 @@
 apps/home/               阿瓦隆工具集首頁（/）
 apps/record/             遊戲紀錄（/record/）
 apps/deal/               角色發牌（/deal/）
+apps/docs/               使用說明（/docs/，VitePress，不是 PWA）
 packages/avalon-rules/   純 TS：阿瓦隆規則與角色（不依賴 React／DOM）
 packages/record-core/    純 TS：遊戲紀錄的型別、reducer、schema、匯出與分享格式
 packages/registry/       工具清單（名稱、路徑、圖示、顏色、狀態）

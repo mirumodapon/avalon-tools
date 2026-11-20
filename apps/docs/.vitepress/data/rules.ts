@@ -74,6 +74,8 @@ function roleAt(seat: number): RoleId {
   return DEMO_TABLE.find((p) => p.seat === seat)!.role
 }
 
+const seats = (v: Vision): number[] => ('seats' in v ? v.seats : [])
+
 export interface RoleRow {
   id: RoleId
   name: string
@@ -92,7 +94,6 @@ export interface RoleRow {
 
 export function roleRows(): RoleRow[] {
   const visions = new Map(DEMO_TABLE.map((p) => [p.role, visionFor(p, DEMO_TABLE)]))
-  const seats = (v: Vision) => ('seats' in v ? v.seats : [])
   return ROLES.map((r) => {
     const vision = visions.get(r.id)!
     const self = DEMO_TABLE.find((p) => p.role === r.id)!.seat
