@@ -20,6 +20,8 @@ export interface SetupSettings {
   lady: boolean
   /** The Lady's first holder, by seat; null = the last seat (the default). */
   ladyHolderSeat: number | null
+  /** Draw the Lady's first holder at random instead (ladyHolderSeat is then ignored). */
+  ladyHolderRandom: boolean
 }
 
 export function normalizeSetup(data: unknown): SetupSettings {
@@ -43,6 +45,7 @@ export function normalizeSetup(data: unknown): SetupSettings {
       (d.ladyHolderSeat as number) <= playerCount
         ? (d.ladyHolderSeat as number)
         : null,
+    ladyHolderRandom: d.ladyHolderRandom === true,
   }
 }
 

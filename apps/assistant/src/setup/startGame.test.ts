@@ -46,6 +46,12 @@ describe('startGame', () => {
     expect(startGame(chosen, NOW, pick(3)).game.lady!.initialHolderId).toBe('p2')
   })
 
+  it('draws the Lady holder at random when asked', () => {
+    const random = { ...setup, ladyHolderSeat: 2, ladyHolderRandom: true }
+    expect(startGame(random, NOW, pick(4)).game.lady!.initialHolderId).toBe('p5')
+    expect(startGame(random, NOW, pick(0)).game.lady!.initialHolderId).toBe('p1')
+  })
+
   it('leaves the Lady out when it is off', () => {
     expect(startGame({ ...setup, lady: false }, NOW, pick(0)).game.lady).toBeNull()
   })

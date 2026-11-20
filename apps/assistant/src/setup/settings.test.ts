@@ -31,4 +31,9 @@ describe('normalizeSetup', () => {
     expect(normalizeSetup({ playerCount: 7, ladyHolderSeat: 3 }).ladyHolderSeat).toBe(3)
     expect(normalizeSetup({ playerCount: 7, ladyHolderSeat: 9 }).ladyHolderSeat).toBeNull()
   })
+
+  it('does not draw the Lady holder at random unless asked', () => {
+    expect(normalizeSetup({}).ladyHolderRandom).toBe(false)
+    expect(normalizeSetup({ ladyHolderRandom: true }).ladyHolderRandom).toBe(true)
+  })
 })
