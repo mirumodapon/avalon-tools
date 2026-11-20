@@ -1,10 +1,15 @@
 import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
 import { IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
-import { CardBack } from '../components/CardBack.tsx'
-import { QUEST_CARD, QuestCards, questResultText } from '../components/marks.tsx'
-import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
-import { cardOrder, resultText } from '@avalon/pass-play'
+import {
+  CardBack,
+  QUEST_CARD,
+  QuestCards,
+  questResultText,
+  usePrivacyGuard,
+  cardOrder,
+  resultText,
+} from '@avalon/pass-play'
 import { useQuest } from '../quest/store.ts'
 
 /** A quest in progress: each member plays a card in private, then the result. */

@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./pass-play.css": "./src/pass-play.css"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -11,14 +12,18 @@
   },
   "dependencies": {
     "@avalon/rules": "workspace:*",
+    "@avalon/ui": "workspace:*",
+    "@tabler/icons-react": "catalog:",
     "react": "catalog:"
   },
   "devDependencies": {
     "@avalon/tsconfig": "workspace:*",
     "@testing-library/react": "catalog:",
+    "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "jsdom": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vite-plugin-pwa": "catalog:"
   }
 }

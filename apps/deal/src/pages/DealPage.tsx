@@ -1,10 +1,7 @@
 import { AppShell, Button, ConfirmSheet, IconButton } from '@avalon/ui'
 import { IconCircleCheck, IconConfetti, IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
-import { CardBack } from '../components/CardBack.tsx'
-import { RoleCard } from '../components/RoleCard.tsx'
-import { isDealing } from '@avalon/pass-play'
-import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
+import { CardBack, RoleCard, isDealing, usePrivacyGuard } from '@avalon/pass-play'
 import { useFlow } from '../flow/store.ts'
 import { navigate } from '../router.ts'
 
