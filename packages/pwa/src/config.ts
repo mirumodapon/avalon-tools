@@ -22,6 +22,14 @@ export function pathPattern(path: string): RegExp {
   return new RegExp(`^${escapeRegExp(path.replace(/\/$/, ''))}(/|$)`)
 }
 
+/**
+ * A path to a file (its last segment has an extension), e.g. `/record/licenses.txt`. Such
+ * navigations must reach the network: answering them with the app shell would show the
+ * tool instead of the file. (The app's own `index.html` is precached, so the precache
+ * route serves it before this denylist is consulted.)
+ */
+export const FILE_PATH = /\/[^/?]+\.[^/]+$/
+
 /** Workbox cache-name prefix; distinct per app so caches never collide. */
 export function cacheIdOf(tool: ToolMeta): string {
   return `avalon-${tool.id}`
@@ -64,7 +72,8 @@ export function createPwaConfig(
       // App shell: precache this app's built files and serve its index.html offline.
       globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
       navigateFallback: 'index.html',
-      navigateFallbackDenylist: nestedToolPaths(tool, tools).map(pathPattern),
+      // Not other tools' pages, and not files such as licenses.txt: those come from the network.
+      navigateFallbackDenylist: [...nestedToolPaths(tool, tools).map(pathPattern), FILE_PATH],
       // Replaced by CLEANUP_SCRIPT: Workbox's version would delete nested apps' caches.
       cleanupOutdatedCaches: false,
       globIgnores: [CLEANUP_SCRIPT],
