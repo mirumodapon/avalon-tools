@@ -1,0 +1,108 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "3f2b8c1e-4d5a-4b6c-9e7f-0a1b2c3d4e5f",
+    "createdAt": "2026-11-18T12:00:00.000Z",
+    "updatedAt": "2026-11-18T12:40:00.000Z",
+    "savedAt": null,
+    "name": {
+      "custom": "週五桌遊夜",
+      "auto": "11/18 第 1 場",
+      "seq": 1
+    },
+    "note": "",
+    "players": [
+      {
+        "id": "p1",
+        "name": "小明"
+      },
+      {
+        "id": "p2",
+        "name": "阿華"
+      },
+      {
+        "id": "p3",
+        "name": "小美"
+      },
+      {
+        "id": "p4",
+        "name": "大雄"
+      },
+      {
+        "id": "p5",
+        "name": "靜香"
+      }
+    ],
+    "firstLeaderId": "p1",
+    "roleConfig": {
+      "merlin": 1,
+      "percival": 1,
+      "loyal": 1,
+      "morgana": 1,
+      "assassin": 1
+    },
+    "roleAssignment": {
+      "p3": "merlin"
+    },
+    "rounds": [
+      {
+        "proposals": [
+          {
+            "id": "q1-p1",
+            "leaderId": "p1",
+            "team": ["p1", "p2"],
+            "votes": {
+              "p1": "approve",
+              "p2": "approve",
+              "p3": "approve",
+              "p4": "approve",
+              "p5": "approve"
+            },
+            "inputMode": "approvals",
+            "forced": false
+          }
+        ],
+        "result": {
+          "failCount": 0
+        }
+      },
+      {
+        "proposals": [
+          {
+            "id": "q2-p1",
+            "leaderId": "p2",
+            "team": ["p2", "p3", "p4"],
+            "votes": {
+              "p1": "reject",
+              "p2": "approve",
+              "p3": "reject",
+              "p4": "approve",
+              "p5": "reject"
+            },
+            "inputMode": "anomalies",
+            "forced": false
+          },
+          {
+            "id": "q2-p2",
+            "leaderId": "p3",
+            "team": ["p1", "p3", "p5"],
+            "votes": {
+              "p1": "approve",
+              "p2": "approve",
+              "p3": "approve",
+              "p4": "reject",
+              "p5": "approve"
+            },
+            "inputMode": "anomalies",
+            "forced": false
+          }
+        ],
+        "result": {
+          "failCount": 1
+        }
+      }
+    ],
+    "assassination": null,
+    "lady": null
+  }
+]

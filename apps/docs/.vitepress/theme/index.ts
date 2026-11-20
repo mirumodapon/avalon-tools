@@ -3,6 +3,14 @@ import { useData, type Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import { onMounted, watch } from 'vue'
 import { flavorFor, VP_APPEARANCE_KEY, writeBackMode } from './appearance.ts'
+import { ExportFieldTable } from './components/ExportFieldTable.ts'
+import {
+  DefaultConfigTable,
+  FactionCountTable,
+  QuestSizeTable,
+  RoleTable,
+  VisionTable,
+} from './components/RulesTables.ts'
 import { Mermaid } from './Mermaid.ts'
 import '@avalon/theme/flavors.css'
 import './custom.css'
@@ -45,6 +53,12 @@ export default {
   extends: DefaultTheme,
   enhanceApp({ app }) {
     app.component('Mermaid', Mermaid)
+    app.component('QuestSizeTable', QuestSizeTable)
+    app.component('FactionCountTable', FactionCountTable)
+    app.component('RoleTable', RoleTable)
+    app.component('VisionTable', VisionTable)
+    app.component('DefaultConfigTable', DefaultConfigTable)
+    app.component('ExportFieldTable', ExportFieldTable)
   },
   setup() {
     useSharedTheme()
