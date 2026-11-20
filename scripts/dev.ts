@@ -4,13 +4,13 @@
  *
  *   node scripts/dev.ts [--filter <id>]... [--port 5173]
  *
- * Each app keeps its own base (home `/`, record `/record/`); the proxy routes by the
+ * Each app keeps its own base (home `/`, record `/record/`, docs `/docs/`); the proxy routes by the
  * longest registry path prefix, including Vite's HMR websocket.
  */
 import { spawn, type ChildProcess } from 'node:child_process'
 import { createServer, request } from 'node:http'
 import { connect } from 'node:net'
-import type { ToolMeta } from '../packages/registry/src/index.ts'
+import { isPwa, type ToolMeta } from '../packages/registry/src/index.ts'
 import { appForPath, apps, packageName, root } from './lib/apps.ts'
 
 function args(flag: string): string[] {
@@ -29,20 +29,18 @@ if (!list.length) {
 const ports = new Map<ToolMeta, number>(list.map((t, i) => [t, port + 1 + i]))
 const children: ChildProcess[] = []
 
+/** The dev server command for an app: Vite for the tools, VitePress for the docs. */
+function devCommand(tool: ToolMeta, p: number): string[] {
+  const listen = ['--port', String(p), '--strictPort']
+  return isPwa(tool)
+    ? ['exec', 'vite', ...listen, '--clearScreen', 'false']
+    : ['exec', 'vitepress', 'dev', ...listen]
+}
+
 for (const [tool, p] of ports) {
   const child = spawn(
     'pnpm',
-    [
-      '--filter',
-      packageName(tool),
-      'exec',
-      'vite',
-      '--port',
-      String(p),
-      '--strictPort',
-      '--clearScreen',
-      'false',
-    ],
+    ['--filter', packageName(tool), ...devCommand(tool, p)],
     // Own process group, so stopping kills pnpm and the vite it started.
     { cwd: root, stdio: ['ignore', 'inherit', 'inherit'], detached: true },
   )

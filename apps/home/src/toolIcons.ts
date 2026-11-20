@@ -3,6 +3,7 @@ import {
   IconBuildingCastle,
   IconCards,
   IconClipboardList,
+  IconHelpCircle,
   IconMoonStars,
   type Icon,
 } from '@tabler/icons-react'
@@ -16,6 +17,7 @@ export const TOOL_ICONS: Record<string, Icon> = {
   IconBuildingCastle,
   IconCards,
   IconClipboardList,
+  IconHelpCircle,
   IconMoonStars,
   // new:app icons
 }
