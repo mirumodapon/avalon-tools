@@ -1,4 +1,4 @@
-import { docsHref } from '@avalon/registry'
+import { builtTools, docsHref, manifestName } from '@avalon/registry'
 import { AppShell, Card, DocsLink, SectionTitle, StorageUsage } from '@avalon/ui'
 import { IconExternalLink } from '@tabler/icons-react'
 import changelog from '../../../../CHANGELOG.md?raw'
@@ -22,6 +22,28 @@ export function InfoPage() {
         <Card>
           <SectionTitle>儲存空間</SectionTitle>
           <StorageUsage />
+        </Card>
+        <Card>
+          <SectionTitle>授權</SectionTitle>
+          <p className="text-sm text-subtext1">
+            阿瓦隆工具集以 MIT 授權釋出。各工具使用的第三方套件與授權條款：
+          </p>
+          {/* Every app ships its own notices (licenses.txt), generated at build time. */}
+          <ul className="mt-2 space-y-1 text-sm" aria-label="第三方授權">
+            {builtTools().map((t) => (
+              <li key={t.id}>
+                <a
+                  href={`${t.path}licenses.txt`}
+                  target="_blank"
+                  rel="noopener"
+                  className="inline-flex min-h-9 items-center gap-1 text-accent-fg underline-offset-2 hover:underline"
+                >
+                  {manifestName(t)}
+                  <IconExternalLink size={14} aria-hidden />
+                </a>
+              </li>
+            ))}
+          </ul>
         </Card>
         <Card>
           <SectionTitle>更新紀錄</SectionTitle>
