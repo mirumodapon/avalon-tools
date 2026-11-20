@@ -17,10 +17,25 @@ export function builtTools(list: readonly ToolMeta[] = tools): ToolMeta[] {
   return list.filter((t) => t.status !== 'coming-soon')
 }
 
-/** Tools listed on the home page (home itself excluded). */
+/** Whether the tool is an installable PWA (everything except the docs site). */
+export function isPwa(t: ToolMeta): boolean {
+  return (t.kind ?? 'app') === 'app'
+}
+
+/** Built tools that are PWAs: they get a manifest, icons and a service worker. */
+export function pwaTools(list: readonly ToolMeta[] = tools): ToolMeta[] {
+  return builtTools(list).filter(isPwa)
+}
+
+/** The docs site entry. */
+export function docsSite(list: readonly ToolMeta[] = tools): ToolMeta | undefined {
+  return list.find((t) => t.kind === 'docs')
+}
+
+/** Tools listed on the home page (home itself and the docs site excluded). */
 export function listedTools(list: readonly ToolMeta[] = tools): ToolMeta[] {
   // Usable tools first; coming-soon ones go last, each group keeping registry order.
-  const listed = list.filter((t) => t.id !== 'home')
+  const listed = list.filter((t) => t.id !== 'home' && isPwa(t))
   return [
     ...listed.filter((t) => t.status !== 'coming-soon'),
     ...listed.filter((t) => t.status === 'coming-soon'),

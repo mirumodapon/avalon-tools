@@ -5,9 +5,12 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   builtTools,
+  docsSite,
+  isPwa,
   listedTools,
   manifestName,
   nestedToolPaths,
+  pwaTools,
   tools,
   validateTools,
 } from './registry.ts'
@@ -65,6 +68,17 @@ describe('registry', () => {
     expect(listedTools(list).map((x) => x.id)).toEqual(['b', 'd', 'a', 'c'])
     const statuses = listedTools().map((x) => x.status === 'coming-soon')
     expect(statuses).toEqual(statuses.toSorted())
+  })
+
+  it('registers the docs site at /docs/ as a non-PWA that home does not list', () => {
+    const docs = docsSite()!
+    expect(docs.path).toBe('/docs/')
+    expect(isPwa(docs)).toBe(false)
+    expect(builtTools().map((t) => t.id)).toContain('docs')
+    expect(pwaTools().map((t) => t.id)).not.toContain('docs')
+    expect(listedTools().map((t) => t.id)).not.toContain('docs')
+    // Still nested in home's scope, so home's worker leaves its navigations alone.
+    expect(nestedToolPaths(tools.find((t) => t.id === 'home')!)).toContain('/docs/')
   })
 
   it('names manifests', () => {
