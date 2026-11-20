@@ -11,9 +11,19 @@ import {
 import type { SeatRole } from '@avalon/rules'
 import type { SetupSettings } from './settings.ts'
 
+/** The Lady's first holder: drawn at random, the chosen seat, or the last seat. */
+function ladyHolder(
+  setup: SetupSettings,
+  players: readonly { id: string }[],
+  randomInt: (max: number) => number,
+): string {
+  if (setup.ladyHolderRandom) return players[randomInt(players.length)]!.id
+  return players[(setup.ladyHolderSeat ?? players.length) - 1]!.id
+}
+
 /**
  * A new game from the setup: roles dealt onto the seats (seat N is player `pN`), a random
- * first leader, and the Lady with the chosen seat (the last one by default) when it is on.
+ * first leader, and the Lady (when on) with the chosen seat, a random one, or the last.
  */
 export function startGame(
   setup: SetupSettings,
@@ -45,9 +55,7 @@ export function startGame(
     },
     roleConfig,
     roleAssignment,
-    lady: setup.lady
-      ? { initialHolderId: players[(setup.ladyHolderSeat ?? players.length) - 1]!.id }
-      : null,
+    lady: setup.lady ? { initialHolderId: ladyHolder(setup, players, randomInt) } : null,
   })
   return { game, table }
 }

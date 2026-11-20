@@ -31,6 +31,14 @@ describe('App', () => {
     expect(useSession.getState().session!.game.lady!.initialHolderId).toBe('p2')
   })
 
+  it('hides the holder choice when the holder is drawn at random', () => {
+    useSetup.getState().update({ playerCount: 7, lady: true, ladyHolderRandom: false })
+    render(<App />)
+    act(() => fireEvent.click(screen.getByRole('switch', { name: /隨機決定初始持有者/ })))
+    expect(useSetup.getState().settings.ladyHolderRandom).toBe(true)
+    expect(screen.queryByRole('button', { name: /湖中女神初始持有者/ })).toBeNull()
+  })
+
   it('asks before abandoning a game', () => {
     render(<App />)
     act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))

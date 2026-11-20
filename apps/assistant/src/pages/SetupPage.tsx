@@ -91,6 +91,13 @@ export function SetupPage() {
             onChange={(lady) => update({ lady })}
           />
           {settings.lady && (
+            <Switch
+              label="隨機決定初始持有者"
+              checked={settings.ladyHolderRandom}
+              onChange={(ladyHolderRandom) => update({ ladyHolderRandom })}
+            />
+          )}
+          {settings.lady && !settings.ladyHolderRandom && (
             <Select
               className="mt-2"
               label="湖中女神初始持有者"
