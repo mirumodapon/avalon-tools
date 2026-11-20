@@ -117,6 +117,7 @@ packages/record-core/    純 TS：遊戲紀錄的型別、reducer、schema、匯
 packages/registry/       工具清單（名稱、路徑、圖示、顏色、狀態）
 packages/storage/        localStorage 命名空間與 IndexedDB 名稱
 packages/theme/          Catppuccin 色票 → CSS token、防閃爍腳本
+packages/pass-play/      傳手機流程：洗牌、狀態機、角色設定與卡片文字
 packages/ui/             共用元件（AppShell、Sheet、主題選擇、更新、空間用量）
 packages/pwa/            createPwaConfig、service worker 快取清理、圖示產生
 packages/licenses/       建置時產生第三方授權聲明 licenses.txt

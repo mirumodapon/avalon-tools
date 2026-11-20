@@ -6,7 +6,7 @@ import {
   type QuestAction,
   type QuestFlow,
   type QuestSize,
-} from './quest.ts'
+} from '@avalon/pass-play'
 
 /**
  * Quest voting lives in memory; once every card is in, the result is saved to the

@@ -63,6 +63,7 @@ flowchart TD
 | `@avalon/registry`                         | 工具清單，build、dev、PWA、首頁都由它產生                                  |
 | `@avalon/storage`                          | localStorage 命名空間與版本化讀寫、IndexedDB 名稱                          |
 | `@avalon/theme`                            | Catppuccin 色票 → CSS token、防閃爍腳本                                    |
+| `@avalon/pass-play`                        | 傳手機流程：洗牌、發角色／出任務／湖中女神狀態機、角色設定與卡片文字       |
 | `@avalon/ui`                               | 共用 React 元件（AppShell、Sheet、主題選擇、更新提示、空間用量）、全站主題 |
 | `@avalon/pwa`                              | `createPwaConfig`、service worker 快取清理、圖示產生、版本字串             |
 | `@avalon/licenses`                         | 建置時產生第三方授權聲明（`licenses.txt`），擋下不允許的授權               |

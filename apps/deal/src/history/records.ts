@@ -1,5 +1,5 @@
 import type { Faction, RoleId } from '@avalon/rules'
-import type { QuestCard } from '../quest/quest.ts'
+import type { QuestCard } from '@avalon/pass-play'
 
 /** Which mode made the record. */
 export type RecordKind = 'roles' | 'quest' | 'lady'

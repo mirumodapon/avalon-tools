@@ -1,7 +1,7 @@
 import type { PlayerCount, RoleId } from '@avalon/rules'
 import { onStoreChange, readStore, storageKey, writeStore, type StoreSpec } from '@avalon/storage'
 import { create } from 'zustand'
-import { DEFAULT_SPECIAL, normalizePlayerCount, normalizeSpecial } from './roles/config.ts'
+import { DEFAULT_SPECIAL, normalizePlayerCount, normalizeSpecial } from '@avalon/pass-play'
 
 export interface Settings {
   playerCount: PlayerCount

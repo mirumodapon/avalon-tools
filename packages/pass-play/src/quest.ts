@@ -1,4 +1,4 @@
-import { shuffle } from '../deal/shuffle.ts'
+import { shuffle } from './shuffle.ts'
 
 export type QuestCard = 'success' | 'fail'
 

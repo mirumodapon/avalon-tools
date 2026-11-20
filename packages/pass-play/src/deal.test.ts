@@ -1,6 +1,6 @@
 import type { SeatRole } from '@avalon/rules'
 import { describe, expect, it } from 'vitest'
-import { flowReducer, IDLE, isDealing, type Flow, type FlowAction } from './machine.ts'
+import { flowReducer, IDLE, isDealing, type Flow, type FlowAction } from './deal.ts'
 
 const table: SeatRole[] = [
   { seat: 1, role: 'merlin' },
