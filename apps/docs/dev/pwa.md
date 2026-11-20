@@ -32,7 +32,7 @@ Workbox 內建的 `cleanupOutdatedCaches` 會刪除名稱**包含** scope 的快
 
 所以每次開啟都是最新版本，不會出現「舊版還在跑」的情況。開發模式（`pnpm dev`）不註冊 service worker。
 
-`sw.js`、`sw-cleanup.js`、`workbox-*.js`、`*.webmanifest`、`*.html` 不能被伺服器長期快取，否則更新會延遲；GitHub Pages 的快取時間是 10 分鐘。其他平台的設定見 `docs/deploy.md`。
+`sw.js`、`sw-cleanup.js`、`workbox-*.js`、`*.webmanifest`、`*.html` 不能被伺服器長期快取，否則更新會延遲；GitHub Pages 的快取時間是 10 分鐘。其他平台的設定見[部署](./deploy)。
 
 ## 為什麼使用說明不做 PWA
 

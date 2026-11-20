@@ -11,7 +11,7 @@
 | 角色發牌             | `/deal/`      | rc：一支手機輪流查看角色（見 [apps/deal](apps/deal/README.md)）   |
 | 使用說明             | `/docs/`      | VitePress 文件站，不是 PWA（見 [apps/docs](apps/docs/README.md)） |
 
-從 1.x（阿瓦隆紀錄）升級請見 [docs/upgrade-2.0.md](docs/upgrade-2.0.md)，更新內容見 [CHANGELOG.md](CHANGELOG.md)。
+從 1.x（阿瓦隆紀錄）升級請見使用說明的[更新紀錄](apps/docs/changelog.md)，更新內容見 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 遊戲紀錄
 
@@ -169,4 +169,4 @@ pnpm --filter @avalon/record add <pkg>   # catalogMode: strict 會自動寫入 c
 
 ## 部署
 
-`.github/workflows/deploy.yml` 在推送到 `main` 時執行檢查、建置所有工具，並把 `dist/` 部署到 GitHub Pages（Settings → Pages 的 Source 需設為 GitHub Actions）。網站必須部署在網域根目錄（自訂網域），否則工作流程會失敗。其他平台（Netlify、Vercel、nginx）的設定見 [docs/deploy.md](docs/deploy.md)。
+`.github/workflows/deploy.yml` 在推送到 `main` 時執行檢查、建置所有工具，並把 `dist/` 部署到 GitHub Pages（Settings → Pages 的 Source 需設為 GitHub Actions）。網站必須部署在網域根目錄（自訂網域），否則工作流程會失敗。其他平台（Netlify、Vercel、nginx）的設定見使用說明的[部署](apps/docs/dev/deploy.md)。

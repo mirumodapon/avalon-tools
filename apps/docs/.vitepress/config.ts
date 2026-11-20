@@ -57,6 +57,7 @@ const dev: DefaultTheme.SidebarItem[] = [
       { text: '新增工具', link: '/dev/new-app' },
       { text: '資料儲存', link: '/dev/storage' },
       { text: 'PWA 與快取', link: '/dev/pwa' },
+      { text: '部署', link: '/dev/deploy' },
       { text: '匯出格式', link: '/dev/export-format' },
       { text: '貢獻流程', link: '/dev/contributing' },
     ],
