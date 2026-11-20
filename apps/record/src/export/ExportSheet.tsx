@@ -1,6 +1,8 @@
 import type { Game, ViewMode } from '@avalon/record-core'
 import {
+  IconCheck,
   IconClipboard,
+  IconCopy,
   IconDownload,
   IconLoader2,
   IconPhotoDown,
@@ -13,11 +15,14 @@ import { Button, cx, Segmented, Switch } from '@avalon/ui'
 import { VIEW_MODE_OPTIONS } from '../components/ViewModeToggle.tsx'
 import { useDisplayName } from '../naming/useDisplayName.ts'
 import { useSettings } from '../settings/store.ts'
+import { shareUrl } from '../share/link.ts'
+import { QrCode } from '../share/QrCode.tsx'
 import {
   exportFilename,
   exportText,
   FORMAT_HINT,
   FORMAT_LABEL,
+  isShareFormat,
   mimeOf,
   type ExportFormat,
 } from './formats.ts'
@@ -30,7 +35,7 @@ import {
   shareFile,
 } from './share.ts'
 
-const FORMATS: ExportFormat[] = ['json', 'csv', 'markdown', 'text', 'png']
+const FORMATS: ExportFormat[] = ['json', 'text', 'png', 'link', 'qr']
 
 type Action = 'download' | 'copy' | 'share' | 'photos'
 
@@ -55,10 +60,25 @@ export function ExportSheet({
   /** Action in progress; buttons are disabled and show a spinner meanwhile. */
   const [busy, setBusy] = useState<Action | null>(null)
   const pngRef = useRef<HTMLDivElement>(null)
+  const qrRef = useRef<HTMLDivElement>(null)
 
   const opts = { name, viewMode, includeRoles }
-  const text = format === 'png' ? null : exportText(game, format, opts)
-  const filename = exportFilename(name, format)
+  const text = format === 'json' || format === 'text' ? exportText(game, format, opts) : null
+  const filename = format === 'link' ? null : exportFilename(name, format)
+  const sharing = isShareFormat(format)
+  /** The share link, built (compressed) once the link or QR code format is chosen. */
+  const [url, setUrl] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    setCopied(false)
+    if (!sharing) return
+    let alive = true
+    void shareUrl(game).then((u) => alive && setUrl(u))
+    return () => {
+      alive = false
+    }
+  }, [sharing, game])
 
   const [toPhotos] = useState(canSaveImageToPhotos)
   const savesToPhotos = format === 'png' && toPhotos
@@ -72,8 +92,7 @@ export function ExportSheet({
    */
   const locked = format === 'png' && (rendering || busy !== null)
 
-  async function renderPng(): Promise<Blob> {
-    const node = pngRef.current
+  async function renderPng(node = pngRef.current): Promise<Blob> {
     if (!node) throw new Error('無法產生圖片')
     const { toBlob } = await import('html-to-image')
     const bg = getComputedStyle(document.body).backgroundColor
@@ -105,8 +124,22 @@ export function ExportSheet({
   }, [open, savesToPhotos, viewMode, includeRoles, game])
 
   async function blob(): Promise<Blob> {
-    if (text !== null) return new Blob([text], { type: mimeOf(format) })
+    if (format === 'json' || format === 'text') return new Blob([text!], { type: mimeOf(format) })
+    if (format === 'qr') return renderPng(qrRef.current)
     return readyPng ?? renderPng()
+  }
+
+  async function copyLink() {
+    if (!url) return
+    const ok = await copyText(url)
+    setCopied(ok)
+    setStatus(ok ? null : '此瀏覽器無法複製，請長按連結選取')
+  }
+
+  function shareLink() {
+    if (!url) return
+    // Called directly from the tap: Web Share requires a user gesture.
+    navigator.share({ title: name, text: `阿瓦隆紀錄：${name}`, url }).catch(() => {})
   }
 
   function saveToPhotos() {
@@ -114,7 +147,7 @@ export function ExportSheet({
     setStatus(null)
     setBusy('photos')
     // No await before share(): iOS only allows it directly in response to the tap.
-    shareFile(new File([readyPng], filename, { type: 'image/png' }))
+    shareFile(new File([readyPng], filename!, { type: 'image/png' }))
       .then((ok) => {
         if (ok) setStatus('在分享選單選擇「儲存影像」即可存進相簿')
       })
@@ -133,10 +166,10 @@ export function ExportSheet({
       }
       const b = await blob()
       if (action === 'download') {
-        downloadBlob(b, filename)
-        setStatus(`已下載 ${filename}`)
+        downloadBlob(b, filename!)
+        setStatus(`已下載 ${filename!}`)
       } else {
-        const ok = await shareFile(new File([b], filename, { type: b.type }), text ?? undefined)
+        const ok = await shareFile(new File([b], filename!, { type: b.type }), text ?? undefined)
         if (!ok) setStatus('未分享')
       }
     } catch (e) {
@@ -154,58 +187,81 @@ export function ExportSheet({
       open={open}
       onClose={onClose}
       footer={
-        <div className="flex gap-2">
-          {savesToPhotos ? (
-            <>
-              <Button
-                variant="primary"
-                className="flex-1"
-                disabled={busy !== null || !readyPng}
-                aria-busy={!readyPng || busy === 'photos'}
-                onClick={saveToPhotos}
-              >
-                {!readyPng || busy === 'photos' ? spinner : <IconPhotoDown size={20} aria-hidden />}
-                {readyPng ? '儲存到相簿' : '產生中…'}
-              </Button>
-              <Button
-                disabled={busy !== null || !readyPng}
-                onClick={() => void run('download')}
-                aria-label="下載檔案"
-              >
-                <IconDownload size={20} aria-hidden />
-              </Button>
-            </>
-          ) : (
+        format === 'link' ? (
+          <div className="flex gap-2">
             <Button
               variant="primary"
               className="flex-1"
-              disabled={busy !== null}
-              aria-busy={busy === 'download'}
-              onClick={() => void run('download')}
+              disabled={!url}
+              onClick={() => void copyLink()}
             >
-              {busy === 'download' ? spinner : <IconDownload size={20} aria-hidden />}
-              {busy === 'download' ? '產生中…' : '下載'}
+              {copied ? <IconCheck size={20} aria-hidden /> : <IconCopy size={20} aria-hidden />}
+              {copied ? '已複製' : '複製連結'}
             </Button>
-          )}
-          <Button
-            disabled={busy !== null}
-            aria-busy={busy === 'copy'}
-            onClick={() => void run('copy')}
-            aria-label="複製到剪貼簿"
-          >
-            {busy === 'copy' ? spinner : <IconClipboard size={20} aria-hidden />}
-          </Button>
-          {canShare() && !savesToPhotos && (
+            {canShare() && (
+              <Button disabled={!url} onClick={shareLink} aria-label="用其他 App 分享">
+                <IconShare size={20} aria-hidden />
+              </Button>
+            )}
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            {savesToPhotos ? (
+              <>
+                <Button
+                  variant="primary"
+                  className="flex-1"
+                  disabled={busy !== null || !readyPng}
+                  aria-busy={!readyPng || busy === 'photos'}
+                  onClick={saveToPhotos}
+                >
+                  {!readyPng || busy === 'photos' ? (
+                    spinner
+                  ) : (
+                    <IconPhotoDown size={20} aria-hidden />
+                  )}
+                  {readyPng ? '儲存到相簿' : '產生中…'}
+                </Button>
+                <Button
+                  disabled={busy !== null || !readyPng}
+                  onClick={() => void run('download')}
+                  aria-label="下載檔案"
+                >
+                  <IconDownload size={20} aria-hidden />
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="primary"
+                className="flex-1"
+                disabled={busy !== null}
+                aria-busy={busy === 'download'}
+                onClick={() => void run('download')}
+              >
+                {busy === 'download' ? spinner : <IconDownload size={20} aria-hidden />}
+                {busy === 'download' ? '產生中…' : '下載'}
+              </Button>
+            )}
             <Button
               disabled={busy !== null}
-              aria-busy={busy === 'share'}
-              onClick={() => void run('share')}
-              aria-label="分享"
+              aria-busy={busy === 'copy'}
+              onClick={() => void run('copy')}
+              aria-label="複製到剪貼簿"
             >
-              {busy === 'share' ? spinner : <IconShare size={20} aria-hidden />}
+              {busy === 'copy' ? spinner : <IconClipboard size={20} aria-hidden />}
             </Button>
-          )}
-        </div>
+            {canShare() && !savesToPhotos && (
+              <Button
+                disabled={busy !== null}
+                aria-busy={busy === 'share'}
+                onClick={() => void run('share')}
+                aria-label="分享"
+              >
+                {busy === 'share' ? spinner : <IconShare size={20} aria-hidden />}
+              </Button>
+            )}
+          </div>
+        )
       }
     >
       <div className="space-y-4">
@@ -234,7 +290,7 @@ export function ExportSheet({
           <p className="mt-2 text-xs text-subtext0">{FORMAT_HINT[format]}</p>
         </fieldset>
 
-        {format !== 'json' && (
+        {(format === 'text' || format === 'png') && (
           <div className="space-y-3">
             <Segmented
               label="呈現方式"
@@ -255,10 +311,31 @@ export function ExportSheet({
           <p className="text-xs text-subtext0">圖片產生中，完成後才能調整格式與呈現方式</p>
         )}
 
-        <p className="truncate text-sm text-subtext0">檔名：{filename}</p>
+        {filename && <p className="truncate text-sm text-subtext0">檔名：{filename}</p>}
         {status && <output className="block text-sm text-subtext1">{status}</output>}
 
-        {text !== null ? (
+        {sharing ? (
+          url ? (
+            format === 'link' ? (
+              <>
+                <textarea
+                  readOnly
+                  aria-label="分享連結"
+                  value={url}
+                  onFocus={(e) => e.currentTarget.select()}
+                  className="h-28 w-full rounded-xl border border-overlay0 bg-mantle p-2 font-mono text-xs break-all"
+                />
+                <p className="text-xs text-subtext0">長度 {url.length} 字元</p>
+              </>
+            ) : (
+              <div ref={qrRef}>
+                <QrCode value={url} label={`「${name}」的分享連結 QR code`} />
+              </div>
+            )
+          ) : (
+            <div className="flex justify-center py-8">{spinner}</div>
+          )
+        ) : text !== null ? (
           <textarea
             readOnly
             aria-label="預覽"

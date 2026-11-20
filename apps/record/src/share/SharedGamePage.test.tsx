@@ -62,7 +62,7 @@ describe('shared link', () => {
     await open(await encodeGame(shared()))
     fireEvent.click(screen.getByRole('button', { name: /^匯出$/ }))
     expect(screen.getByRole('heading', { name: '匯出' })).toBeTruthy()
-    fireEvent.click(screen.getByRole('radio', { name: 'Markdown' }))
+    fireEvent.click(screen.getByRole('radio', { name: '純文字' }))
     expect((screen.getByRole('textbox', { name: '預覽' }) as HTMLTextAreaElement).value).toContain(
       '朋友的局',
     )

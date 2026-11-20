@@ -2,7 +2,7 @@ import { deriveState, playerName } from '../game.ts'
 import { cellAnomaly, historyRows, type HistoryRow } from '../history.ts'
 import { LADY_DECLARATION_LABEL, ladyLied, ladyTruth } from '../lady.ts'
 import { dateKey, formatTime, WINNER_LABEL } from '../naming.ts'
-import { FACTION_LABEL, roleDef } from '@avalon/rules'
+import { FACTION_LABEL, QUEST_COUNT, roleDef } from '@avalon/rules'
 import type { Game, LadyUse, PlayerId, RoleId, ViewMode } from '../types.ts'
 
 export interface ExportOptions {
@@ -98,3 +98,11 @@ export function startedText(game: Game): string {
 }
 
 export { historyRows }
+
+/** The five quests as ✅ / ❌ / ⚪. */
+export function questDots(game: Game): string {
+  const s = deriveState(game)
+  return Array.from({ length: QUEST_COUNT }, (_, i) =>
+    s.outcomes[i] === 'success' ? '✅' : s.outcomes[i] === 'fail' ? '❌' : '⚪',
+  ).join('')
+}
