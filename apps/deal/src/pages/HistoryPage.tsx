@@ -12,7 +12,6 @@ import {
 } from '@tabler/icons-react'
 import { useCallback, useEffect, useState } from 'react'
 import { startReplay } from '../flow/start.ts'
-import { QuestCards, questResultText } from '../components/marks.tsx'
 import {
   MAX_RECORDS,
   type GameRecord,
@@ -22,7 +21,6 @@ import {
 } from '../history/records.ts'
 import { clearRecords, deleteRecord, listRecords } from '../history/store.ts'
 import { formatDate, formatWhen } from '../history/summary.ts'
-import { resultText } from '../quest/quest.ts'
 import { navigate } from '../router.ts'
 
 const toSetup = () => navigate({ name: 'setup' })
@@ -69,18 +67,8 @@ function RolesBody({ record }: { record: RolesRecord }) {
   )
 }
 
-function QuestBody({ record }: { record: QuestRecord }) {
-  return (
-    <div className="mt-3 flex items-center justify-between gap-3">
-      <QuestCards size={record.size} fails={record.fails} cards={record.cards} small />
-      <span className={cx('font-semibold', questResultText(record.fails))}>
-        {resultText(record.fails)}
-      </span>
-    </div>
-  )
-}
-
-function LadyBody({ record }: { record: LadyRecord }) {
+/** Quest and Lady results stay covered in the list: 檢視 opens them behind a long press. */
+function CoveredBody({ record }: { record: QuestRecord | LadyRecord }) {
   return (
     <Button className="mt-4 w-full" onClick={() => navigate({ name: 'record', id: record.id })}>
       <IconEye size={20} aria-hidden />
@@ -126,15 +114,14 @@ function RecordItem({ record, onDelete }: { record: GameRecord; onDelete: () => 
         </IconButton>
       </div>
       {record.kind === 'roles' && <RolesBody record={record} />}
-      {record.kind === 'quest' && <QuestBody record={record} />}
-      {record.kind === 'lady' && <LadyBody record={record} />}
+      {record.kind !== 'roles' && <CoveredBody record={record} />}
     </li>
   )
 }
 
 /**
  * Everything the three modes saved, newest first. A deal can be shown (檢視) or passed
- * around again (回放); a quest shows its result; a Lady result stays covered until held.
+ * around again (回放); quest and Lady results stay covered until held on their page.
  */
 export function HistoryPage() {
   const [records, setRecords] = useState<GameRecord[] | null>(null)

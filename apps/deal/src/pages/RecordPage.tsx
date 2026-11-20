@@ -93,10 +93,16 @@ export function RecordPage({ id }: { id: string }) {
       <AppShell title={formatDate(record.createdAt)} onBack={back}>
         <div className="flex flex-1 flex-col items-center justify-center gap-6 py-8 text-center">
           <p className="text-subtext1">{record.size} 人出任務</p>
-          <p className={cx('text-4xl font-bold', questResultText(record.fails))}>
-            {resultText(record.fails)}
-          </p>
-          <QuestCards size={record.size} fails={record.fails} cards={record.cards} />
+          {shown ? (
+            <>
+              <p className={cx('text-4xl font-bold', questResultText(record.fails))}>
+                {resultText(record.fails)}
+              </p>
+              <QuestCards size={record.size} fails={record.fails} cards={record.cards} />
+            </>
+          ) : (
+            <CardBack onReveal={() => setShown(true)} label="長按查看任務結果" />
+          )}
         </div>
       </AppShell>
     )
