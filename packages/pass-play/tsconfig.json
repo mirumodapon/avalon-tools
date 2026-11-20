@@ -1,0 +1,7 @@
+{
+  "extends": "@avalon/tsconfig/react.json",
+  "compilerOptions": {
+    "types": ["vite/client", "node"]
+  },
+  "include": ["src", "vitest.config.ts"]
+}

@@ -7,7 +7,7 @@ import { LADY_MARK, QuestCards, questResultText } from '../components/marks.tsx'
 import type { GameRecord } from '../history/records.ts'
 import { getRecord } from '../history/store.ts'
 import { configSummary, formatDate } from '../history/summary.ts'
-import { resultText } from '../quest/quest.ts'
+import { resultText } from '@avalon/pass-play'
 import { navigate } from '../router.ts'
 import { useSettings, type RecordView } from '../settings.ts'
 

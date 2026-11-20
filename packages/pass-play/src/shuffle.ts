@@ -1,6 +1,6 @@
 import type { RoleId } from '@avalon/rules'
 import type { SeatRole } from '@avalon/rules'
-import { randomUint32 } from '../random.ts'
+import { randomUint32 } from './random.ts'
 
 /**
  * Uniform integer in [0, max) (rejection sampling, no modulo bias), from

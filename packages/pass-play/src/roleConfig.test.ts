@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { PLAYER_COUNTS } from '@avalon/rules'
-import { checkConfig, defaultSpecialFor, rolesInPlay } from './config.ts'
+import { checkConfig, defaultSpecialFor, rolesInPlay } from './roleConfig.ts'
 
 describe('checkConfig', () => {
   it('accepts the default Merlin + Assassin', () => {

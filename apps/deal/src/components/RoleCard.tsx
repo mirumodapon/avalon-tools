@@ -1,7 +1,7 @@
 import { FACTION_LABEL, roleDef, visionFor, type SeatRole } from '@avalon/rules'
 import { cx, ROLE_ICONS } from '@avalon/ui'
 import { useDoubleTap } from '../hooks/useDoubleTap.ts'
-import { ABILITY, EXTRA, visionText } from '../roles/text.ts'
+import { ABILITY, EXTRA, visionText } from '@avalon/pass-play'
 
 /**
  * The face-up card of one player. Double tap to turn it face down. It is a button so

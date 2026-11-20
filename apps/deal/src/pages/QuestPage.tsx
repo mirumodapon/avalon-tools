@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { CardBack } from '../components/CardBack.tsx'
 import { QUEST_CARD, QuestCards, questResultText } from '../components/marks.tsx'
 import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
-import { cardOrder, resultText } from '../quest/quest.ts'
+import { cardOrder, resultText } from '@avalon/pass-play'
 import { useQuest } from '../quest/store.ts'
 
 /** A quest in progress: each member plays a card in private, then the result. */

@@ -1,5 +1,5 @@
 import type { Faction } from '@avalon/rules'
-import { shuffle } from '../deal/shuffle.ts'
+import { shuffle } from './shuffle.ts'
 
 /** What the inspected player chooses to show; on their honour, like the loyalty card. */
 export type Loyalty = Faction

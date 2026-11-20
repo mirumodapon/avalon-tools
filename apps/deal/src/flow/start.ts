@@ -1,8 +1,6 @@
-import { newId } from '../random.ts'
-import { dealRoles } from '../deal/shuffle.ts'
+import { newId, dealRoles, rolesInPlay } from '@avalon/pass-play'
 import { MAX_RECORDS, type RolesRecord } from '../history/records.ts'
 import { saveAndPrune } from '../history/store.ts'
-import { rolesInPlay } from '../roles/config.ts'
 import type { Settings } from '../settings.ts'
 import { useFlow } from './store.ts'
 

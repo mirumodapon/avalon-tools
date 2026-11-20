@@ -1,6 +1,6 @@
 import { visionFor, type SeatRole } from '@avalon/rules'
 import { describe, expect, it } from 'vitest'
-import { visionText } from './text.ts'
+import { visionText } from './roleText.ts'
 
 const table: SeatRole[] = [
   { seat: 1, role: 'loyal' },

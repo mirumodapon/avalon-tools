@@ -24,9 +24,15 @@ import {
 import { useState } from 'react'
 import { ModeTabs, panelId, tabId, type TabOption } from '../components/ModeTabs.tsx'
 import { useLady } from '../lady/store.ts'
-import { QUEST_SIZES, type QuestSize } from '../quest/quest.ts'
+import {
+  QUEST_SIZES,
+  type QuestSize,
+  checkConfig,
+  defaultSpecialFor,
+  FILLER,
+  SPECIAL_ROLES,
+} from '@avalon/pass-play'
 import { useQuest } from '../quest/store.ts'
-import { checkConfig, defaultSpecialFor, FILLER, SPECIAL_ROLES } from '../roles/config.ts'
 import { navigate } from '../router.ts'
 import { useSettings, type DealTab } from '../settings.ts'
 

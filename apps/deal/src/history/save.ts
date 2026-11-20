@@ -1,4 +1,4 @@
-import { newId } from '../random.ts'
+import { newId } from '@avalon/pass-play'
 import { MAX_RECORDS, type GameRecord, type LadyRecord, type QuestRecord } from './records.ts'
 import { saveAndPrune } from './store.ts'
 
