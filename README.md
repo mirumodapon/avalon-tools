@@ -7,7 +7,7 @@
 | 阿瓦隆工具集（首頁） | `/`           | 工具列表、資訊頁（版本、空間用量、更新紀錄）                      |
 | 遊戲紀錄             | `/record/`    | beta                                                              |
 | 夜晚旁白             | `/narrator/`  | 即將推出                                                          |
-| 整合遊戲助手         | `/assistant/` | beta：一支手機帶完一整場遊戲，結束後交給遊戲紀錄                  |
+| 單機遊戲助手         | `/assistant/` | beta：一支手機帶完一整場遊戲，結束後交給遊戲紀錄                  |
 | 角色發牌             | `/deal/`      | rc：一支手機輪流查看角色（見 [apps/deal](apps/deal/README.md)）   |
 | 使用說明             | `/docs/`      | VitePress 文件站，不是 PWA（見 [apps/docs](apps/docs/README.md)） |
 
@@ -111,7 +111,7 @@
 apps/home/               阿瓦隆工具集首頁（/）
 apps/record/             遊戲紀錄（/record/）
 apps/deal/               角色發牌（/deal/）
-apps/assistant/          整合遊戲助手（/assistant/）
+apps/assistant/          單機遊戲助手（/assistant/）
 apps/docs/               使用說明（/docs/，VitePress，不是 PWA）
 packages/avalon-rules/   純 TS：阿瓦隆規則與角色（不依賴 React／DOM）
 packages/record-core/    純 TS：遊戲紀錄的型別、reducer、schema、匯出與分享格式

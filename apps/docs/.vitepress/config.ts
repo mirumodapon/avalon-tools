@@ -38,7 +38,7 @@ const guide: DefaultTheme.SidebarItem[] = [
     ],
   },
   {
-    text: '整合遊戲助手',
+    text: '單機遊戲助手',
     items: [{ text: '使用方式', link: '/guide/assistant/' }],
   },
 ]
