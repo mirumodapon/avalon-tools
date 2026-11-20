@@ -21,7 +21,7 @@ describe('session store', () => {
     const env = JSON.parse(localStorage.getItem(SESSION_STORE.key)!) as {
       data: Record<string, unknown>
     }
-    expect(Object.keys(env.data).sort()).toEqual(['game', 'stage', 'voteMode'])
+    expect(Object.keys(env.data).toSorted()).toEqual(['game', 'stage', 'voteMode'])
   })
 
   it('applies game actions and saves the result', () => {

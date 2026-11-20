@@ -1,13 +1,14 @@
-import { toolById } from '@avalon/registry'
-import { AppShell, Card, useApplyGlobalTheme } from '@avalon/ui'
+import { useApplyGlobalTheme } from '@avalon/ui'
+import { DealPage } from './pages/DealPage.tsx'
+import { PlayPage } from './pages/PlayPage.tsx'
+import { SetupPage } from './pages/SetupPage.tsx'
+import { useSession } from './session/store.ts'
 
-const TOOL = toolById('assistant')
-
+/** One screen per stage of the game in progress; no game → 開局. */
 export function App() {
   useApplyGlobalTheme()
-  return (
-    <AppShell title={TOOL.name}>
-      <Card className="mt-2 text-subtext1">{TOOL.description}</Card>
-    </AppShell>
-  )
+  const session = useSession((s) => s.session)
+  if (!session) return <SetupPage />
+  if (session.stage === 'deal') return <DealPage session={session} />
+  return <PlayPage session={session} />
 }
