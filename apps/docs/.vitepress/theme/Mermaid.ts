@@ -23,6 +23,8 @@ export const Mermaid = defineComponent({
         startOnLoad: false,
         securityLevel: 'strict',
         theme: 'base',
+        // mermaid 12 lays flowcharts out with ELK by default; ELK is not bundled (elkStub.ts).
+        layout: 'dagre',
         flowchart: { htmlLabels: false },
         // Measured and drawn with the same font, so labels are never clipped.
         fontFamily: getComputedStyle(document.body).fontFamily,
@@ -44,7 +46,9 @@ export const Mermaid = defineComponent({
         const out = await mermaid.render(`mermaid-${++seq}`, decodeURIComponent(props.code))
         svg.value = out.svg
         failed.value = false
-      } catch {
+      } catch (e) {
+        // Shown as the diagram's source instead; keep the reason for whoever debugs it.
+        console.error('[mermaid]', e)
         failed.value = true
       }
     }
