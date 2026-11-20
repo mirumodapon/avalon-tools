@@ -7,7 +7,7 @@
 `@avalon/pwa` 的 `createPwaConfig(tool)` 依 registry 產生 vite-plugin-pwa 的設定：
 
 - **manifest**：`id`、`scope`、`start_url` 都是工具路徑（首頁是 `/`），名稱為「阿瓦隆・工具名稱」（首頁是「阿瓦隆工具集」）。每個工具因此可以單獨安裝，互不覆蓋。
-- **service worker**：在工具路徑下（`/record/sw.js` 等），預先快取這個 app 的檔案，離線時以 `index.html` 回應導覽。
+- **service worker**：在工具路徑下（`/record/sw.js` 等），預先快取這個 app 的檔案，離線時以 `index.html` 回應導覽。帶副檔名的路徑（例如 `licenses.txt`）不在此列，一律向網路取得，否則開啟這類檔案會看到工具畫面。
 - **快取名稱**：Workbox `cacheId` 為 `avalon-<id>`，不同工具的快取不會衝突。
 
 <ToolTable />
