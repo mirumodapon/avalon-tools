@@ -34,10 +34,10 @@ describe('quest', () => {
     render(<App />)
     expect(screen.getByText('2 號')).toBeTruthy()
     hold('長按出牌')
-    click('任務成功')
+    click('任務失敗') // seat 2 is the Assassin
     expect(screen.getByText('4 號')).toBeTruthy()
     hold('長按出牌')
-    click('任務失敗')
+    act(() => fireEvent.click(screen.getAllByRole('button', { name: '任務成功' })[0]!))
     hold('長按公布結果')
     expect(screen.getByText('1 張失敗')).toBeTruthy()
     click('繼續')
@@ -53,5 +53,20 @@ describe('quest', () => {
     render(<App />)
     expect(screen.getByText('2 號')).toBeTruthy()
     expect(useSession.getState().session!.game.rounds[0]!.result).toBeNull()
+  })
+
+  it('lets good players play only 任務成功', () => {
+    // Seat 2 is the Assassin, seat 4 a Loyal Servant (see ROLES_5).
+    startSession(onQuest())
+    render(<App />)
+    hold('長按出牌')
+    expect(screen.getByRole('button', { name: '任務失敗' })).toBeTruthy()
+    click('任務成功')
+    hold('長按出牌')
+    const buttons = screen.getAllByRole('button', { name: '任務成功' })
+    expect(buttons).toHaveLength(2)
+    act(() => fireEvent.click(buttons.find((b) => b.className.includes('quest-fail'))!))
+    hold('長按公布結果')
+    expect(screen.getByText('任務成功', { selector: 'p' })).toBeTruthy()
   })
 })

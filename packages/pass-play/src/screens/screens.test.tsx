@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { RoleSetup, type RoleSelection } from '../RoleSetup.tsx'
+import type { QuestAction } from '../quest.ts'
 import type { VoteAction } from '../vote.ts'
 import { DealSteps } from './DealSteps.tsx'
 import { LadySteps } from './LadySteps.tsx'
@@ -81,5 +82,32 @@ describe('pass-the-phone screens', () => {
       />,
     )
     expect(screen.getByText('3 號・小美')).toBeTruthy()
+  })
+
+  it('QuestSteps gives a player who must succeed two 任務成功 buttons, still in both colours', () => {
+    const dispatch = vi.fn<(a: QuestAction) => void>()
+    render(
+      <QuestSteps
+        flow={{
+          step: 'choose',
+          size: 2,
+          index: 0,
+          fails: 0,
+          played: [],
+          order: ['fail', 'success'],
+        }}
+        dispatch={dispatch}
+        who={() => '1 號'}
+        successOnly={() => true}
+      />,
+    )
+    const buttons = screen.getAllByRole('button', { name: '任務成功' })
+    expect(buttons).toHaveLength(2)
+    expect(screen.queryByRole('button', { name: '任務失敗' })).toBeNull()
+    // Same look as usual: the first button keeps the fail card's colours.
+    expect(buttons[0]!.className).toContain('border-quest-fail')
+    expect(buttons[1]!.className).toContain('border-quest-success')
+    fireEvent.click(buttons[0]!)
+    expect(dispatch).toHaveBeenCalledWith({ type: 'play', card: 'success' })
   })
 })
