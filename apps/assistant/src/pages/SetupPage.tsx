@@ -8,6 +8,7 @@ import {
   Card,
   SectionTitle,
   Segmented,
+  Select,
   Switch,
   TextField,
 } from '@avalon/ui'
@@ -43,7 +44,12 @@ export function SetupPage() {
             update(
               playerCount === settings.playerCount
                 ? { special }
-                : { playerCount, special, lady: ladyEnabledByDefault(playerCount) },
+                : {
+                    playerCount,
+                    special,
+                    lady: ladyEnabledByDefault(playerCount),
+                    ladyHolderSeat: null,
+                  },
             )
           }
         />
@@ -84,6 +90,18 @@ export function SetupPage() {
             checked={settings.lady}
             onChange={(lady) => update({ lady })}
           />
+          {settings.lady && (
+            <Select
+              className="mt-2"
+              label="湖中女神初始持有者"
+              value={String(settings.ladyHolderSeat ?? settings.playerCount)}
+              options={settings.names.map((name, i) => ({
+                value: String(i + 1),
+                label: name.trim() ? `${i + 1} 號・${name.trim()}` : `${i + 1} 號`,
+              }))}
+              onChange={(v) => update({ ladyHolderSeat: Number(v) })}
+            />
+          )}
         </Card>
       </div>
       <BottomBar>

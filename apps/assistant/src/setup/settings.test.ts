@@ -25,4 +25,10 @@ describe('normalizeSetup', () => {
     expect(normalizeSetup({ playerCount: 7 }).lady).toBe(true)
     expect(normalizeSetup({ playerCount: 7, lady: false }).lady).toBe(false)
   })
+
+  it('keeps a chosen Lady holder seat only when it is at the table', () => {
+    expect(normalizeSetup({ playerCount: 7 }).ladyHolderSeat).toBeNull()
+    expect(normalizeSetup({ playerCount: 7, ladyHolderSeat: 3 }).ladyHolderSeat).toBe(3)
+    expect(normalizeSetup({ playerCount: 7, ladyHolderSeat: 9 }).ladyHolderSeat).toBeNull()
+  })
 })
