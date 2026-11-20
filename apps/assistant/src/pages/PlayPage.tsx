@@ -3,6 +3,7 @@ import { docsHref } from '@avalon/registry'
 import { AppShell } from '@avalon/ui'
 import { useEffect, useState } from 'react'
 import { AbandonButton } from '../play/AbandonButton.tsx'
+import { LadyRun } from '../play/LadyRun.tsx'
 import { LeaderVote } from '../play/LeaderVote.tsx'
 import { PassVote } from '../play/PassVote.tsx'
 import { QuestRun } from '../play/QuestRun.tsx'
@@ -67,6 +68,17 @@ export function PlayPage({ session }: { session: Session }) {
         game={game}
         team={approved.team}
         onDone={(failCount) => apply({ type: 'recordQuest', failCount })}
+      />
+    )
+  }
+
+  if (state.phase === 'lady' && state.ladyHolderId) {
+    body = (
+      <LadyRun
+        key={game.lady?.uses.length ?? 0}
+        game={game}
+        holderId={state.ladyHolderId}
+        onDone={(targetId, declared) => apply({ type: 'useLady', targetId, declared })}
       />
     )
   }
