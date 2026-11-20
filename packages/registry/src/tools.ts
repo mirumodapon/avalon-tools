@@ -49,7 +49,8 @@ export const TOOLS = [
     id: 'assistant',
     name: '單機遊戲助手',
     shortName: '遊戲助手',
-    description: '把發牌、夜晚旁白、出任務與遊戲紀錄串成一場完整的遊戲',
+    description:
+      '一支手機帶完一整場遊戲：發角色、組隊投票、出任務、湖中女神與刺殺，結束後交給遊戲紀錄',
     path: '/assistant/',
     icon: 'IconApps',
     accent: 'sapphire',
