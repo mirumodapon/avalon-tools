@@ -36,4 +36,9 @@ describe('normalizeSetup', () => {
     expect(normalizeSetup({}).ladyHolderRandom).toBe(false)
     expect(normalizeSetup({ ladyHolderRandom: true }).ladyHolderRandom).toBe(true)
   })
+
+  it('skips voting on the forced proposal unless asked', () => {
+    expect(normalizeSetup({}).forcedVote).toBe(false)
+    expect(normalizeSetup({ forcedVote: true }).forcedVote).toBe(true)
+  })
 })

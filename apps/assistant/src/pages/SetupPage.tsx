@@ -22,7 +22,7 @@ const VOTE_MODES = [
   { value: 'leader', label: '隊長輸入' },
 ] as const satisfies readonly { value: VoteMode; label: string }[]
 
-/** 開局: players, roles, names (optional), how votes are taken and the Lady. */
+/** 開局: players and roles, how votes are taken, the Lady, then the names (optional). */
 export function SetupPage() {
   const settings = useSetup((s) => s.settings)
   const update = useSetup((s) => s.update)
@@ -31,7 +31,13 @@ export function SetupPage() {
 
   function begin() {
     const { game } = startGame(settings, new Date().toISOString())
-    start({ game, voteMode: settings.voteMode, stage: 'deal', progress: null })
+    start({
+      game,
+      voteMode: settings.voteMode,
+      forcedVote: settings.forcedVote,
+      stage: 'deal',
+      progress: null,
+    })
   }
 
   return (
@@ -54,22 +60,6 @@ export function SetupPage() {
           }
         />
         <Card>
-          <SectionTitle>玩家名字（選填）</SectionTitle>
-          <div className="space-y-2">
-            {settings.names.map((name, i) => (
-              <TextField
-                // Seats are fixed positions; the index is the identity.
-                key={i}
-                label={`${i + 1} 號`}
-                value={name}
-                placeholder="未填則顯示座位號碼"
-                maxLength={12}
-                onChange={(v) => update({ names: settings.names.with(i, v) })}
-              />
-            ))}
-          </div>
-        </Card>
-        <Card>
           <SectionTitle>投票方式</SectionTitle>
           <Segmented
             label="投票方式"
@@ -82,6 +72,16 @@ export function SetupPage() {
               ? '手機依序傳給每位玩家投票，全部投完後一起公布。'
               : '大家公開投票，由隊長點選誰同意。'}
           </p>
+          <Switch
+            label="強制局投票"
+            description={
+              settings.forcedVote
+                ? '第 5 次組隊照常投票，被否決時壞人獲勝。'
+                : '第 5 次組隊不投票，自動記為全員贊成，直接出任務。'
+            }
+            checked={settings.forcedVote}
+            onChange={(forcedVote) => update({ forcedVote })}
+          />
         </Card>
         <Card>
           <Switch
@@ -109,6 +109,22 @@ export function SetupPage() {
               onChange={(v) => update({ ladyHolderSeat: Number(v) })}
             />
           )}
+        </Card>
+        <Card>
+          <SectionTitle>玩家名字（選填）</SectionTitle>
+          <div className="space-y-2">
+            {settings.names.map((name, i) => (
+              <TextField
+                // Seats are fixed positions; the index is the identity.
+                key={i}
+                label={`${i + 1} 號`}
+                value={name}
+                placeholder="未填則顯示座位號碼"
+                maxLength={12}
+                onChange={(v) => update({ names: settings.names.with(i, v) })}
+              />
+            ))}
+          </div>
         </Card>
       </div>
       <BottomBar>
