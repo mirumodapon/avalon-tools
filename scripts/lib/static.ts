@@ -23,7 +23,8 @@ async function isFile(p: string): Promise<boolean> {
 
 /**
  * Resolves a URL path inside `dir` like GitHub Pages: the file itself, a folder's
- * index.html (redirecting to the trailing slash), else 404.html with status 404.
+ * index.html (redirecting to the trailing slash), `<path>.html` for an extensionless
+ * path (the docs' clean URLs), else 404.html with status 404.
  */
 export async function resolveStatic(
   dir: string,
@@ -38,6 +39,9 @@ export async function resolveStatic(
     return pathname.endsWith('/')
       ? { file: join(target, 'index.html'), status: 200 }
       : { redirect: `${pathname}/` }
+  }
+  if (!pathname.endsWith('/') && (await isFile(`${target}.html`))) {
+    return { file: `${target}.html`, status: 200 }
   }
   const notFound = join(dir, '404.html')
   return (await isFile(notFound)) ? { file: notFound, status: 404 } : null
