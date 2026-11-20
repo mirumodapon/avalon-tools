@@ -1,0 +1,28 @@
+{
+  "name": "@avalon/docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "tsc -p tsconfig.json && vitepress build",
+    "preview": "vitepress preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@avalon/record-core": "workspace:*",
+    "@avalon/registry": "workspace:*",
+    "@avalon/rules": "workspace:*",
+    "@avalon/storage": "workspace:*",
+    "@avalon/theme": "workspace:*",
+    "@avalon/ui": "workspace:*",
+    "mermaid": "catalog:",
+    "vue": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@avalon/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "vitepress": "catalog:",
+    "vitest": "catalog:"
+  }
+}

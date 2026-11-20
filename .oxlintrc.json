@@ -33,5 +33,20 @@
       }
     ]
   },
-  "ignorePatterns": ["**/dist/**", "**/dev-dist/**", "**/node_modules/**", "**/*.generated.css"]
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/dev-dist/**",
+    "**/.vitepress/cache/**",
+    "**/node_modules/**",
+    "**/*.generated.css"
+  ],
+  "overrides": [
+    {
+      "files": ["apps/docs/**"],
+      "rules": {
+        "react/rules-of-hooks": "off",
+        "react/exhaustive-deps": "off"
+      }
+    }
+  ]
 }

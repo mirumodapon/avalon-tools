@@ -4,5 +4,11 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "all",
-  "ignorePatterns": ["pnpm-lock.yaml", "**/*.generated.css", "**/dist/**", "**/dev-dist/**"]
+  "ignorePatterns": [
+    "pnpm-lock.yaml",
+    "**/*.generated.css",
+    "**/dist/**",
+    "**/dev-dist/**",
+    "**/.vitepress/cache/**"
+  ]
 }
