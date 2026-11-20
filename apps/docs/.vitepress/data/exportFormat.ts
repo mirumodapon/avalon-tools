@@ -91,14 +91,17 @@ function typeName(s: JsonSchema): string {
   return t.join(' | ').replace('integer', '整數').replace('number', '數字')
 }
 
+/** A schema maximum, ignoring zod's "any safe integer" default. */
+function realMax(n: number | undefined): number | undefined {
+  return n !== undefined && n < Number.MAX_SAFE_INTEGER ? n : undefined
+}
+
 function limits(s: JsonSchema): string {
-  const max = (n: number | undefined) =>
-    n !== undefined && n < Number.MAX_SAFE_INTEGER ? n : undefined
   if (s.type === 'array' && (s.minItems !== undefined || s.maxItems !== undefined)) {
     return `${s.minItems ?? 0}–${s.maxItems ?? '∞'} 筆`
   }
-  if (s.minimum !== undefined || max(s.maximum) !== undefined) {
-    return `${s.minimum ?? ''}–${max(s.maximum) ?? ''}`.replace(/–$/, ' 以上')
+  if (s.minimum !== undefined || realMax(s.maximum) !== undefined) {
+    return `${s.minimum ?? ''}–${realMax(s.maximum) ?? ''}`.replace(/–$/, ' 以上')
   }
   if (s.minLength) return '不可為空'
   return ''
