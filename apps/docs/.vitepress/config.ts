@@ -37,6 +37,10 @@ const guide: DefaultTheme.SidebarItem[] = [
       { text: '歷史紀錄', link: '/guide/dealer/history' },
     ],
   },
+  {
+    text: '整合遊戲助手',
+    items: [{ text: '使用方式', link: '/guide/assistant/' }],
+  },
 ]
 
 const rules: DefaultTheme.SidebarItem[] = [

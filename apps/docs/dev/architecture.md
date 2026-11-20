@@ -17,8 +17,10 @@ flowchart TD
   home["home  /"]
   record["record  /record/"]
   deal["deal  /deal/"]
+  assistant["assistant  /assistant/"]
   docs["docs  /docs/"]
   ui[ui]
+  passplay[pass-play]
   pwa[pwa]
   core[record-core]
   rules[rules]
@@ -33,7 +35,10 @@ flowchart TD
   deal --> pwa
   record --> core
   docs --> core
-  deal --> rules
+  deal --> passplay
+  assistant --> passplay
+  assistant --> core
+  passplay --> ui
   ui --> rules
   ui --> storage
   ui --> theme
@@ -47,12 +52,13 @@ flowchart TD
 
 ## Apps
 
-| 路徑          | 職責                                                                 |
-| ------------- | -------------------------------------------------------------------- |
-| `apps/home`   | 工具清單、資訊頁（版本、空間用量、更新紀錄）、1.x 舊網址導向、404 頁 |
-| `apps/record` | 遊戲紀錄：開局、派票、任務、湖中女神、結算、匯出入、分享             |
-| `apps/deal`   | 角色發牌：發角色、出任務、湖中女神、歷史紀錄                         |
-| `apps/docs`   | 使用說明（VitePress），沒有 manifest 與 service worker               |
+| 路徑             | 職責                                                                       |
+| ---------------- | -------------------------------------------------------------------------- |
+| `apps/home`      | 工具清單、資訊頁（版本、空間用量、更新紀錄）、1.x 舊網址導向、404 頁       |
+| `apps/record`    | 遊戲紀錄：開局、派票、任務、湖中女神、結算、匯出入、分享                   |
+| `apps/deal`      | 角色發牌：發角色、出任務、湖中女神、歷史紀錄                               |
+| `apps/assistant` | 整合遊戲助手：開局、發角色、組隊投票、出任務、湖中女神、刺殺、交給遊戲紀錄 |
+| `apps/docs`      | 使用說明（VitePress），沒有 manifest 與 service worker                     |
 
 ## Packages
 
@@ -63,7 +69,7 @@ flowchart TD
 | `@avalon/registry`                         | 工具清單，build、dev、PWA、首頁都由它產生                                  |
 | `@avalon/storage`                          | localStorage 命名空間與版本化讀寫、IndexedDB 名稱                          |
 | `@avalon/theme`                            | Catppuccin 色票 → CSS token、防閃爍腳本                                    |
-| `@avalon/pass-play`                        | 傳手機流程：洗牌、發角色／出任務／湖中女神狀態機、角色設定與卡片文字       |
+| `@avalon/pass-play`                        | 傳手機流程：洗牌、發角色／投票／出任務／湖中女神狀態機與畫面、角色設定     |
 | `@avalon/ui`                               | 共用 React 元件（AppShell、Sheet、主題選擇、更新提示、空間用量）、全站主題 |
 | `@avalon/pwa`                              | `createPwaConfig`、service worker 快取清理、圖示產生、版本字串             |
 | `@avalon/licenses`                         | 建置時產生第三方授權聲明（`licenses.txt`），擋下不允許的授權               |
