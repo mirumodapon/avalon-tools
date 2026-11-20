@@ -1,4 +1,6 @@
-import { AppShell, Card, SectionTitle, StorageUsage } from '@avalon/ui'
+import { docsHref } from '@avalon/registry'
+import { AppShell, Card, DocsLink, SectionTitle, StorageUsage } from '@avalon/ui'
+import { IconExternalLink } from '@tabler/icons-react'
 import changelog from '../../../../CHANGELOG.md?raw'
 import { Changelog } from '../Changelog.tsx'
 import { APP_VERSION } from '../version.ts'
@@ -23,8 +25,15 @@ export function InfoPage() {
         </Card>
         <Card>
           <SectionTitle>更新紀錄</SectionTitle>
-
           <Changelog source={changelog} />
+          {/* Only the latest versions fit here; the docs keep every version (new tab). */}
+          <DocsLink
+            href={docsHref('changelog')}
+            className="mt-3 flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-surface0 px-4 text-text transition-colors hover:bg-surface1 active:scale-[0.98]"
+          >
+            更多更新紀錄
+            <IconExternalLink size={18} aria-hidden />
+          </DocsLink>
         </Card>
       </div>
     </AppShell>
