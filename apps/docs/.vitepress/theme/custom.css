@@ -65,13 +65,16 @@
 }
 
 /* Good / evil, as on the tools' role cards. */
+.faction-good,
+.faction-evil {
+  font-weight: 600;
+  white-space: nowrap;
+}
 .faction-good {
   color: var(--ctp-blue-fg);
-  font-weight: 600;
 }
 .faction-evil {
   color: var(--ctp-red-fg);
-  font-weight: 600;
 }
 
 .mermaid {
@@ -79,4 +82,12 @@
   justify-content: center;
   margin: 16px 0;
   overflow-x: auto;
+}
+
+.two-fails {
+  color: var(--ctp-red-fg);
+}
+.table-note {
+  font-size: 14px;
+  color: var(--vp-c-text-2);
 }
