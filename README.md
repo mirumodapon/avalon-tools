@@ -119,6 +119,7 @@ packages/storage/        localStorage 命名空間與 IndexedDB 名稱
 packages/theme/          Catppuccin 色票 → CSS token、防閃爍腳本
 packages/ui/             共用元件（AppShell、Sheet、主題選擇、更新、空間用量）
 packages/pwa/            createPwaConfig、service worker 快取清理、圖示產生
+packages/licenses/       建置時產生第三方授權聲明 licenses.txt
 packages/tsconfig/       共用 tsconfig
 scripts/                 build-all、dev、preview、new-app、檢查
 ```

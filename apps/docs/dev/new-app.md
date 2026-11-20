@@ -60,6 +60,8 @@ pnpm icons <id>
 
 ## 之後要做的事
 
+- 模板已掛上第三方授權的外掛，建置後會有 `apps/<id>/dist/licenses.txt`；新增的套件若不是寬鬆授權，建置會失敗（見[常用指令](./commands#授權)）。
+
 - 在 `apps/<id>/README.md` 說明工具（可參考 `apps/deal/README.md`）。
 - 在使用說明加上這個工具的頁面（`apps/docs/guide/<id>/`），並在 `apps/docs/.vitepress/config.ts` 的側邊欄登錄。
 - 讓工具首頁的說明按鈕連到這一頁（見各工具的 `AppShell`）。
