@@ -1,6 +1,6 @@
 import { toolById, tools, type ToolMeta } from '@avalon/registry'
 import { describe, expect, it } from 'vitest'
-import { cacheIdOf, createPwaConfig, pathPattern, PWA_THEME_COLOR } from './config.ts'
+import { cacheIdOf, createPwaConfig, FILE_PATH, pathPattern, PWA_THEME_COLOR } from './config.ts'
 
 const home = toolById('home')
 const record = toolById('record')
@@ -45,8 +45,19 @@ describe('createPwaConfig', () => {
     for (const t of tools.filter((x) => x.id !== 'home')) expect(denied(t.path)).toBe(true)
   })
 
-  it('does not deny anything for a leaf tool', () => {
-    expect(createPwaConfig(record).workbox!.navigateFallbackDenylist).toEqual([])
+  it('leaves files such as licenses.txt to the network in every app', () => {
+    for (const t of [home, record]) {
+      const deny = createPwaConfig(t).workbox!.navigateFallbackDenylist!
+      const denied = (p: string) => deny.some((re) => re.test(p))
+      expect(denied(`${t.path}licenses.txt`)).toBe(true)
+      // The app's own pages still get the app shell.
+      expect(denied(t.path)).toBe(false)
+      expect(denied(`${t.path}#/settings`)).toBe(false)
+    }
+  })
+
+  it('denies only files for a leaf tool', () => {
+    expect(createPwaConfig(record).workbox!.navigateFallbackDenylist).toEqual([FILE_PATH])
   })
 
   it('uses the scope-exact cleanup instead of Workbox’s', () => {
