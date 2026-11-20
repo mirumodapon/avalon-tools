@@ -3,6 +3,7 @@
  *   dist/            ← apps/home/dist
  *   dist/record/     ← apps/record/dist   (each tool at its registry path)
  *   dist/docs/       ← apps/docs/dist     (the VitePress docs: no manifest, no service worker)
+ * Every app carries its own licenses.txt (third-party notices, see @avalon/licenses).
  *   dist/404.html    ← home's index.html  (GitHub Pages serves it for unknown paths)
  *
  *   node scripts/build-all.ts [--skip-build]
@@ -10,6 +11,7 @@
 import { execFileSync } from 'node:child_process'
 import { copyFileSync, cpSync, existsSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
+import { LICENSES_FILE } from '../packages/licenses/src/vite.ts'
 import { isPwa } from '../packages/registry/src/index.ts'
 import { appDir, apps, distDir, packageName, root } from './lib/apps.ts'
 
@@ -27,7 +29,9 @@ const PWA_FILES = ['manifest.webmanifest', 'sw.js']
 for (const tool of list) {
   const from = join(appDir(tool), 'dist')
   const to = join(distDir, tool.path)
-  if (!existsSync(join(from, 'index.html'))) problems.push(`${tool.id}: dist/index.html is missing`)
+  for (const f of ['index.html', LICENSES_FILE]) {
+    if (!existsSync(join(from, f))) problems.push(`${tool.id}: dist/${f} is missing`)
+  }
   for (const f of PWA_FILES) {
     const present = existsSync(join(from, f))
     if (isPwa(tool) && !present) problems.push(`${tool.id}: dist/${f} is missing`)
