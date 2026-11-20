@@ -26,6 +26,8 @@ export type Progress =
 export interface Session {
   game: Game
   voteMode: VoteMode
+  /** Fixed when the game starts: vote on the forced proposal (false = all approve). */
+  forcedVote: boolean
   stage: Stage
   progress: Progress | null
 }

@@ -58,6 +58,7 @@ function parseSession(data: unknown): Session | null {
   return {
     game: parsed.game,
     voteMode: d.voteMode === 'leader' ? 'leader' : 'pass',
+    forcedVote: d.forcedVote === true,
     stage: STAGES.includes(d.stage as Stage) ? (d.stage as Stage) : 'play',
     progress: parseProgress(d.progress),
   }
@@ -71,8 +72,8 @@ export const SESSION_STORE: StoreSpec<Session | null> = {
 }
 
 function save(session: Session): Session {
-  const { game, voteMode, stage, progress } = session
-  writeStore(SESSION_STORE, { game, voteMode, stage, progress })
+  const { game, voteMode, forcedVote, stage, progress } = session
+  writeStore(SESSION_STORE, { game, voteMode, forcedVote, stage, progress })
   return session
 }
 

@@ -39,6 +39,15 @@ describe('App', () => {
     expect(screen.queryByRole('button', { name: /湖中女神初始持有者/ })).toBeNull()
   })
 
+  it('puts the player names last and fixes the forced-round choice into the game', () => {
+    render(<App />)
+    const titles = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
+    expect(titles.at(-1)).toMatch(/玩家名字/)
+    act(() => fireEvent.click(screen.getByRole('switch', { name: /強制局投票/ })))
+    act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))
+    expect(useSession.getState().session!.forcedVote).toBe(true)
+  })
+
   it('asks before abandoning a game', () => {
     render(<App />)
     act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))

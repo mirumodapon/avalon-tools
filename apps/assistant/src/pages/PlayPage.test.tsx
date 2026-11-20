@@ -21,8 +21,17 @@ describe('voting', () => {
     useSession.getState().clear()
   })
 
-  it('ends the game when the forced proposal is rejected', () => {
+  it('records the forced proposal as everyone approving when it is not voted on', () => {
     startSession(reject(newGame(), 4), 'leader')
+    render(<App />)
+    proposeTeam('1 號', '2 號')
+    const forced = useSession.getState().session!.game.rounds[0]!.proposals[4]!
+    expect(Object.values(forced.votes).every((v) => v === 'approve')).toBe(true)
+    expect(screen.getByRole('button', { name: '長按出牌' })).toBeTruthy()
+  })
+
+  it('ends the game when the forced proposal is voted down', () => {
+    startSession(reject(newGame(), 4), 'leader', true)
     render(<App />)
     expect(screen.getByText('強制局')).toBeTruthy()
     proposeTeam('1 號', '2 號')

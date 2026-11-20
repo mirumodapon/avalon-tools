@@ -1,4 +1,10 @@
-import { deriveState, type InputMode, type Votes } from '@avalon/record-core'
+import {
+  deriveState,
+  uniformVotes,
+  type InputMode,
+  type PlayerId,
+  type Votes,
+} from '@avalon/record-core'
 import { docsHref } from '@avalon/registry'
 import { AppShell } from '@avalon/ui'
 import { useEffect } from 'react'
@@ -58,12 +64,21 @@ export function PlayPage({ session }: { session: Session }) {
           <LeaderVote game={game} team={team} onDone={done} />
         )
     } else {
-      body = (
-        <TeamPicker
-          game={game}
-          onSubmit={(team) => setProgress({ kind: 'team', team, cast: [] })}
-        />
-      )
+      // The forced proposal goes without a vote unless the game was set up to vote on it.
+      const skipVote = state.forced && !session.forcedVote
+      const submit = (team: PlayerId[]) =>
+        skipVote
+          ? apply({
+              type: 'propose',
+              team,
+              votes: uniformVotes(
+                game.players.map((p) => p.id),
+                'approve',
+              ),
+              inputMode: 'approvals',
+            })
+          : setProgress({ kind: 'team', team, cast: [] })
+      body = <TeamPicker game={game} onSubmit={submit} />
     }
   }
 

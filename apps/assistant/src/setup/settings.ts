@@ -15,6 +15,8 @@ export interface SetupSettings {
   /** One per seat; empty means "N 號". */
   names: string[]
   voteMode: VoteMode
+  /** Vote on the 5th (forced) proposal; when false it is recorded as everyone approving. */
+  forcedVote: boolean
   /** 隊長輸入 only: 派票 (mark approvers) or 派跳 (mark exceptions), as in the record app. */
   leaderInputMode: InputMode
   lady: boolean
@@ -37,6 +39,7 @@ export function normalizeSetup(data: unknown): SetupSettings {
       typeof given[i] === 'string' ? given[i] : '',
     ),
     voteMode: d.voteMode === 'leader' ? 'leader' : 'pass',
+    forcedVote: d.forcedVote === true,
     leaderInputMode: d.leaderInputMode === 'anomalies' ? 'anomalies' : 'approvals',
     lady: typeof d.lady === 'boolean' ? d.lady : ladyEnabledByDefault(playerCount),
     ladyHolderSeat:
