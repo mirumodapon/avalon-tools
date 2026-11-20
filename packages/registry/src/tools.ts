@@ -53,7 +53,7 @@ export const TOOLS = [
     path: '/assistant/',
     icon: 'IconApps',
     accent: 'sapphire',
-    status: 'coming-soon',
+    status: 'beta',
   },
   {
     id: 'docs',

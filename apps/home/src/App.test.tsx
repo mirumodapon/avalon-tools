@@ -30,7 +30,7 @@ describe('home', () => {
     expect(seen).toEqual(expected)
     expect(within(list).getAllByRole('listitem')).toHaveLength(listedTools().length)
     expect(within(list).queryByText('阿瓦隆工具集')).toBeNull()
-    expect(within(list).getByText('Beta')).toBeTruthy()
+    expect(within(list).getAllByText('Beta').length).toBeGreaterThan(0)
     expect(within(list).getByText('RC')).toBeTruthy()
   })
 

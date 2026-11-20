@@ -1,0 +1,39 @@
+{
+  "name": "@avalon/assistant",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@avalon/pass-play": "workspace:*",
+    "@avalon/record-core": "workspace:*",
+    "@avalon/registry": "workspace:*",
+    "@avalon/rules": "workspace:*",
+    "@avalon/storage": "workspace:*",
+    "@avalon/theme": "workspace:*",
+    "@avalon/ui": "workspace:*",
+    "@tabler/icons-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "zustand": "catalog:"
+  },
+  "devDependencies": {
+    "@avalon/licenses": "workspace:*",
+    "@avalon/pwa": "workspace:*",
+    "@avalon/tsconfig": "workspace:*",
+    "@tailwindcss/vite": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "jsdom": "catalog:",
+    "tailwindcss": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-pwa": "catalog:",
+    "workbox-window": "catalog:"
+  }
+}
