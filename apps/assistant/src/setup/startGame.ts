@@ -2,7 +2,6 @@ import { dealRoles, newId, rolesInPlay, secureRandomInt } from '@avalon/pass-pla
 import {
   createGame,
   DEFAULT_NAMING,
-  defaultLadyHolder,
   makePlayers,
   renderName,
   type Game,
@@ -14,7 +13,7 @@ import type { SetupSettings } from './settings.ts'
 
 /**
  * A new game from the setup: roles dealt onto the seats (seat N is player `pN`), a random
- * first leader, and the Lady with the player to their right when it is on.
+ * first leader, and the Lady with the chosen seat (the last one by default) when it is on.
  */
 export function startGame(
   setup: SetupSettings,
@@ -46,7 +45,9 @@ export function startGame(
     },
     roleConfig,
     roleAssignment,
-    lady: setup.lady ? { initialHolderId: defaultLadyHolder(players, firstLeaderId) } : null,
+    lady: setup.lady
+      ? { initialHolderId: players[(setup.ladyHolderSeat ?? players.length) - 1]!.id }
+      : null,
   })
   return { game, table }
 }

@@ -1,5 +1,5 @@
 import { decodeGame, deriveState, playerFaction } from '@avalon/record-core'
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { App } from './App.tsx'
 import { useSession } from './session/store.ts'
@@ -19,6 +19,16 @@ describe('App', () => {
     expect(screen.getByText(/請將手機交給/)).toBeTruthy()
     expect(screen.getByText('1 號・小明')).toBeTruthy()
     expect(useSession.getState().session?.stage).toBe('deal')
+  })
+
+  it('lets the Lady start with any seat, the last one by default', () => {
+    useSetup.getState().update({ playerCount: 7, lady: true, ladyHolderSeat: null })
+    render(<App />)
+    act(() => fireEvent.click(screen.getByRole('button', { name: '湖中女神初始持有者：7 號' })))
+    const dialog = screen.getByRole('dialog', { name: '湖中女神初始持有者' })
+    act(() => fireEvent.click(within(dialog).getByRole('button', { name: '2 號' })))
+    act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))
+    expect(useSession.getState().session!.game.lady!.initialHolderId).toBe('p2')
   })
 
   it('asks before abandoning a game', () => {

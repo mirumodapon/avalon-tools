@@ -18,6 +18,8 @@ export interface SetupSettings {
   /** 隊長輸入 only: 派票 (mark approvers) or 派跳 (mark exceptions), as in the record app. */
   leaderInputMode: InputMode
   lady: boolean
+  /** The Lady's first holder, by seat; null = the last seat (the default). */
+  ladyHolderSeat: number | null
 }
 
 export function normalizeSetup(data: unknown): SetupSettings {
@@ -35,6 +37,12 @@ export function normalizeSetup(data: unknown): SetupSettings {
     voteMode: d.voteMode === 'leader' ? 'leader' : 'pass',
     leaderInputMode: d.leaderInputMode === 'anomalies' ? 'anomalies' : 'approvals',
     lady: typeof d.lady === 'boolean' ? d.lady : ladyEnabledByDefault(playerCount),
+    ladyHolderSeat:
+      Number.isInteger(d.ladyHolderSeat) &&
+      (d.ladyHolderSeat as number) >= 1 &&
+      (d.ladyHolderSeat as number) <= playerCount
+        ? (d.ladyHolderSeat as number)
+        : null,
   }
 }
 

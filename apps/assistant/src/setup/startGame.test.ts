@@ -1,5 +1,5 @@
 import { dealRoles, rolesInPlay } from '@avalon/pass-play'
-import { defaultLadyHolder, deriveState } from '@avalon/record-core'
+import { deriveState } from '@avalon/record-core'
 import { describe, expect, it } from 'vitest'
 import { normalizeSetup } from './settings.ts'
 import { startGame } from './startGame.ts'
@@ -31,11 +31,19 @@ describe('startGame', () => {
     ])
   })
 
-  it('draws the first leader and gives the Lady to their right', () => {
+  it('draws the first leader', () => {
     const { game } = startGame(setup, NOW, pick(3))
     expect(game.firstLeaderId).toBe('p4')
     expect(deriveState(game).leaderId).toBe('p4')
-    expect(game.lady!.initialHolderId).toBe(defaultLadyHolder(game.players, 'p4'))
+  })
+
+  it('gives the Lady to the last seat by default', () => {
+    expect(startGame(setup, NOW, pick(3)).game.lady!.initialHolderId).toBe('p7')
+  })
+
+  it('gives the Lady to the chosen seat', () => {
+    const chosen = { ...setup, ladyHolderSeat: 2 }
+    expect(startGame(chosen, NOW, pick(3)).game.lady!.initialHolderId).toBe('p2')
   })
 
   it('leaves the Lady out when it is off', () => {
