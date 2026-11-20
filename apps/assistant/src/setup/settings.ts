@@ -1,0 +1,55 @@
+import { defaultSpecialFor, normalizePlayerCount, normalizeSpecial } from '@avalon/pass-play'
+import { ladyEnabledByDefault } from '@avalon/record-core'
+import type { PlayerCount, RoleId } from '@avalon/rules'
+import { readStore, writeStore, type StoreSpec } from '@avalon/storage'
+import { create } from 'zustand'
+import { key } from '../storage.ts'
+
+/** 傳手機投票 (everyone votes in private, revealed together) or 隊長輸入 (the leader taps). */
+export type VoteMode = 'pass' | 'leader'
+
+/** The last game's setup, offered again for the next one. */
+export interface SetupSettings {
+  playerCount: PlayerCount
+  special: RoleId[]
+  /** One per seat; empty means "N 號". */
+  names: string[]
+  voteMode: VoteMode
+  lady: boolean
+}
+
+export function normalizeSetup(data: unknown): SetupSettings {
+  const d = (typeof data === 'object' && data !== null ? data : {}) as Partial<
+    Record<keyof SetupSettings, unknown>
+  >
+  const playerCount = normalizePlayerCount(d.playerCount)
+  const given = Array.isArray(d.names) ? d.names : []
+  return {
+    playerCount,
+    special: d.special === undefined ? defaultSpecialFor(playerCount) : normalizeSpecial(d.special),
+    names: Array.from({ length: playerCount }, (_, i) =>
+      typeof given[i] === 'string' ? given[i] : '',
+    ),
+    voteMode: d.voteMode === 'leader' ? 'leader' : 'pass',
+    lady: typeof d.lady === 'boolean' ? d.lady : ladyEnabledByDefault(playerCount),
+  }
+}
+
+export const SETUP_STORE: StoreSpec<SetupSettings> = {
+  key: key('setup'),
+  version: 1,
+  parse: normalizeSetup,
+  fallback: () => normalizeSetup({}),
+}
+
+export const useSetup = create<{
+  settings: SetupSettings
+  update: (patch: Partial<SetupSettings>) => void
+}>()((set, get) => ({
+  settings: readStore(SETUP_STORE),
+  update: (patch) => {
+    const settings = normalizeSetup({ ...get().settings, ...patch })
+    writeStore(SETUP_STORE, settings)
+    set({ settings })
+  },
+}))
