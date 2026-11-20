@@ -51,3 +51,16 @@ export function reject(game: Game, count: number): Game {
 export function startSession(game: Game, voteMode: VoteMode = 'leader') {
   useSession.getState().start({ game, voteMode, stage: 'play' })
 }
+
+/** The derived leader's team goes (everyone approves) and the quest ends with `failCount`. */
+export function completeQuest(game: Game, failCount = 0): Game {
+  const ids = game.players.map((p) => p.id)
+  const team = ids.slice(0, deriveState(game).teamSize)
+  const g = gameReducer(game, {
+    type: 'propose',
+    team,
+    votes: uniformVotes(ids, 'approve'),
+    inputMode: 'approvals',
+  })
+  return gameReducer(g, { type: 'recordQuest', failCount })
+}
