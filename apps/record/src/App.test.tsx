@@ -17,6 +17,9 @@ describe('App', () => {
   it('renders the home page', () => {
     render(<App />)
     expect(screen.getByRole('heading', { name: '阿瓦隆紀錄' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: '使用說明' }).getAttribute('href')).toBe(
+      '/docs/guide/record/',
+    )
   })
 
   it('creates a game from the setup page', () => {

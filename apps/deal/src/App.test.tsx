@@ -60,6 +60,9 @@ describe('deal app', () => {
     render(<App />)
     expect(screen.getByRole('heading', { name: '角色發牌' })).toBeTruthy()
     expect(screen.getByRole('link', { name: '回到阿瓦隆工具集' }).getAttribute('href')).toBe('/')
+    expect(screen.getByRole('link', { name: '使用說明' }).getAttribute('href')).toBe(
+      '/docs/guide/dealer/',
+    )
     expect(screen.getByText('好人 3')).toBeTruthy()
     expect(screen.getByText('壞人 2')).toBeTruthy()
   })
