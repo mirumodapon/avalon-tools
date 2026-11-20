@@ -590,6 +590,12 @@ importers:
       '@avalon/rules':
         specifier: workspace:*
         version: link:../avalon-rules
+      '@avalon/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@tabler/icons-react':
+        specifier: 'catalog:'
+        version: 3.52.0(react@19.3.1)
       react:
         specifier: 'catalog:'
         version: 19.3.1
@@ -600,6 +606,9 @@ importers:
       '@testing-library/react':
         specifier: 'catalog:'
         version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.6
       '@types/react':
         specifier: 'catalog:'
         version: 19.3.0
@@ -612,6 +621,9 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2)
+      vite-plugin-pwa:
+        specifier: 'catalog:'
+        version: 2.0.0(@vite-pwa/assets-generator@2.0.0(@types/node@26.6.6))(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(terser@5.51.2))(workbox-build@7.4.1)(workbox-window@7.4.1)
 
   packages/pwa:
     dependencies:

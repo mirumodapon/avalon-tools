@@ -1,11 +1,14 @@
 import { AppShell, Button, ConfirmSheet, IconButton, cx } from '@avalon/ui'
 import { IconRipple, IconX } from '@tabler/icons-react'
 import { useCallback, useState } from 'react'
-import { CardBack } from '../components/CardBack.tsx'
-import { LADY_MARK } from '../components/marks.tsx'
-import { useDoubleTap } from '../hooks/useDoubleTap.ts'
-import { usePrivacyGuard } from '../hooks/usePrivacyGuard.ts'
-import { loyaltyOrder, type Loyalty } from '@avalon/pass-play'
+import {
+  CardBack,
+  LADY_MARK,
+  useDoubleTap,
+  usePrivacyGuard,
+  loyaltyOrder,
+  type Loyalty,
+} from '@avalon/pass-play'
 import { useLady } from '../lady/store.ts'
 
 function Handoff({ who }: { who: string }) {

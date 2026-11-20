@@ -1,7 +1,7 @@
 import { FACTION_LABEL, type Faction } from '@avalon/rules'
 import { cx } from '@avalon/ui'
 import { IconTrophy, IconTrophyOff, IconUserCheck, IconUserX, type Icon } from '@tabler/icons-react'
-import { playedCards, type QuestCard } from '@avalon/pass-play'
+import { playedCards, type QuestCard } from './quest.ts'
 
 interface Mark {
   label: string

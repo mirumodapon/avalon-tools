@@ -1,5 +1,5 @@
 import { IconCards } from '@tabler/icons-react'
-import { HOLD_MS, useHold } from '../hooks/useHold.ts'
+import { HOLD_MS, useHold } from './useHold.ts'
 
 const R = 46
 const CIRCUMFERENCE = 2 * Math.PI * R

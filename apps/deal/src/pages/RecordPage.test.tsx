@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { HOLD_MS } from '../hooks/useHold.ts'
+import { HOLD_MS } from '@avalon/pass-play'
 import { createLocalStore, saveRecord, setRecordStore } from '../history/store.ts'
 import { DEFAULT_SETTINGS, useSettings } from '../settings.ts'
 import { RecordPage } from './RecordPage.tsx'
