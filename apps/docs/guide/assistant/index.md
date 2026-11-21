@@ -52,4 +52,8 @@
 
 右上角的 × 可以放棄這一場，放棄後無法復原。
 
-<!-- TODO(assistant-setup.png, assistant-team.png, assistant-finish.png): 截圖：開局設定、隊長組隊畫面、結算畫面 -->
+<div class="screenshots">
+
+![開局設定](/screenshots/assistant-setup.webp) ![隊長組隊畫面](/screenshots/assistant-team.webp) ![結算畫面](/screenshots/assistant-finish.webp)
+
+</div>

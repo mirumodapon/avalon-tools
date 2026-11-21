@@ -13,7 +13,11 @@
 
 標示「即將推出」的工具還不能使用。
 
-<!-- TODO(home-tools.png): 截圖：首頁工具清單 -->
+<div class="screenshots">
+
+![首頁的工具清單](/screenshots/home-tools.webp)
+
+</div>
 
 ## 安裝成 App
 

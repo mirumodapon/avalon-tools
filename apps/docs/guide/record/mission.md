@@ -47,7 +47,11 @@
 
 按「保存」完成。保存後，名稱、備註與角色仍可以在遊戲詳情頁修改。
 
-<!-- TODO(record-summary.png): 截圖：結算頁 -->
+<div class="screenshots">
+
+![結算頁](/screenshots/record-summary.webp)
+
+</div>
 
 ## 瀏覽已結束的遊戲
 
