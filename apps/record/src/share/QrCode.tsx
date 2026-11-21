@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 
-const QUIET = 2
-
 /**
- * QR code drawn as SVG paths. Always uses the light (Latte) palette so modules are
- * dark on light, which every scanner reads; colors come from theme tokens.
+ * QR code drawn as SVG paths (encoded with uqr, loaded on first use). Always uses the light
+ * (Latte) palette so modules are dark on light, which every scanner reads; colors come from
+ * theme tokens.
  */
 export function QrCode({ value, label }: { value: string; label: string }) {
   const [path, setPath] = useState<{ d: string; size: number } | null>(null)
@@ -12,17 +11,8 @@ export function QrCode({ value, label }: { value: string; label: string }) {
 
   useEffect(() => {
     let alive = true
-    import('qrcode')
-      .then(({ default: QRCode }) => {
-        const { modules } = QRCode.create(value, { errorCorrectionLevel: 'M' })
-        let d = ''
-        for (let y = 0; y < modules.size; y++) {
-          for (let x = 0; x < modules.size; x++) {
-            if (modules.get(x, y)) d += `M${x + QUIET} ${y + QUIET}h1v1h-1z`
-          }
-        }
-        if (alive) setPath({ d, size: modules.size + QUIET * 2 })
-      })
+    import('./qrSvg.ts')
+      .then(({ qrModules, qrPath }) => alive && setPath(qrPath(qrModules(value))))
       .catch((e: unknown) => alive && setError(e instanceof Error ? e.message : String(e)))
     return () => {
       alive = false

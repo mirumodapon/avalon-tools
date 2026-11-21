@@ -17,9 +17,9 @@
     "dexie": "catalog:",
     "html-to-image": "catalog:",
     "jsqr": "catalog:",
-    "qrcode": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "uqr": "catalog:",
     "zustand": "catalog:"
   },
   "devDependencies": {
@@ -30,7 +30,6 @@
     "@catppuccin/palette": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/react": "catalog:",
-    "@types/qrcode": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
