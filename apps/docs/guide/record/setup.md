@@ -22,7 +22,11 @@
 - **往上移／往下移**：調整座位順序。
 - 名字重複時會提醒「玩家名稱重複，記錄時可能難以分辨」。
 
-<!-- TODO(record-setup-players.png): 截圖：玩家與座位 -->
+<div class="screenshots">
+
+![玩家與座位](/screenshots/record-setup-players.webp)
+
+</div>
 
 ## 第一位隊長
 

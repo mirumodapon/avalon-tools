@@ -95,3 +95,24 @@
 .vp-doc td.nowrap {
   white-space: nowrap;
 }
+
+/* App screenshots (public/screenshots, 600px wide WebP): phone-sized, side by side. */
+.vp-doc .screenshots p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+.vp-doc .screenshots img {
+  /* Up to three in a row on wide screens; one per row on phones. */
+  flex: 1 1 180px;
+  min-width: 0;
+  max-width: 280px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 16px;
+}
+/* A cropped strip of the screen rather than a whole phone screen. */
+.vp-doc .screenshots.strip img {
+  max-width: 375px;
+  border-radius: 12px;
+}

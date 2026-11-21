@@ -26,7 +26,11 @@
 
 按「送出派票」完成。被否決時，隊長換到下一位，記錄下一次派票；通過時進入[記錄任務結果](./mission)。
 
-<!-- TODO(record-vote-approvals.png, record-vote-anomalies.png): 截圖：派票與派跳 -->
+<div class="screenshots">
+
+![派票（記贊成）](/screenshots/record-vote-approvals.webp) ![派跳（記異常）](/screenshots/record-vote-anomalies.webp)
+
+</div>
 
 ## 強制局
 

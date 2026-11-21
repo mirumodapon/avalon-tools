@@ -30,7 +30,11 @@
 
 中途按 ✕「結束發牌」時，結果已經保存在歷史紀錄，之後可以用「回放」讓還沒看的人繼續看。
 
-<!-- TODO(deal-card-back.png, deal-role-card.png): 截圖：卡背、角色卡 -->
+<div class="screenshots">
+
+![卡背：長按翻開](/screenshots/deal-card-back.webp) ![角色卡：雙擊蓋上](/screenshots/deal-role-card.webp)
+
+</div>
 
 ## 出任務
 
