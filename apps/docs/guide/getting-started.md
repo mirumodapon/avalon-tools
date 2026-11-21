@@ -13,7 +13,7 @@
 
 標示「即將推出」的工具還不能使用。
 
-<!-- TODO: 截圖：首頁工具清單 -->
+<!-- TODO(home-tools.png): 截圖：首頁工具清單 -->
 
 ## 安裝成 App
 
@@ -35,7 +35,7 @@
 各瀏覽器版本的選單名稱可能不同，以上名稱需要在實機上確認。
 :::
 
-<!-- TODO: 截圖：iOS 加入主畫面、Android 安裝 -->
+<!-- TODO(install-ios.png, install-android.png): 截圖：iOS 加入主畫面、Android 安裝 -->
 
 ## 離線使用
 
