@@ -31,7 +31,7 @@ export default defineConfig({
       '@tabler/icons-react',
       '@catppuccin/palette',
       'html-to-image',
-      'qrcode',
+      'uqr',
       'jsqr',
       'workbox-window',
     ],
