@@ -12,6 +12,8 @@ export type VoteMode = 'pass' | 'leader'
 export interface SetupSettings {
   playerCount: PlayerCount
   special: RoleId[]
+  /** Draw the first leader at random; when false, seat 1 leads first. */
+  firstLeaderRandom: boolean
   /** One per seat; empty means "N 號". */
   names: string[]
   voteMode: VoteMode
@@ -35,6 +37,7 @@ export function normalizeSetup(data: unknown): SetupSettings {
   return {
     playerCount,
     special: d.special === undefined ? defaultSpecialFor(playerCount) : normalizeSpecial(d.special),
+    firstLeaderRandom: d.firstLeaderRandom !== false,
     names: Array.from({ length: playerCount }, (_, i) =>
       typeof given[i] === 'string' ? given[i] : '',
     ),

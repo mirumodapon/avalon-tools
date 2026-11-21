@@ -48,6 +48,14 @@ describe('App', () => {
     expect(useSession.getState().session!.forcedVote).toBe(true)
   })
 
+  it('lets seat 1 lead first when the first leader is not drawn', () => {
+    render(<App />)
+    act(() => fireEvent.click(screen.getByRole('switch', { name: /隨機決定第一位隊長/ })))
+    expect(useSetup.getState().settings.firstLeaderRandom).toBe(false)
+    act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))
+    expect(useSession.getState().session!.game.firstLeaderId).toBe('p1')
+  })
+
   it('asks before abandoning a game', () => {
     render(<App />)
     act(() => fireEvent.click(screen.getByRole('button', { name: /開始遊戲/ })))

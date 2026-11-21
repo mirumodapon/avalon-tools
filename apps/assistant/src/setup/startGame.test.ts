@@ -37,6 +37,11 @@ describe('startGame', () => {
     expect(deriveState(game).leaderId).toBe('p4')
   })
 
+  it('starts with seat 1 when the first leader is not drawn at random', () => {
+    const fixed = { ...setup, firstLeaderRandom: false }
+    expect(startGame(fixed, NOW, pick(3)).game.firstLeaderId).toBe('p1')
+  })
+
   it('gives the Lady to the last seat by default', () => {
     expect(startGame(setup, NOW, pick(3)).game.lady!.initialHolderId).toBe('p7')
   })

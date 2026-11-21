@@ -60,6 +60,18 @@ export function SetupPage() {
           }
         />
         <Card>
+          <Switch
+            label="隨機決定第一位隊長"
+            description={
+              settings.firstLeaderRandom
+                ? '開始時隨機抽出第一位隊長，之後依座位輪流。'
+                : '由 1 號開始當隊長，之後依座位輪流。'
+            }
+            checked={settings.firstLeaderRandom}
+            onChange={(firstLeaderRandom) => update({ firstLeaderRandom })}
+          />
+        </Card>
+        <Card>
           <SectionTitle>投票方式</SectionTitle>
           <Segmented
             label="投票方式"
