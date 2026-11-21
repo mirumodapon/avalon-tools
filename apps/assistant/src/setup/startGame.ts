@@ -22,8 +22,8 @@ function ladyHolder(
 }
 
 /**
- * A new game from the setup: roles dealt onto the seats (seat N is player `pN`), a random
- * first leader, and the Lady (when on) with the chosen seat, a random one, or the last.
+ * A new game from the setup: roles dealt onto the seats (seat N is player `pN`), the first
+ * leader (drawn at random, or seat 1), and the Lady (when on) with the chosen seat, a random one, or the last.
  */
 export function startGame(
   setup: SetupSettings,
@@ -38,7 +38,9 @@ export function startGame(
     roleAssignment[`p${seat}`] = role
     roleConfig[role] = (roleConfig[role] ?? 0) + 1
   }
-  const firstLeaderId = players[randomInt(players.length)]!.id
+  const firstLeaderId = setup.firstLeaderRandom
+    ? players[randomInt(players.length)]!.id
+    : players[0]!.id
   const game = createGame({
     id: newId(),
     now,

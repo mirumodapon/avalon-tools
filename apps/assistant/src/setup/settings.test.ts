@@ -41,4 +41,9 @@ describe('normalizeSetup', () => {
     expect(normalizeSetup({}).forcedVote).toBe(false)
     expect(normalizeSetup({ forcedVote: true }).forcedVote).toBe(true)
   })
+
+  it('draws the first leader at random unless turned off', () => {
+    expect(normalizeSetup({}).firstLeaderRandom).toBe(true)
+    expect(normalizeSetup({ firstLeaderRandom: false }).firstLeaderRandom).toBe(false)
+  })
 })
