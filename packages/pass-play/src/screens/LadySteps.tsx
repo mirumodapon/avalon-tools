@@ -12,7 +12,7 @@ function Handoff({ who }: { who: string }) {
   )
 }
 
-/** What the inspected player showed, for the holder's eyes only. Double tap to cover. */
+/** What the inspected player showed, for the holder's eyes only. Double tap anywhere to cover. */
 function LoyaltyCard({
   shown,
   caption,
@@ -40,7 +40,7 @@ function LoyaltyCard({
         <Icon size={64} className={text} aria-hidden />
         <span className={cx('text-4xl font-bold', text)}>{label}</span>
       </button>
-      <p className="text-lg text-subtext1">看完後雙擊卡片蓋上</p>
+      <p className="text-lg text-subtext1">看完後雙擊畫面蓋上</p>
     </div>
   )
 }

@@ -4,8 +4,8 @@ import { useDoubleTap } from './useDoubleTap.ts'
 import { ABILITY, EXTRA, visionText } from './roleText.ts'
 
 /**
- * The face-up card of one player. Double tap to turn it face down. It is a button so
- * the zoom guard lets quick taps through.
+ * The face-up card of one player. Double tap anywhere on the screen to turn it face down;
+ * the card stays a button so the keyboard can do it too.
  */
 export function RoleCard({
   self,
@@ -42,7 +42,7 @@ export function RoleCard({
         {EXTRA[self.role] && <span className="text-sm text-evil-fg">{EXTRA[self.role]}</span>}
         <span className="text-sm text-subtext0">{ABILITY[self.role]}</span>
       </button>
-      <p className="text-lg text-subtext1">確認後雙擊卡片蓋牌</p>
+      <p className="text-lg text-subtext1">確認後雙擊畫面蓋牌</p>
     </div>
   )
 }
