@@ -76,14 +76,14 @@ describe('deal app', () => {
       for (const name of ROLE_NAMES) expect(domText()).not.toContain(name)
 
       hold()
-      expect(screen.getByText('確認後雙擊卡片蓋牌')).toBeTruthy()
+      expect(screen.getByText('確認後雙擊畫面蓋牌')).toBeTruthy()
       expect(ROLE_NAMES.some((n) => domText().includes(n))).toBe(true)
 
       // a single tap does nothing
       act(() => vi.advanceTimersByTime(IGNORE_TAPS_MS + 10))
       fireEvent.click(screen.getByRole('button', { name: /雙擊蓋牌/ }))
       act(() => vi.advanceTimersByTime(400))
-      expect(screen.getByText('確認後雙擊卡片蓋牌')).toBeTruthy()
+      expect(screen.getByText('確認後雙擊畫面蓋牌')).toBeTruthy()
 
       doubleTap()
     }
@@ -102,7 +102,7 @@ describe('deal app', () => {
     fireEvent.click(card)
     act(() => vi.advanceTimersByTime(100))
     fireEvent.click(card)
-    expect(screen.getByText('確認後雙擊卡片蓋牌')).toBeTruthy()
+    expect(screen.getByText('確認後雙擊畫面蓋牌')).toBeTruthy()
   })
 
   it('covers the card when the app goes to the background', async () => {
