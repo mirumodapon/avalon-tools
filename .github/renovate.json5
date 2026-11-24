@@ -1,0 +1,59 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: ['config:recommended', ':semanticCommits'],
+  timezone: 'Asia/Taipei',
+  schedule: ['after 6pm on friday'],
+  prConcurrentLimit: 5,
+
+  // Update PRs go to chore/deps-update (branched from main), which is merged into main
+  // by hand. Renovate does not create this branch; it must exist on the remote.
+  // The config itself is still read from the default branch (main).
+  baseBranchPatterns: ['chore/deps-update'],
+
+  // pnpm 12 refuses packages published less than a day ago (minimumReleaseAge),
+  // so a fresher version would make `pnpm install` fail in the update branch.
+  minimumReleaseAge: '3 days',
+  internalChecksFilter: 'strict',
+
+  // External versions live in the catalog in pnpm-workspace.yaml; keep its
+  // ranges' lower bounds in step with the lockfile.
+  rangeStrategy: 'bump',
+
+  // Transitive dependencies are only updated through the lockfile.
+  lockFileMaintenance: {
+    enabled: true,
+    schedule: ['after 6pm on friday'],
+  },
+
+  packageRules: [
+    {
+      groupName: 'react',
+      matchPackageNames: ['react', 'react-dom', '@types/react', '@types/react-dom'],
+    },
+    {
+      groupName: 'vite',
+      matchPackageNames: ['vite', '@vitejs/**', 'vite-plugin-pwa', '@vite-pwa/**'],
+    },
+    {
+      groupName: 'vitest',
+      matchPackageNames: ['vitest', '@vitest/**'],
+    },
+    {
+      groupName: 'tailwindcss',
+      matchPackageNames: ['tailwindcss', '@tailwindcss/**'],
+    },
+    {
+      groupName: 'oxc',
+      matchPackageNames: ['oxlint', 'oxfmt'],
+    },
+    {
+      groupName: 'github actions',
+      matchManagers: ['github-actions'],
+    },
+    {
+      // Follow Node.js LTS majors, not odd/current releases.
+      matchDatasources: ['node-version'],
+      allowedVersions: '/^\\d*[02468](\\.|$)/',
+    },
+  ],
+}
